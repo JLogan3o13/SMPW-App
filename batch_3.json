@@ -1,0 +1,604 @@
+{
+  "MasterDrivers": [
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "cd4b6deb-2aeb-409c-862c-6e3bc2aa1fb6"
+          },
+          "name": {
+            "S": "Omar Gutierrez"
+          },
+          "phoneNumber": {
+            "S": "725-270-6800"
+          },
+          "make": {
+            "S": "Mazda"
+          },
+          "model": {
+            "S": "CX9"
+          },
+          "seatCapacity": {
+            "N": "7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "d389e94d-c9bb-4a4f-afae-6e7782824e9f"
+          },
+          "name": {
+            "S": "Lawone Hamilton"
+          },
+          "phoneNumber": {
+            "S": "702 884-0102"
+          },
+          "make": {
+            "S": "Ford"
+          },
+          "model": {
+            "S": "Transit 350"
+          },
+          "seatCapacity": {
+            "N": "15"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "79800083-70f3-4728-b797-b53ed12b5335"
+          },
+          "name": {
+            "S": "Connie Harris"
+          },
+          "phoneNumber": {
+            "S": "704-779-3963"
+          },
+          "make": {
+            "S": "Honda"
+          },
+          "model": {
+            "S": "CRV"
+          },
+          "seatCapacity": {
+            "N": "5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "0521a7df-d36e-4b12-badf-6f0a1103d65e"
+          },
+          "name": {
+            "S": "Jessica Haywood"
+          },
+          "phoneNumber": {
+            "S": "702-202-7737"
+          },
+          "make": {
+            "S": "Land Rover"
+          },
+          "model": {
+            "S": "Discovery"
+          },
+          "seatCapacity": {
+            "N": "5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "be1b5127-a32b-4a4e-818b-f197043f64ea"
+          },
+          "name": {
+            "S": "Joe Haywood"
+          },
+          "phoneNumber": {
+            "S": "314-536-3109"
+          },
+          "make": {
+            "S": "Ford"
+          },
+          "model": {
+            "S": "F150"
+          },
+          "seatCapacity": {
+            "N": "4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "6b916ec9-04f7-4274-8ee0-8ae1623cad45"
+          },
+          "name": {
+            "S": "Kim Haywood"
+          },
+          "phoneNumber": {
+            "S": "314-225-6119"
+          },
+          "make": {
+            "S": "Ford"
+          },
+          "model": {
+            "S": "Bronco"
+          },
+          "seatCapacity": {
+            "N": "4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "f022bcbd-2729-4242-ad30-59ed6dbdf749"
+          },
+          "name": {
+            "S": "Angel Hernandez"
+          },
+          "phoneNumber": {
+            "S": "702-533-9773"
+          },
+          "make": {
+            "S": "Chevy"
+          },
+          "model": {
+            "S": "Silverado"
+          },
+          "seatCapacity": {
+            "N": "4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "01f6b644-9d04-4080-a069-a39759929ae9"
+          },
+          "name": {
+            "S": "Frank Hernandez"
+          },
+          "phoneNumber": {
+            "S": "702-285-7509"
+          },
+          "make": {
+            "S": "Jeep"
+          },
+          "model": {
+            "S": "Cherokee"
+          },
+          "seatCapacity": {
+            "N": "7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "572be62a-dc0a-4cf9-978c-363629fabec7"
+          },
+          "name": {
+            "S": "Manuel Hernandez"
+          },
+          "phoneNumber": {
+            "S": "702-370-3214"
+          },
+          "make": {
+            "S": "Chevrolet"
+          },
+          "model": {
+            "S": "Suburban 1500"
+          },
+          "seatCapacity": {
+            "N": "9"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "6e76732e-ae06-45e3-a2c8-e8ef5b1c78a4"
+          },
+          "name": {
+            "S": "Roberto Ibarra"
+          },
+          "phoneNumber": {
+            "S": "702-334-9469"
+          },
+          "make": {
+            "S": "Honda"
+          },
+          "model": {
+            "S": "Pilot"
+          },
+          "seatCapacity": {
+            "N": "8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "e3a88f35-f022-4952-a389-49edce31aa58"
+          },
+          "name": {
+            "S": "Sharon Jackson"
+          },
+          "phoneNumber": {
+            "S": "702-234-5881"
+          },
+          "make": {
+            "S": "Mazda"
+          },
+          "model": {
+            "S": "CX-5"
+          },
+          "seatCapacity": {
+            "N": "4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "76320df1-6e22-4b63-9828-c5a0a93a892e"
+          },
+          "name": {
+            "S": "Dunetta Kitchen"
+          },
+          "phoneNumber": {
+            "S": "323-992-8914"
+          },
+          "make": {
+            "S": "Toyota"
+          },
+          "model": {
+            "S": "Highlander"
+          },
+          "seatCapacity": {
+            "N": "7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "a45b67ab-4b96-4d10-acb6-d879bc987ec3"
+          },
+          "name": {
+            "S": "Paul Kuhn"
+          },
+          "phoneNumber": {
+            "S": "702-994-4631"
+          },
+          "make": {
+            "S": "Toyota"
+          },
+          "model": {
+            "S": "Sienna"
+          },
+          "seatCapacity": {
+            "N": "7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "ddeb6ad4-f05b-4e23-b270-8d43359fe5a4"
+          },
+          "name": {
+            "S": "Dave Kyles"
+          },
+          "phoneNumber": {
+            "S": "818-818-2382"
+          },
+          "make": {
+            "S": "Dodge"
+          },
+          "model": {
+            "S": "journey"
+          },
+          "seatCapacity": {
+            "N": "7"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "31ca83db-fa2a-4484-9857-4a67d7409c2e"
+          },
+          "name": {
+            "S": "Meta Lacarra"
+          },
+          "phoneNumber": {
+            "S": "909-538-3550"
+          },
+          "make": {
+            "S": "Kia"
+          },
+          "model": {
+            "S": "Sorento"
+          },
+          "seatCapacity": {
+            "N": "5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "b3673c17-e503-4f6c-9393-ab3ed5a912b5"
+          },
+          "name": {
+            "S": "Jeremiah Logan"
+          },
+          "phoneNumber": {
+            "S": "517-420-0245"
+          },
+          "make": {
+            "S": "Chrysler"
+          },
+          "model": {
+            "S": "Town and Country"
+          },
+          "seatCapacity": {
+            "N": "6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "1f1b77a9-baeb-4466-a290-6ee4f616b8c2"
+          },
+          "name": {
+            "S": "Blanca Madrigal"
+          },
+          "phoneNumber": {
+            "S": "702-480-6864"
+          },
+          "make": {
+            "S": "Toyota"
+          },
+          "model": {
+            "S": "Tundra"
+          },
+          "seatCapacity": {
+            "N": "4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "cd8c3d74-2cbd-4cc7-8e27-b774bb6b505c"
+          },
+          "name": {
+            "S": "Manny Maneclang"
+          },
+          "phoneNumber": {
+            "S": "702-499-4264"
+          },
+          "make": {
+            "S": "Ford"
+          },
+          "model": {
+            "S": "Expedition"
+          },
+          "seatCapacity": {
+            "N": "8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "32a847fc-d073-42b2-b24c-10107f1f53e8"
+          },
+          "name": {
+            "S": "Eliam & Maribella Marrero Bernal"
+          },
+          "phoneNumber": {
+            "S": "702-762-6677"
+          },
+          "make": {
+            "S": "CHEVY"
+          },
+          "model": {
+            "S": "TRAVERSE"
+          },
+          "seatCapacity": {
+            "N": "6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "dd9227a6-818d-419a-bffa-a61183c1169a"
+          },
+          "name": {
+            "S": "Darlene Marshall"
+          },
+          "phoneNumber": {
+            "S": "702-808-2100"
+          },
+          "make": {
+            "S": "Toyota"
+          },
+          "model": {
+            "S": "Prius"
+          },
+          "seatCapacity": {
+            "N": "4"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "fdc40463-59f2-4bc2-a659-b4e5601ab734"
+          },
+          "name": {
+            "S": "Victor Martin"
+          },
+          "phoneNumber": {
+            "S": "(702) 762-1249"
+          },
+          "make": {
+            "S": "Hyundai"
+          },
+          "model": {
+            "S": "Santa Fe"
+          },
+          "seatCapacity": {
+            "N": "5"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "8742d873-184c-48fa-86e3-ff535a8b6c76"
+          },
+          "name": {
+            "S": "Oscar Martinez Jr"
+          },
+          "phoneNumber": {
+            "S": "702-504-6294"
+          },
+          "make": {
+            "S": "Dodge"
+          },
+          "model": {
+            "S": "Ram"
+          },
+          "seatCapacity": {
+            "N": "6"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "2d3c7bce-4059-4e5b-9777-678109c8de65"
+          },
+          "name": {
+            "S": "Kaleb Miley"
+          },
+          "phoneNumber": {
+            "S": "702-279-5059"
+          },
+          "make": {
+            "S": "Chevrolet"
+          },
+          "model": {
+            "S": "Suburban"
+          },
+          "seatCapacity": {
+            "N": "8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "00b0f6d6-9374-4e92-b47d-efef7f0f5e0f"
+          },
+          "name": {
+            "S": "Kirk Miley"
+          },
+          "phoneNumber": {
+            "S": "702-279-5059"
+          },
+          "make": {
+            "S": "Chevrolet"
+          },
+          "model": {
+            "S": "Suburban"
+          },
+          "seatCapacity": {
+            "N": "8"
+          }
+        }
+      }
+    },
+    {
+      "PutRequest": {
+        "Item": {
+          "driverId": {
+            "S": "48e21f41-2663-4331-a585-2b2f0c1f7086"
+          },
+          "name": {
+            "S": "Bryon Miner"
+          },
+          "phoneNumber": {
+            "S": "805-406-9419"
+          },
+          "make": {
+            "S": "Chevrolet"
+          },
+          "model": {
+            "S": "Tahoe"
+          },
+          "seatCapacity": {
+            "N": "5"
+          }
+        }
+      }
+    }
+  ]
+}

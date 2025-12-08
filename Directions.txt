@@ -1,0 +1,505 @@
+========================================Fomula 1========================================
+=====Zone A: Fashion Show=====
+Route1:
+
+https://www.google.com/maps/dir/?api=1&
+origin=36.07744,-115.23981
+&&
+destination=36.1262502,-115.1712801
+&
+waypoints=36.07800654305389,-115.23370763443121 ;Left on Torrey Pines
+%7C
+36.08526544165996,-115.23405342903031 ;Right on Russell
+%7C
+36.08653,-115.18977 :Left on N. Valley View
+%7C
+36.10842,-115.18763 ;Right on Harmon
+%7C
+36.10831,-115.18337 ;Left on Aldebaran
+%7C
+36.10892,-115.1812 ;Jerry Lewis Left on Dean Martin Dr
+%7C
+36.1277235,-115.1751551 ;Sammy Davis Jr Right at Dillard's
+&
+travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.1262502,-115.1712801&waypoints=36.07800654305389,-115.23370763443121%7C36.08526544165996,-115.23405342903031%7C36.08653,-115.18977%7C36.10842,-115.18763%7C36.10831,-115.18337%7C36.10892,-115.1812%7C36.1277235,-115.1751551&travelmode=driving
+
+
+Route1 Return:
+https://www.google.com/maps/dir/?api=1&
+origin=36.1262502,-115.1712801
+&&
+destination=36.07744,-115.23981
+&
+waypoints=36.12791631290823,-115.1753971068505 ;Dillard's Left on Sammy Davis Jr
+%7C
+36.10886504695281,-115.1814018144486 ;Dean Martin Right on Jerry Lewis
+%7C
+36.10823681484808,-115.18347670368581 ;Aldebaran Right on Harmon
+%7C
+36.10668458723076,-115.18978684027388 ;Harmon to S. Valley View
+%7C
+36.08638620519517,-115.19012406567239 ;S. Valley View Right on Russell
+%7C
+36.085151614776116,-115.23404677769892 ;Russell Left on Torrey Pines
+%7C
+36.078018919317905,-115.23382969996531 ;Torrey Pines Right on Patrick
+&
+travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.1262502,-115.1712801&&destination=36.07744,-115.23981&waypoints=36.12791631290823,-115.1753971068505%7C36.10886504695281,-115.1814018144486%7C36.10823681484808,-115.18347670368581%7C36.10668458723076,-115.18978684027388%7C36.08638620519517,-115.19012406567239%7C36.085151614776116,-115.23404677769892%7C36.078018919317905,-115.23382969996531&travelmode=driving
+
+
+Route2:
+https://www.google.com/maps/dir/?api=1&
+origin=36.07744,-115.23981
+&&
+destination=36.1262502,-115.1712801
+&
+36.08524, -115.23387 ;Torry Pines Right on Russell
+%7C
+36.08660,-115.18977 ;Left on N. Valley View
+%7C
+36.10835, -115.18698 ;Right on Harmon
+%7C
+36.10840,-115.18335 ;Left on Aldebaran
+%7C
+36.10905,-115.18123 ;Jerry Lewis Left on Dean Martin Dr
+%7C
+36.12771,-115.17515 ;Sammy Davis Jr Right at Dillard's
+&
+travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.1262502,-115.1712801&waypoints=36.08524,-115.23387%7C36.08660,-115.18977%7C36.10835,-115.18698%7C36.10840,-115.18335%7C36.10905,-115.18123%7C36.12771,-115.17515&travelmode=driving
+
+Route2 Return:
+https://www.google.com/maps/dir/?api=1&
+origin=36.1262502,-115.1712801
+&&
+destination=36.07744,-115.23981
+&
+waypoints=36.12734,-115.17592 ;Dillard's Left onto Sammy Davis Jr
+%7C
+36.10886,-115.18151 ;Dean Martin Dr Right onto Jerry Lewis
+%7C
+36.10823,-115.18365 ;Right on Harmon
+%7C
+36.10630,-115.18988 ;Left on N. Valley View
+%7C
+36.08634,-115.19233 ;Right on Russell
+%7C
+36.08501,-115.23402 ;Torrey Pines Right on Russell
+&
+travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.1262502,-115.1712801&&destination=36.07744,-115.23981&waypoints=36.12734,-115.17592%7C36.10886,-115.18151%7C36.10823,-115.18365%7C36.10630,-115.18988%7C36.08634,-115.19233%7C36.08501,-115.23402&travelmode=driving
+
+=====Zone A: Fashion Show=====
+
+=====Zone A3: Treasure Island=====
+Route1:
+https://www.google.com/maps/dir/?api=1&
+origin=36.07744,-115.23981
+&&
+destination=36.1236286,-115.1724227
+&
+waypoints=36.07800654305389,-115.23370763443121 ;Left on Torrey Pines
+%7C
+36.08526544165996,-115.23405342903031 ;Right on Russell
+%7C
+36.08653,-115.18977 :Left on N. Valley View
+%7C
+36.10842,-115.18763 ;Right on Harmon
+%7C
+36.10831,-115.18337 ;Left on Aldebaran
+%7C
+36.10892,-115.1812 ;Jerry Lewis Left on Dean Martin Dr
+%7C
+36.12646370093044,-115.1761938588968 ;Sammy Davis Jr Right on Mel Torme
+%7C
+36.12378621500761,-115.17319085211908 ;Mel Torme left on Mystere Dreams
+&
+travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.1236286,-115.1724227&waypoints=36.07800654305389,-115.23370763443121%7C36.08526544165996,-115.23405342903031%7C36.08653,-115.18977%7C36.10842,-115.18763%7C36.10831,-115.18337%7C36.10892,-115.1812%7C36.12646370093044,-115.1761938588968%7C36.12378621500761,-115.17319085211908&travelmode=driving
+
+
+Route1Return:
+https://www.google.com/maps/dir/?api=1&
+origin=36.1236286,-115.1724227
+&&
+destination=36.07744,-115.23981
+&
+waypoints=36.1240666,-115.173053 ;Mystere Dreams Right on Mel Torme
+%7C
+36.1263422,-115.1766562 ;Mel Torme Left on Sammy Davis Jr
+%7C
+36.10886504695281,-115.1814018144486 ;Sammy Davis Jr Right on Jerry Lewis
+%7C
+36.10823681484808,-115.18347670368581 ;Aldebaran Right on Harmon
+%7C
+36.10668458723076,-115.18978684027388 ;Harmon to S. Valley View
+%7C
+36.08638620519517,-115.19012406567239 ;S. Valley View Right on Russell
+%7C
+36.085151614776116,-115.23404677769892 ;Russell Left on Torrey Pines
+%7C
+36.078018919317905,-115.23382969996531 ;Torrey Pines Right on Patrick
+&
+travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.1236286,-115.1724227&&destination=36.07744,-115.23981&waypoints=36.1240666,-115.173053%7C36.1263422,-115.1766562%7C36.10886504695281,-115.1814018144486%7C36.10823681484808,-115.18347670368581%7C36.10668458723076,-115.18978684027388%7C36.08638620519517,-115.19012406567239%7C36.085151614776116,-115.23404677769892%7C36.078018919317905,-115.23382969996531&travelmode=driving
+
+
+Route2:
+	https://www.google.com/maps/dir/?api=1&
+	origin=36.07744,-115.23981
+	&&
+	destination=36.1236286,-115.1724227
+	&
+	waypoints=36.08524,-115.23387 ;Torry Pines Right on Russell
+	%7C
+	36.08660,-115.18977 ;Left on N. Valley View
+	%7C
+	36.10835,-115.18698 ;Right on Harmon
+	%7C
+	36.10840,-115.18335 ;Left on Aldebaran
+	%7C
+	36.10905,-115.18123 ;Jerry Lewis Left on Dean Martin Dr
+	%7C
+	36.12640,-115.17602 ;Sammy Davis Jr Right on Mel Torme
+	%7C
+	36.12370,-115.17294 ;Mel Torme left on Mystere Dreams
+	&
+	travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.1236286,-115.1724227&waypoints=36.08524,-115.23387%7C36.08660,-115.18977%7C36.10835,-115.18698%7C36.10840,-115.18335%7C36.10905,-115.18123%7C36.12640,-115.17602%7C36.12370,-115.17294&travelmode=driving
+
+Route2Return:
+	https://www.google.com/maps/dir/?api=1&
+	origin=36.1236286,-115.1724227
+	&&
+	destination=36.07744,-115.23981
+	&
+	waypoints=36.12413,-115.17306 ;Mystere Dreams Right on Mel Torme 
+	%7C
+	36.12648,-115.17649 ;Mel Torme Left on Sammy Davis Jr 
+	%7C
+	36.10886,-115.18151 ;Dean Martin Dr Right onto Jerry Lewis
+	%7C
+	36.10823,-115.18365 ;Right on Harmon
+	%7C
+	36.10630,-115.18988 ;Left on N. Valley View
+	%7C
+	36.08634,-115.19233 ;Right on Russell
+	%7C
+	36.08501,-115.23402 ;Torrey Pines Right on Russell
+	&
+	travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.1236286,-115.1724227&&destination=36.07744,-115.23981&waypoints=36.12413,-115.17306%7C36.12648,-115.17649%7C36.10886,-115.18151%7C36.10823,-115.18365%7C36.10630,-115.18988%7C36.08634,-115.19233%7C36.08501,-115.23402&travelmode=driving
+
+=====Zone A3: Treasure Island=====
+
+=====Zone B: Caesar's/Harrah's=====
+
+Route1:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.07744,-115.23981
+	&&
+	destination=36.11607,-115.17405
+	&&
+	waypoints=36.07800654305389,-115.23370763443121 ;Left on Torrey Pines
+	%7C
+	36.08526544165996,-115.23405342903031 ;Right on Russell
+	%7C
+	36.08653,-115.18977 ;Russell Left on Valley View
+	%7C
+	36.10842,-115.18763 ;N. Valley View Right on Harmon
+	%7C
+	36.10831,-115.18337 ;Harmon Left on Aldebaran
+	%7C
+	36.10892,-115.1812 ;Jerry Lewis Left on Dean Martin Dr.
+	%7C
+	36.11976,-115.1811 ;Dean Martin Right on Twain
+	%7C
+	36.11963, -115.18002 ;Twain Right on Frank Sinatra
+	%7C
+	36.11835,-115.17976 ;Frank Sinatra Left on Jay Sarno Way
+	&
+	travelmode=driving
+	
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.1165226,-115.173814&&waypoints=36.07800654305389,-115.23370763443121%7C36.08526544165996,-115.23405342903031%7C36.08653,-115.18977%7C36.10842,-115.18763%7C36.10831,-115.18337%7C36.10892,-115.1812%7C36.11976,-115.1811%7C36.11963,-115.18002%7C36.11835,-115.17976&travelmode=driving
+
+
+Route1Return:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.11607,-115.17405
+	&&
+	destination=36.07744,-115.23981
+	&&
+	waypoints=36.118522630493544,-115.17988594600408 ;Jay Sarno Way Right on Frank Sinatra
+	%7C
+	36.120693,-115.180035 ;Frank Sinatra Left on Dean Martin
+	%7C
+	36.10886504695281,-115.1814018144486 ;Dean Martin Right on Jerry Lewis
+	%7C
+	36.10823681484808,-115.18347670368581 ;Aldebaran Right on Harmon
+	%7C
+	36.10668458723076,-115.18978684027388 ;Harmon to S. Valley View
+	%7C
+	36.08638620519517,-115.19012406567239 ;S. Valley View Right on Russell
+	%7C
+	36.085151614776116,-115.23404677769892 ;Russell Left on Torrey Pines
+	%7C
+	36.078018919317905,-115.23382969996531 ;Torrey Pines Right on Patrick
+	&
+	travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.1165226,-115.173814&&destination=36.07744,-115.23981&&waypoints=36.118522630493544,-115.17988594600408%7C36.120693,-115.180035%7C36.10886504695281,-115.1814018144486%7C36.10823681484808,-115.18347670368581%7C36.10668458723076,-115.18978684027388%7C36.08638620519517,-115.19012406567239%7C36.085151614776116,-115.23404677769892%7C36.078018919317905,-115.23382969996531&travelmode=driving
+
+Route2:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.07744,-115.23981
+	&&
+	destination=36.11605,-115.17401
+	&&
+	waypoints=36.08524,-115.23387 ;Torry Pines Right on Russell
+	%7C
+	36.08660,-115.18977 ;Russell Left on N. Valley View
+	%7C
+	36.10835,-115.18698 ;N. Valley View Right on Harmon
+	%7C
+	36.10840,-115.18335 ;Harmon Left on Aldebaran
+	%7C
+	36.10905,-115.18123 ;Jerry Lewis Left on Dean Martin Dr
+	%7C
+	36.11976,-115.18101 ;Dean Martin Right on Twain
+	%7C
+	36.11835,-115.17976 ;Frank Sinatra Left on Jay Sarno Way
+	&
+	travelmode=driving
+	
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.11605,-115.17401&&waypoints=36.08524,-115.23387%7C36.08660,-115.18977%7C36.10835,-115.18698%7C36.10840,-115.18335%7C36.10905,-115.18123%7C36.11976,-115.18101%7C36.11835,-115.17976&travelmode=driving
+
+Route2Return:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.11605,-115.17401
+	&&
+	destination=36.07744,-115.23981
+	&&
+	waypoints=36.11868,-115.17989 ;Jay Sarno Way Right on Frank Sinatra	
+	%7C
+	36.11926299696356, -115.18163244175078 ;Frank Sinatra Left on Dean Martin	
+	%7C
+	36.10886,-115.18151 ;Dean Martin Dr Right onto Jerry Lewis
+	%7C
+	36.10823,-115.18365 ;Right on Harmon
+	%7C
+	36.10630,-115.18988 ;Left on N. Valley View
+	%7C
+	36.08634,-115.19233 ;Right on Russell
+	%7C
+	36.08501,-115.23402 ;Torrey Pines Right on Russell
+	&
+	travelmode=driving
+	
+https://www.google.com/maps/dir/?api=1&origin=36.11605,-115.17401&&destination=36.07744,-115.23981&&waypoints=36.11868,-115.17989%7C36.11926299696356,-115.18163244175078%7C36.10886,-115.18151%7C36.10823,-115.18365%7C36.10630,-115.18988%7C36.08634,-115.19233%7C36.08501,-115.23402&travelmode=driving	
+
+=====Zone B: Caesar's/Harrah's=====
+
+=====Zone C: Miracle Mile=====
+From Hub To Drop-Off:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.07744,-115.23981
+	&&
+	destination=36.1080231,-115.1775756
+	&&
+	waypoints=36.07800654305389,-115.23370763443121 ;Left on Torrey Pines
+	%7C
+	36.08526544165996,-115.23405342903031 ;Right on Russell
+	%7C
+	36.08653,-115.18977 ;Russell Left on Valley View
+	%7C
+	36.10842,-115.18763 ;N. Valley View Right on Harmon
+	&
+	travelmode=driving
+	
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.1080231,-115.1775756&&waypoints=36.07800654305389,-115.23370763443121%7C36.08526544165996,-115.23405342903031%7C36.08653,-115.18977%7C36.10842,-115.18763&travelmode=driving
+
+From Drop-Off Back To Hub:
+
+https://www.google.com/maps/dir/?api=1&origin=36.1080231,-115.1775756&&destination=36.07744,-115.23981&&waypoints=36.10668458723076,-115.18978684027388%7C36.08638620519517,-115.19012406567239%7C36.085151614776116,-115.23404677769892%7C36.078018919317905,-115.23382969996531&travelmode=driving
+	
+=====Zone C: Miracle Mile=====
+
+=====Zone D: Park MGM=====
+Hub To Drop-Off:
+	
+https://www.google.com/maps/dir/?api=1&
+	origin=36.07744,-115.23981
+	&&
+	destination=36.105143,-115.1772031
+	&&
+	waypoints=36.07800654305389,-115.23370763443121 ;Left on Torrey Pines
+	%7C
+	36.08526544165996,-115.23405342903031 ;Right on Russell
+	%7C
+	36.0858,-115.17582 ;Russell Right on Frank Sinatra
+	%7C
+	36.10373,-115.17971 ;Frank Sinatra Right on Park
+	&
+	travelmode=driving
+	
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.105143,-115.1772031&&waypoints=36.07800654305389,-115.23370763443121%7C36.08526544165996,-115.23405342903031%7C36.0858,-115.17582%7C36.10373,-115.17971&travelmode=driving
+
+Drop-Off Back To Hub:
+	
+https://www.google.com/maps/dir/?api=1&
+	origin=36.105143,-115.1772031
+	&&
+	destination=36.07744,-115.23981
+	&&
+	waypoints=36.10368043671971,-115.18002231889342 ;Park Left on Frank Sinatra
+	%7C
+	36.086145148255774,-115.17600909188207 ;Frank Sinatra Left on Russell
+	%7C
+	36.085151614776116,-115.23404677769892 ;Russell Left on Torrey Pines
+	%7C
+	36.078018919317905,-115.23382969996531 ;Torrey Pines Right on Patrick
+	&
+	travelmode=driving
+	
+	
+https://www.google.com/maps/dir/?api=1&origin=36.105143,-115.1772031&&destination=36.07744,-115.23981&&waypoints=36.10368043671971,-115.18002231889342%7C36.086145148255774,-115.17600909188207%7C36.085151614776116,-115.23404677769892%7C36.078018919317905,-115.23382969996531&travelmode=driving
+
+=====Zone D: Park MGM=====
+
+=====Zone E: Harmon Crossings=====
+From Hub To Drop-Off:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.07744,-115.23981
+	&&
+	destination=36.10709522926622,-115.15876964628067
+	&&
+	waypoints=36.07800654305389,-115.23370763443121 ;Left on Torrey Pines
+	%7C
+	36.08526544165996,-115.23405342903031 ;Right on Russell
+	%7C
+	36.08628,-115.17286 ;Russell Left on S. Las Vegas Blvd.
+	%7C
+	36.09731,-115.17262 ;S. Las Vegas Blvd Right on Reno
+	%7C
+	36.10073,-115.16333; Koval Right on Tropicana
+	%7C
+	36.10098,-115.15273 ;U-Turn on Tropicana
+	%7C
+	36.10109,-115.15654 ;Tropicana Right on Kelch
+	&
+	travelmode=driving
+	
+https://www.google.com/maps/dir/?api=1&origin=36.07744,-115.23981&&destination=36.10709522926622,-115.15876964628067&&waypoints=36.07800654305389,-115.23370763443121%7C36.08526544165996,-115.23405342903031%7C36.08628,-115.17286%7C36.09731,-115.17262%7C36.10073,-115.16333%7C36.10098,-115.15273%7C36.10109,-115.15654&travelmode=driving
+
+From Drop-Off Back To Hub:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.10709522926622,-115.15876964628067
+	&&
+	destination=36.07744,-115.23981
+	&&
+	waypoints=36.101008964213584,-115.15666642507061 ;Kelch Right on Tropicana
+	%7C
+	36.10061829051369,-115.16393745228582 ;Tropicana Left on Koval
+	%7C
+	36.097024999462086,-115.1731081209431 ;Reno Left on S. Las Vegas Blvd.
+	%7C
+	36.08622020777331,-115.17359315479887 ;S. Las Vegas Blvd Right on Russell
+	%7C
+	36.085151614776116,-115.23404677769892 ;Russell Left on Torrey Pines
+	%7C
+	36.078018919317905,-115.23382969996531 ;Torrey Pines Right on Patrick
+	&
+	travelmode=driving
+
+https://www.google.com/maps/dir/?api=1&origin=36.10709522926622,-115.15876964628067&&destination=36.07744,-115.23981&&waypoints=36.101008964213584,-115.15666642507061%7C36.10061829051369,-115.16393745228582%7C36.097024999462086,-115.1731081209431%7C36.08622020777331,-115.17359315479887%7C36.085151614776116,-115.23404677769892%7C36.078018919317905,-115.23382969996531&travelmode=driving
+
+=====Zone E: Harmon Crossings=====
+
+========================================Fomula 1========================================
+
+=====================================Raiders Games======================================
+
+To In-N-Out:
+https://www.google.com/maps/dir/?api=1&
+origin=36.07744%2c-115.23981&destination=36.0859%2c-115.18582&travelmode=driving&waypoints=36.07800654305389%2c-115.23370763443121%7c36.08526544165996%2c-115.23405342903031%7c36.08617%2c-115.18996%7c36.08267%2c-115.18983%7c36.08257%2c-115.18559
+
+=====================================Raiders Games======================================
+
+
+========================================Coords==========================================
+Hub: 36.07744,-115.23981
+Pickup #1: 36.0859, -115.18582
+Caesar's Parking: 36.1165226,-115.173814
+Cosmo/Bellagio/Miracle Mile: 36.1080231,-115.1775756
+Harmon Crossings: 36.10709522926622,-115.15876964628067
+MGM: 36.105143,-115.1772031
+Macy's Drop Off: 36.1262502,-115.1712801
+
+
+W. Patrick Left on Torrey Pines: 36.07800654305389,-115.23370763443121
+Torrey Pines Right on Russell: 36.08526544165996,-115.23405342903031
+Russell Right on Valley View: 36.08617,-115.18996
+Russell Left on Valley View: 36.08653,-115.18977
+Russell right on S. Las Vegas Blvd.: 36.08594,-115.17311
+Russell Right on Frank Sinatra: 36.0858,-115.17582
+Russell Left on S. Las Vegas Blvd.: 36.08628,-115.17286
+
+
+Left on Polaris: 36.08627,-115.18554
+Right on Hacienda: 36.09358,-115.18544
+Right on Luxor: 36.09351,-115.1781
+Right on Lee: 36.09291,-115.1781
+
+S. Las Vegas Blvd Right on Reno: 36.09731,-115.17262
+Koval Right on Tropicana: 36.10073,-115.16333
+U-Turn on Tropicana: 36.10098,-115.15273
+Tropicana Right on Kelch: 36.10109,-115.15654
+Frank Sinatra Right on Park: 36.10373,-115.17971
+
+W Oquondo: 36.08267,-115.18983
+Polaris: 36.08257, -115.18559
+N. Valley View Right on Harmon: 36.10842,-115.18763
+Harmon Left on Aldebaran: 36.10831,-115.18337
+Jerry Lewis Left on Dean Martin Dr.: 36.10892,-115.1812
+Sammy Davis Jr Right at Dillard's: 36.1277235,-115.1751551
+Dillard's Left on Sammy Davis Jr: 36.12791631290823,-115.1753971068505
+Aldebaran Right on Harmon: 36.10823681484808,-115.18347670368581
+Harmon to S. Valley View: 36.10668458723076,-115.18978684027388
+S. Valley View Right on Russell: 36.08638620519517,-115.19012406567239
+Russell Left on Torrey Pines: 36.085151614776116,-115.23404677769892
+Torrey Pines Right on Patrick: 36.078018919317905,-115.23382969996531
+
+Dean Martin Right on Twain: 36.11976,-115.1811
+Dean Martin Right on Jerry Lewis: 36.10886504695281,-115.1814018144486
+Twain Right on Frank Sinatra: 36.11963, -115.18002
+Frank Sinatra Left on Jay Sarno Way: 36.11835,-115.17976
+Jay Sarno Way Right on Frank Sinatra: 36.118522630493544,-115.17988594600408
+Frank Sinatra Left on Dean Martin: 36.120693,-115.180035
+
+
+
+PrettyPrint:
+https://www.google.com/maps/dir/?api=1&
+	origin=36.07744,-115.23981
+	&&
+	destination=36.08207,-115.17277
+	&&
+	waypoints=36.07800654305389,-115.23370763443121 ;Left on Torrey Pines
+	%7C
+	36.08526544165996,-115.23405342903031 ;Right on Russell
+	%7C
+	36.08594, -115.17311
+	&
+	travelmode=driving
+
+========================================Coords==========================================
