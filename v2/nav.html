@@ -213,7 +213,6 @@
   <div id="routeControls" class="route-controls">
     <div class="route-row">
       <button id="btnToggleDir" class="route-btn primary" type="button">Return Route</button>
-      <button id="btnOpenGmaps" class="route-btn" type="button">Open Google Maps</button>
     </div>
     <div id="routeStatus" class="route-status">
       <span class="route-status-text">Loading route…</span>
@@ -269,7 +268,6 @@
     const followBtn = document.getElementById('followBtn');
 
     const btnToggleDir = document.getElementById('btnToggleDir');
-    const btnOpenGmaps = document.getElementById('btnOpenGmaps');
     const routeStatus = document.getElementById('routeStatus');
     const routeStatusClose = document.getElementById('routeStatusClose');
 
@@ -303,7 +301,6 @@
 
     // Disable route buttons until loaded
     btnToggleDir.disabled = true;
-    btnOpenGmaps.disabled = true;
 
     /***************
      * HELPERS UI
@@ -786,7 +783,6 @@
           syncButtons();
 
           btnToggleDir.disabled = false;
-          btnOpenGmaps.disabled = false;
 
           renderRouteOnMap();
           startGPS();
@@ -929,18 +925,6 @@
       renderRouteOnMap();
     });
 
-    btnOpenGmaps.addEventListener('click', () => {
-      if (!currentLocation) {
-        showRouteStatus('Loading route…', false);
-        return;
-      }
-      const url = getGmapsUrlForDir();
-      if(!url){
-        showRouteStatus(`No Google Maps link for ${currentDir}.`, false);
-        return;
-      }
-      window.open(url, '_blank');
-    });
 
     // Route status close button
     routeStatusClose.addEventListener('click', () => {
