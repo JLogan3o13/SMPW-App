@@ -72,50 +72,6 @@
       font-size: 13px;
     }
 
-    /* TURN-BY-TURN INSTRUCTION BOX */
-    #turnBox{
-      position: fixed;
-      top: 116px;
-      left: 12px;
-      right: 12px;
-      z-index: 11;
-      display: none;
-      padding: 16px;
-      border-radius: 16px;
-      background: linear-gradient(135deg, rgba(34, 197, 94, 0.95) 0%, rgba(22, 163, 74, 0.95) 100%);
-      border: 2px solid rgba(255, 255, 255, 0.2);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      color: #fff;
-    }
-    #turnBox.off-route{
-      background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%);
-    }
-    .turn-distance{
-      font-size: 13px;
-      font-weight: 600;
-      opacity: 0.95;
-      margin-bottom: 6px;
-      letter-spacing: 0.3px;
-    }
-    .turn-instruction{
-      font-size: 20px;
-      font-weight: 900;
-      line-height: 1.3;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .turn-icon{
-      font-size: 32px;
-      flex-shrink: 0;
-    }
-    .turn-progress{
-      margin-top: 10px;
-      font-size: 12px;
-      opacity: 0.85;
-      font-weight: 600;
-    }
-
     #map{
       position: fixed;
       top: 112px;
@@ -191,6 +147,37 @@
       background: rgba(0,0,0,0.65);
       color: #fff;
       font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .route-status.hidden{
+      display: none;
+    }
+    .route-status-close{
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+    .route-status-close:hover{
+      opacity: 1;
+    }
+    .route-status-text{
+      flex: 1;
+    }
+    .route-status-text{
+      flex: 1;
     }
   </style>
 </head>
@@ -205,30 +192,20 @@
     <div class="statusRow">
       <div class="pill">
         <span class="dot" id="mapDot"></span>
-        <span id="mapText">Loading map…</span>
+        <span id="mapText">Loading mapâ€¦</span>
       </div>
       <div class="pill">
         <span class="dot" id="gpsDot"></span>
-        <span id="gpsText">GPS: waiting…</span>
+        <span id="gpsText">GPS: waitingâ€¦</span>
       </div>
       <div class="pill">
         <span class="dot" id="routeDot"></span>
-        <span id="routeText">Route: waiting…</span>
+        <span id="routeText">Route: waitingâ€¦</span>
       </div>
     </div>
   </header>
 
   <div id="errorBanner"><span id="errorText"></span></div>
-
-  <!-- TURN-BY-TURN INSTRUCTION BOX -->
-  <div id="turnBox">
-    <div class="turn-distance" id="turnDistance">In 0.3 mi</div>
-    <div class="turn-instruction">
-      <span class="turn-icon" id="turnIcon">➡️</span>
-      <span id="turnText">Turn right onto Las Vegas Blvd</span>
-    </div>
-    <div class="turn-progress" id="turnProgress">Step 3 of 12</div>
-  </div>
 
   <div id="map"></div>
 
@@ -238,13 +215,16 @@
       <button id="btnToggleDir" class="route-btn primary" type="button">Return Route</button>
       <button id="btnOpenGmaps" class="route-btn" type="button">Open Google Maps</button>
     </div>
-    <div id="routeStatus" class="route-status">Loading route…</div>
+    <div id="routeStatus" class="route-status">
+      <span class="route-status-text">Loading routeâ€¦</span>
+      <button class="route-status-close" id="routeStatusClose" type="button">×</button>
+    </div>
   </div>
 
   <div class="controls">
-    <button id="recenterBtn" disabled>📍 Re-center</button>
-    <button id="viewToggleBtn" class="secondary">🗺️ View: 3D</button>
-    <button id="followBtn" class="secondary" disabled>🧭 Follow: Off</button>
+    <button id="recenterBtn" disabled><span>ðŸ“</span> Re-center</button>
+    <button id="viewToggleBtn" class="secondary"><span>ðŸ—ºï¸</span> View: 3D</button>
+    <button id="followBtn" class="secondary" disabled><span>ðŸ§­</span> Follow: Off</button>
   </div>
 
   <script>
@@ -261,18 +241,14 @@
     const OFF_ROUTE_HYSTERESIS_M = 20;
     const OFF_ROUTE_MIN_SPEED_MPS = 2.0;
 
-    // Turn-by-turn config
-    const TURN_APPROACH_THRESHOLD_M = 800; // Start showing instruction at 800m (~0.5 mi)
-    const TURN_PASSED_THRESHOLD_M = 30;    // Consider turn "passed" after 30m
-
-    // Route line visuals
+    // Route line visuals (Option B)
     const ROUTE_STYLE_ON = {
-      color: '#22c55e',
-      dasharray: null
+      color: '#22c55e',          // green
+      dasharray: null            // solid
     };
     const ROUTE_STYLE_OFF = {
-      color: '#ef4444',
-      dasharray: [1.5, 1.5]
+      color: '#ef4444',          // red
+      dasharray: [1.5, 1.5]      // dashed
     };
 
     /***************
@@ -288,12 +264,6 @@
     const errorBanner = document.getElementById('errorBanner');
     const errorText = document.getElementById('errorText');
 
-    const turnBox = document.getElementById('turnBox');
-    const turnDistance = document.getElementById('turnDistance');
-    const turnIcon = document.getElementById('turnIcon');
-    const turnText = document.getElementById('turnText');
-    const turnProgress = document.getElementById('turnProgress');
-
     const recenterBtn = document.getElementById('recenterBtn');
     const viewToggleBtn = document.getElementById('viewToggleBtn');
     const followBtn = document.getElementById('followBtn');
@@ -301,6 +271,7 @@
     const btnToggleDir = document.getElementById('btnToggleDir');
     const btnOpenGmaps = document.getElementById('btnOpenGmaps');
     const routeStatus = document.getElementById('routeStatus');
+    const routeStatusClose = document.getElementById('routeStatusClose');
 
     /***************
      * STATE
@@ -326,11 +297,7 @@
     let lastRouteFeature = null;
     let isOffRoute = false;
 
-    // Turn-by-turn state
-    let currentInstructions = null;
-    let currentStepIndex = 0;
-
-    // Route layer IDs
+    // Route layer IDs (single source of truth)
     const ROUTE_SOURCE_ID = 'routeLine';
     const ROUTE_LAYER_ID  = 'routeLineLayer';
 
@@ -362,6 +329,29 @@
       routeTextEl.textContent = text;
     }
 
+    let routeStatusTimer = null;
+
+    function showRouteStatus(text, autoHide = true){
+      const textEl = routeStatus.querySelector('.route-status-text');
+      if(textEl) textEl.textContent = text;
+      routeStatus.classList.remove('hidden');
+      
+      // Clear any existing timer
+      if(routeStatusTimer) clearTimeout(routeStatusTimer);
+      
+      // Auto-hide after 3 seconds if enabled
+      if(autoHide){
+        routeStatusTimer = setTimeout(() => {
+          routeStatus.classList.add('hidden');
+        }, 3000);
+      }
+    }
+
+    function hideRouteStatus(){
+      routeStatus.classList.add('hidden');
+      if(routeStatusTimer) clearTimeout(routeStatusTimer);
+    }
+
     function getParams(){
       const p = new URLSearchParams(window.location.search);
       return {
@@ -379,11 +369,6 @@
     function getGeometryForDir(){
       if(!currentLocation) return null;
       return (currentDir === 'return') ? currentLocation.returnRouteGeometry : currentLocation.routeGeometry;
-    }
-
-    function getInstructionsForDir(){
-      if(!currentLocation) return null;
-      return (currentDir === 'return') ? currentLocation.returnRouteInstructions : currentLocation.routeInstructions;
     }
 
     function getGmapsUrlForDir(){
@@ -427,6 +412,7 @@
 
       if(!Number.isFinite(lng) || !Number.isFinite(lat)) return;
 
+      // Big, unmistakable destination marker
       const el = document.createElement('div');
       el.style.width = '18px';
       el.style.height = '18px';
@@ -448,151 +434,8 @@
       recenterBtn.disabled = false;
     }
 
-    /***************
-     * TURN-BY-TURN HELPERS
-     ***************/
-    function getManeuverIcon(type, modifier) {
-      // Map Mapbox maneuver types to emoji icons
-      const iconMap = {
-        'turn': {
-          'left': '⬅️',
-          'slight left': '↖️',
-          'sharp left': '↩️',
-          'right': '➡️',
-          'slight right': '↗️',
-          'sharp right': '↪️',
-          'straight': '⬆️'
-        },
-        'merge': '🔀',
-        'fork': '🔱',
-        'roundabout': '🔄',
-        'rotary': '🔄',
-        'continue': '⬆️',
-        'arrive': '🎯',
-        'depart': '🚗',
-        'exit roundabout': '↗️',
-        'exit rotary': '↗️'
-      };
-
-      if (iconMap[type]?.[modifier]) {
-        return iconMap[type][modifier];
-      }
-      if (iconMap[type]) {
-        return typeof iconMap[type] === 'string' ? iconMap[type] : '➡️';
-      }
-      return '➡️';
-    }
-
-    function formatDistance(meters) {
-      if (meters < 100) {
-        return `In ${Math.round(meters / 10) * 10} m`;
-      } else if (meters < 1000) {
-        return `In ${Math.round(meters / 50) * 50} m`;
-      } else {
-        const miles = meters / 1609.34;
-        return `In ${miles.toFixed(1)} mi`;
-      }
-    }
-
-    function updateTurnDisplay() {
-      if (!currentInstructions || currentInstructions.length === 0) {
-        turnBox.style.display = 'none';
-        return;
-      }
-
-      const step = currentInstructions[currentStepIndex];
-      if (!step) {
-        turnBox.style.display = 'none';
-        return;
-      }
-
-      // Calculate distance to this step
-      const distanceToStep = calculateDistanceToStep(step);
-
-      // Only show if within threshold or if off-route
-      if (distanceToStep === null || (distanceToStep > TURN_APPROACH_THRESHOLD_M && !isOffRoute)) {
-        turnBox.style.display = 'none';
-        return;
-      }
-
-      // Update display
-      turnBox.style.display = 'block';
-      turnBox.classList.toggle('off-route', isOffRoute);
-
-      if (isOffRoute) {
-        turnDistance.textContent = 'OFF ROUTE';
-        turnIcon.textContent = '⚠️';
-        turnText.textContent = 'Return to highlighted route';
-        turnProgress.textContent = '';
-      } else {
-        turnDistance.textContent = formatDistance(distanceToStep);
-        turnIcon.textContent = getManeuverIcon(step.maneuver?.type, step.maneuver?.modifier);
-        turnText.textContent = step.maneuver?.instruction || 'Continue';
-        turnProgress.textContent = `Step ${currentStepIndex + 1} of ${currentInstructions.length}`;
-      }
-    }
-
-    function calculateDistanceToStep(step) {
-      if (!lastUserLngLat || !step.maneuver?.location) return null;
-
-      const [lng, lat] = lastUserLngLat;
-      const [stepLng, stepLat] = step.maneuver.location;
-
-      // Simple Haversine distance calculation
-      const R = 6371000; // Earth radius in meters
-      const φ1 = lat * Math.PI / 180;
-      const φ2 = stepLat * Math.PI / 180;
-      const Δφ = (stepLat - lat) * Math.PI / 180;
-      const Δλ = (stepLng - lng) * Math.PI / 180;
-
-      const a = Math.sin(Δφ/2) * Math.sin(Δφ/2) +
-                Math.cos(φ1) * Math.cos(φ2) *
-                Math.sin(Δλ/2) * Math.sin(Δλ/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-      return R * c;
-    }
-
-    function updateCurrentStep() {
-      if (!currentInstructions || currentInstructions.length === 0) return;
-
-      // Find the closest upcoming step
-      let bestIndex = currentStepIndex;
-      let bestDistance = Infinity;
-
-      for (let i = 0; i < currentInstructions.length; i++) {
-        const step = currentInstructions[i];
-        const dist = calculateDistanceToStep(step);
-        
-        if (dist !== null) {
-          // If we've passed this step (very close behind us), skip it
-          if (dist < TURN_PASSED_THRESHOLD_M && i < currentInstructions.length - 1) {
-            continue;
-          }
-          
-          // Find the closest step ahead
-          if (dist < bestDistance) {
-            bestDistance = dist;
-            bestIndex = i;
-          }
-        }
-      }
-
-      // Only update if we found a better step or if we've clearly passed the current one
-      if (bestIndex !== currentStepIndex) {
-        const currentDist = calculateDistanceToStep(currentInstructions[currentStepIndex]);
-        if (currentDist && currentDist < TURN_PASSED_THRESHOLD_M) {
-          currentStepIndex = Math.min(bestIndex, currentStepIndex + 1);
-        } else {
-          currentStepIndex = bestIndex;
-        }
-      }
-
-      updateTurnDisplay();
-    }
-
     /*****************
-     * ROUTE STYLE
+     * ROUTE STYLE (Option B)
      ***************/
     function applyRouteVisualStyle(isOff){
       if(!map || !map.getLayer(ROUTE_LAYER_ID)) return;
@@ -601,9 +444,11 @@
 
       map.setPaintProperty(ROUTE_LAYER_ID, 'line-color', style.color);
 
+      // line-dasharray only works on line layers; set to null -> solid
       if(style.dasharray){
         map.setPaintProperty(ROUTE_LAYER_ID, 'line-dasharray', style.dasharray);
       } else {
+        // remove dasharray by setting it to [1,0] (solid) - Mapbox doesn't accept null consistently across versions
         map.setPaintProperty(ROUTE_LAYER_ID, 'line-dasharray', [1, 0]);
       }
     }
@@ -689,22 +534,24 @@
         setRouteStatus(true, `Route: On route`);
       }
 
+      // Option B: visually change the route line only when state flips
       if(wasOff !== isOffRoute){
-        if(map.getLayer('routeArrowsLayerOn')){
-          map.setLayoutProperty('routeArrowsLayerOn', 'visibility', isOffRoute ? 'none' : 'visible');
-        }
-        if(map.getLayer('routeArrowsLayerOff')){
-          map.setLayoutProperty('routeArrowsLayerOff', 'visibility', isOffRoute ? 'visible' : 'none');
-        }
-        applyRouteVisualStyle(isOffRoute);
+
+      // Toggle arrow layer visibility too
+      if(map.getLayer('routeArrowsLayerOn')){
+        map.setLayoutProperty('routeArrowsLayerOn', 'visibility', isOffRoute ? 'none' : 'visible');
+      }
+      if(map.getLayer('routeArrowsLayerOff')){
+        map.setLayoutProperty('routeArrowsLayerOff', 'visibility', isOffRoute ? 'visible' : 'none');
       }
 
-      // Update turn display when route status changes
-      updateTurnDisplay();
+        applyRouteVisualStyle(isOffRoute);
+      }
     }
 
+
     /***************
-     * ROUTE ARROWS
+     * ROUTE ARROWS (single-add + visibility toggle)
      ***************/
     const ROUTE_ARROW_IMAGE_ID = 'lv-route-arrow-v3';
     const ROUTE_ARROWS_ON_ID   = 'routeArrowsLayerOn';
@@ -716,12 +563,15 @@
     async function ensureRouteArrowImage(){
       if(!map) return;
 
+      // If already present in current style, mark and return
       if(map.hasImage(ROUTE_ARROW_IMAGE_ID)){
         routeArrowImageAdded = true;
         return;
       }
+      // If we've already attempted during this style lifecycle, reuse the promise
       if(routeArrowImagePromise) return routeArrowImagePromise;
 
+      // Embedded 48x48 PNG (simple arrow). No S3 upload needed.
       const ARROW_DATA_URI =
   'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABIklEQVR4nO2ZUQ7CMAxDW8Q92dHMScvP0dH0JHqgqgSVk6lA4y2J0lR7g0a9xH6g0tq6f3cEoKJp8wqgqkq5f+gE1l3y0gqgGk1i7k5z0cZtZlW1n8m7k3f8m3bYj2d2oO3m0Xk8m4m0w2oQxE0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXw==';
 
@@ -740,6 +590,7 @@
             }
             routeArrowImageAdded = true;
           } catch(e){
+            // If Mapbox throws because it already exists, just mark as added
             console.warn('Arrow image add skipped:', e);
             routeArrowImageAdded = map.hasImage(ROUTE_ARROW_IMAGE_ID);
           }
@@ -819,6 +670,7 @@
       }
     }
 
+
     /***************
      * ROUTE RENDERING
      ***************/
@@ -828,10 +680,7 @@
       if(!feature){
         lastRouteFeature = null;
         setRouteStatus(null, 'Route: none');
-        routeStatus.textContent = `No ${currentDir} in-app route line available.`;
-        currentInstructions = null;
-        currentStepIndex = 0;
-        turnBox.style.display = 'none';
+        showRouteStatus(`No ${currentDir} in-app route line available.`, false);
         return false;
       }
 
@@ -860,16 +709,6 @@
       setRouteStatus(true, 'Route: On route');
       applyRouteVisualStyle(false);
 
-      // Load turn-by-turn instructions
-      currentInstructions = getInstructionsForDir();
-      currentStepIndex = 0;
-      
-      if (currentInstructions && currentInstructions.length > 0) {
-        console.log(`Loaded ${currentInstructions.length} turn instructions for ${currentDir} route`);
-      } else {
-        console.log(`No turn instructions available for ${currentDir} route`);
-      }
-
       const bounds = coordsToBounds(feature.geometry.coordinates);
       if(bounds){
         map.fitBounds(bounds, { padding: 70, duration: 500 });
@@ -879,7 +718,7 @@
 
       setDestinationMarkerFromGeometry(feature);
       document.getElementById('headerDestination').textContent = currentLocation?.label || 'Navigation';
-      routeStatus.textContent = `Showing ${currentDir} route: ${currentLocation?.label || ''}`;
+      showRouteStatus(`Showing ${currentDir} route: ${currentLocation?.label || ''}`, true);
 
       evaluateOffRoute();
       return true;
@@ -892,7 +731,7 @@
       const { event, zone, locationIndex, dir } = getParams();
       currentDir = (dir === 'return') ? 'return' : 'outbound';
 
-      routeStatus.textContent = `Loading ${currentDir} route…`;
+      showRouteStatus(`Loading ${currentDir} route…`, false);
 
       const resp = await fetch(`${API_BASE_URL}?event=${encodeURIComponent(event)}&zone=${encodeURIComponent(zone)}`);
       if(!resp.ok) throw new Error(`Destinations API error: ${resp.status}`);
@@ -926,13 +765,14 @@
         showError('Map failed to load. Check network or Mapbox token.');
       });
 
-      map.on('style.load', async () => {
+  map.on('style.load', async () => {
+        // Images are cleared on style reloads
         routeArrowImageAdded = false;
         routeArrowImagePromise = null;
         await ensureRouteArrowImage();
       });
 
-      map.on('load', async () => {
+  map.on('load', async () => {
         clearError();
         setDot(mapDotEl, true);
         mapTextEl.textContent = 'Map loaded';
@@ -953,7 +793,7 @@
 
         } catch(err){
           console.error(err);
-          routeStatus.textContent = `Error loading route: ${err.message}`;
+          showRouteStatus(`Error loading route: ${err.message}`, false);
           showError(`Route load error: ${err.message}`);
           startGPS();
         }
@@ -1010,7 +850,6 @@
       setGPSStatus(true, 'GPS: active');
 
       evaluateOffRoute();
-      updateCurrentStep();
 
       if(followMode){
         map.easeTo({
@@ -1065,13 +904,13 @@
 
     viewToggleBtn.addEventListener('click', () => {
       is3DView = !is3DView;
-      viewToggleBtn.textContent = is3DView ? '🗺️ View: 3D' : '🗺️ View: 2D';
+      viewToggleBtn.textContent = is3DView ? 'ðŸ—ºï¸ View: 3D' : 'ðŸ—ºï¸ View: 2D';
       map.easeTo({ pitch: is3DView ? 60 : 0, duration: 500 });
     });
 
     followBtn.addEventListener('click', () => {
       followMode = !followMode;
-      followBtn.textContent = followMode ? '🧭 Follow: On' : '🧭 Follow: Off';
+      followBtn.textContent = followMode ? 'ðŸ§­ Follow: On' : 'ðŸ§­ Follow: Off';
       if(followMode && lastUserLngLat){
         map.easeTo({ center: lastUserLngLat, pitch: is3DView ? 60 : 0, duration: 500 });
         ensureArrowLayersExist();
@@ -1081,7 +920,7 @@
 
     btnToggleDir.addEventListener('click', () => {
       if (!currentLocation) {
-        routeStatus.textContent = 'Loading route…';
+        showRouteStatus('Loading route…', false);
         return;
       }
       currentDir = (currentDir === 'outbound') ? 'return' : 'outbound';
@@ -1092,15 +931,20 @@
 
     btnOpenGmaps.addEventListener('click', () => {
       if (!currentLocation) {
-        routeStatus.textContent = 'Loading route…';
+        showRouteStatus('Loading route…', false);
         return;
       }
       const url = getGmapsUrlForDir();
       if(!url){
-        routeStatus.textContent = `No Google Maps link for ${currentDir}.`;
+        showRouteStatus(`No Google Maps link for ${currentDir}.`, false);
         return;
       }
       window.open(url, '_blank');
+    });
+
+    // Route status close button
+    routeStatusClose.addEventListener('click', () => {
+      hideRouteStatus();
     });
 
     /***************
