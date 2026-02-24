@@ -89,4 +89,4 @@ $coordsJoined
 
 # Output to console (you can redirect to a file)
 
-$snippet | Out-File "C:\users\Jeremiah\Documents\GitHub\SMPW-App\v2\Maps\Raiders Games\out.json"
+$snippet
