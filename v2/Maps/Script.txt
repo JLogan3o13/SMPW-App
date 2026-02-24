@@ -1,0 +1,4 @@
+PS C:\Users\Jeremiah\Documents\GitHub\SMPW-App\v2\Maps> .\ConvertGeoJSON.ps1 -GeoJsonPath "C:\Users\Jeremiah\Documents\GitHub\SMPW-App\v2\Maps\Raiders Games\Hub to Zone E.geojson" -AttributeName "Route1Geometry" -FeatureIndex 0 > Route1Geometry.json
+
+PS C:\Users\Jeremiah\Documents\GitHub\SMPW-App\v2\Maps> .\ConvertKML2GeoJSon.ps1 -KmlPath "C:\users\jeremiah\downloads\Zone E to Hub.kml" -OutputPath ".\Raiders Games\out.geojson"
+GeoJSON written to .\Raiders Games\out.geojson

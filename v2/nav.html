@@ -9,249 +9,221 @@
 
   <!-- iOS PWA meta -->
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
 
-  <!-- Mapbox GL JS v3 -->
-  <link
-    href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css"
-    rel="stylesheet"
-  />
+  <!-- Mapbox GL -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css" rel="stylesheet" />
   <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
 
   <style>
-    :root {
-      color-scheme: dark;
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: #0b1220; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+    header{
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      padding: 10px 12px;
+      background: rgba(10, 15, 30, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
     }
-    * {
-      box-sizing: border-box;
+    .title{
+      display:flex; justify-content: space-between; gap: 10px; align-items: baseline;
+      font-weight: 800; letter-spacing: 0.2px;
     }
-    body {
-      margin: 0;
-      padding: env(safe-area-inset-top) env(safe-area-inset-right)
-        env(safe-area-inset-bottom) env(safe-area-inset-left);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      background: #020617;
-      color: #e5e7eb;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
+    .title span:first-child{ color: #9fb4ff; font-size: 14px; }
+    #headerDestination{ color: #ffffff; font-size: 16px; }
+
+    .statusRow{
+      display:flex; gap: 10px; margin-top: 8px; align-items: center; flex-wrap: wrap;
     }
-    header {
-      padding: 0.5rem 1rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: linear-gradient(135deg, #1f2937, #020617);
-      z-index: 3;
-    }
-    header .title {
-      display: flex;
-      flex-direction: column;
-    }
-    header .title span:first-child {
-      font-size: 0.8rem;
-      opacity: 0.7;
-    }
-    header .title span:last-child {
-      font-size: 1.05rem;
-      font-weight: 600;
-    }
-    header .status {
-      font-size: 0.75rem;
-      padding: 0.2rem 0.6rem;
+
+    .pill{
+      display:inline-flex; gap: 8px; align-items: center;
+      padding: 6px 10px;
       border-radius: 999px;
-      background: #020617;
-      border: 1px solid #374151;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: rgba(255,255,255,0.92);
     }
-    header .status-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #f97316;
+    .dot{
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
     }
-    header .status-dot.ok {
-      background: #22c55e;
+    .dot.ok{ background:#22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+    .dot.bad{ background:#ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
+
+    #errorBanner{
+      position: fixed;
+      top: 104px; left: 12px; right: 12px;
+      z-index: 12;
+      display:none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fff;
+      font-size: 13px;
     }
 
-    #map {
-      flex: 1 1 auto;
-      width: 100%;
+    #map{
+      position: fixed;
+      top: 112px;
+      left: 0; right: 0;
+      bottom: 90px;
     }
 
-    .error-banner {
-      position: absolute;
-      top: calc(env(safe-area-inset-top) + 52px);
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 0.4rem 0.8rem;
-      border-radius: 999px;
-      background: rgba(127, 29, 29, 0.95);
-      border: 1px solid rgba(239, 68, 68, 0.9);
-      font-size: 0.75rem;
-      display: none;
-      align-items: center;
-      gap: 0.5rem;
-      z-index: 4;
+    .controls{
+      position: fixed;
+      left: 12px; right: 12px;
+      bottom: 12px;
+      z-index: 10;
+      display:flex; gap: 10px;
     }
-
-    .error-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #fecaca;
-    }
-
-    .info-banner {
-      position: absolute;
-      top: calc(env(safe-area-inset-top) + 52px);
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 0.4rem 0.8rem;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(55, 65, 81, 0.9);
-      font-size: 0.75rem;
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      z-index: 3;
-    }
-
-    .info-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #22c55e;
-    }
-
-    .controls {
-      position: absolute;
-      bottom: calc(env(safe-area-inset-bottom) + 12px);
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(480px, 100% - 24px);
-      padding: 0.75rem;
-      border-radius: 1rem;
-      background: rgba(15, 23, 42, 0.94);
-      backdrop-filter: blur(14px);
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 0.5rem;
-      z-index: 3;
-    }
-
-    .controls button {
+    .controls button{
+      flex: 1;
+      padding: 14px 10px;
       border: none;
-      border-radius: 999px;
-      padding: 0.7rem 0.4rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #f9fafb;
-      background: #2563eb;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.92);
+      color:#0b1220;
+    }
+    .controls button.secondary{
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.92);
+    }
+    .controls button:disabled{
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Route Controls Overlay */
+    .route-controls{
+      position: fixed;
+      top: 116px;
+      left: 12px;
+      right: 12px;
+      z-index: 11;
+      pointer-events: none;
+    }
+    .route-controls .route-row,
+    .route-controls .route-status{
+      pointer-events: auto;
+    }
+    .route-row{
+      display:flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .route-btn{
+      flex:1;
+      padding: 12px 10px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.92);
+      color:#0b1220;
+    }
+    .route-btn.primary{
+      background: rgba(46, 204, 113, 0.95);
+      color: #fff;
+    }
+    .route-status{
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .route-status.hidden{
+      display: none;
+    }
+    .route-status-close{
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+      width: 20px;
+      height: 20px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.35rem;
-      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
-      cursor: pointer;
+      opacity: 0.7;
+      flex-shrink: 0;
     }
-
-    .controls button.secondary {
-      background: #020617;
-      border: 1px solid #374151;
-      box-shadow: none;
-      color: #e5e7eb;
+    .route-status-close:hover{
+      opacity: 1;
     }
-
-    .controls button:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-      box-shadow: none;
+    .route-status-text{
+      flex: 1;
     }
-
-    @media (orientation: landscape) {
-      body {
-        flex-direction: row;
-      }
-      header {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-      }
-      .controls {
-        width: 360px;
-      }
+    .route-status-text{
+      flex: 1;
     }
-	
-	.gps-status {
-	padding: 0.25rem 1rem;
-	font-size: 0.75rem;
-	display: flex;
-	align-items: center;
-	gap: 0.35rem;
-	background: #020617;
-	border-bottom: 1px solid #111827;
-	z-index: 2;
-	}
-
-	.gps-dot {
-	width: 8px;
-	height: 8px;
-	border-radius: 999px;
-	background: #f97316; /* orange (waiting/error) */
-	}
-	
-	.gps-dot.online {
-	background: #22c55e; /* green (online) */
-	}
   </style>
 </head>
+
 <body>
   <header>
     <div class="title">
       <span>LV Transportation</span>
       <span id="headerDestination">Navigation</span>
     </div>
-    <div class="status" id="mapStatus">
-      <span class="status-dot" id="mapDot"></span>
-      <span id="mapText">Loading map…</span>
+
+    <div class="statusRow">
+      <div class="pill">
+        <span class="dot" id="mapDot"></span>
+        <span id="mapText">Loading map…</span>
+      </div>
+      <div class="pill">
+        <span class="dot" id="gpsDot"></span>
+        <span id="gpsText">GPS: waiting…</span>
+      </div>
+      <div class="pill">
+        <span class="dot" id="routeDot"></span>
+        <span id="routeText">Route: waiting…</span>
+      </div>
     </div>
-	<div class="gps-status" id="gpsStatus">
-		<span class="gps-dot" id="gpsDot"></span>
-		<span id="gpsText">GPS: waiting…</span>
-	</div>
   </header>
 
-  <!-- Shown when everything is OK -->
-  <div class="info-banner" id="infoBanner">
-    <span class="info-dot"></span>
-    <span id="infoText">PWA ready. Add to Home Screen for full-screen navigation.</span>
-  </div>
-
-  <!-- Shown if Mapbox init fails -->
-  <div class="error-banner" id="errorBanner">
-    <span class="error-dot"></span>
-    <span id="errorText">Map failed to load. Check network or Mapbox token.</span>
-  </div>
+  <div id="errorBanner"><span id="errorText"></span></div>
 
   <div id="map"></div>
 
+  <!-- Route Controls Overlay -->
+  <div id="routeControls" class="route-controls">
+    <div class="route-row">
+      <button id="btnToggleDir" class="route-btn primary" type="button">Return Route</button>
+    </div>
+    <div id="routeStatus" class="route-status">
+      <span class="route-status-text">Loading route…</span>
+      <button class="route-status-close" id="routeStatusClose" type="button">×</button>
+    </div>
+  </div>
+
   <div class="controls">
-    <button id="recenterBtn" disabled>
-      <span>📍</span> Re-center
-    </button>
-    <button id="viewToggleBtn" class="secondary">
-      <span>🗺️</span> View: 3D
-    </button>
-	<button id="followBtn" class="secondary" disabled>
-	  <span>🧭</span> Follow: Off
-	</button>
+    <button id="recenterBtn" disabled><span>📍</span> Re-center</button>
+    <button id="viewToggleBtn" class="secondary"><span>🗺️</span> View: 3D</button>
+    <button id="followBtn" class="secondary" disabled><span>🧭</span> Follow: Off</button>
   </div>
 
   <script>
@@ -259,467 +231,720 @@
      * CONFIG
      ***************/
     const MAPBOX_TOKEN = 'pk.eyJ1IjoiamxvZ2FuM28xMyIsImEiOiJjbWlpNzZuOHYwYnIzM2Nwd2xobTlkZzRyIn0.RiVncFBsWabC5_qCRvEqXg';
+    const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
 
-    // Basic default destination: central-ish Strip
-    const DEFAULT_DESTINATION = {
-      lat: 36.1147,
-      lng: -115.1728,
-      label: 'Las Vegas Strip'
+    const HUB_ORIGIN = { lat: 36.07744, lng: -115.23981 };
+
+    // Off-route tuning
+    const OFF_ROUTE_THRESHOLD_M = 75;
+    const OFF_ROUTE_HYSTERESIS_M = 20;
+    const OFF_ROUTE_MIN_SPEED_MPS = 2.0;
+
+    // Route line visuals (Option B)
+    const ROUTE_STYLE_ON = {
+      color: '#22c55e',          // green
+      dasharray: null            // solid
     };
-	
-	const HUB_ORIGIN = {
-	  lat: 36.07744,
-	  lng: -115.23981
-	};
-
-    function getDestinationFromURL() {
-      const params = new URLSearchParams(window.location.search);
-      const lat = parseFloat(params.get('destLat'));
-      const lng = parseFloat(params.get('destLng'));
-      const label = params.get('label') || DEFAULT_DESTINATION.label;
-
-      if (!isNaN(lat) && !isNaN(lng)) {
-        return { lat, lng, label };
-      }
-      return DEFAULT_DESTINATION;
-    }
-
-    const destination = getDestinationFromURL();
-    document.getElementById('headerDestination').textContent = destination.label;
+    const ROUTE_STYLE_OFF = {
+      color: '#ef4444',          // red
+      dasharray: [1.5, 1.5]      // dashed
+    };
 
     /***************
-     * SERVICE WORKER REGISTRATION
+     * DOM
      ***************/
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker
-          .register('/service-worker.js')
-          .catch(err => console.error('SW registration failed', err));
-      });
-    }
-
-    /***************
-     * MAPBOX INIT
-     ***************/
-    const mapStatusEl = document.getElementById('mapStatus');
     const mapDotEl = document.getElementById('mapDot');
     const mapTextEl = document.getElementById('mapText');
+    const gpsDotEl = document.getElementById('gpsDot');
+    const gpsTextEl = document.getElementById('gpsText');
+    const routeDotEl = document.getElementById('routeDot');
+    const routeTextEl = document.getElementById('routeText');
+
     const errorBanner = document.getElementById('errorBanner');
     const errorText = document.getElementById('errorText');
-    const infoBanner = document.getElementById('infoBanner');
+
     const recenterBtn = document.getElementById('recenterBtn');
     const viewToggleBtn = document.getElementById('viewToggleBtn');
+    const followBtn = document.getElementById('followBtn');
 
+    const btnToggleDir = document.getElementById('btnToggleDir');
+    const routeStatus = document.getElementById('routeStatus');
+    const routeStatusClose = document.getElementById('routeStatusClose');
+
+    /***************
+     * STATE
+     ***************/
     let map;
-    let destinationMarker;
     let is3DView = true;
 
-    function setMapStatus(ok, message) {
-      mapDotEl.classList.toggle('ok', !!ok);
-      mapTextEl.textContent = message || (ok ? 'Map ready' : 'Loading map…');
+    let currentLocation = null;
+    let currentDir = 'outbound'; // outbound | return
+
+    let destinationMarker = null;
+    let hubMarker = null;
+    let userMarker = null;
+
+    // GPS
+    let watchId = null;
+    let followMode = false;
+    let lastHeading = null;
+    let lastUserLngLat = null;
+    let lastSpeedMps = null;
+
+    // Off-route state
+    let lastRouteFeature = null;
+    let isOffRoute = false;
+
+    // Route layer IDs (single source of truth)
+    const ROUTE_SOURCE_ID = 'routeLine';
+    const ROUTE_LAYER_ID  = 'routeLineLayer';
+
+    // Disable route buttons until loaded
+    btnToggleDir.disabled = true;
+
+    /***************
+     * HELPERS UI
+     ***************/
+    function setDot(dotEl, okState) {
+      dotEl.classList.remove('ok', 'bad');
+      if (okState === true) dotEl.classList.add('ok');
+      if (okState === false) dotEl.classList.add('bad');
     }
 
-    function showError(msg) {
-      errorText.textContent = msg;
-      errorBanner.style.display = 'flex';
-      infoBanner.style.display = 'none';
-      setMapStatus(false, 'Map error');
+    function showError(message) {
+      errorText.textContent = message;
+      errorBanner.style.display = 'block';
     }
 
-    function initMapbox() {
-      if (!MAPBOX_TOKEN) {
-        showError('Missing Mapbox token. Update MAPBOX_TOKEN in nav.html.');
+    function clearError() {
+      errorBanner.style.display = 'none';
+      errorText.textContent = '';
+    }
+
+    function setRouteStatus(okState, text){
+      setDot(routeDotEl, okState);
+      routeTextEl.textContent = text;
+    }
+
+    let routeStatusTimer = null;
+
+    function showRouteStatus(text, autoHide = true){
+      const textEl = routeStatus.querySelector('.route-status-text');
+      if(textEl) textEl.textContent = text;
+      routeStatus.classList.remove('hidden');
+      
+      // Clear any existing timer
+      if(routeStatusTimer) clearTimeout(routeStatusTimer);
+      
+      // Auto-hide after 3 seconds if enabled
+      if(autoHide){
+        routeStatusTimer = setTimeout(() => {
+          routeStatus.classList.add('hidden');
+        }, 3000);
+      }
+    }
+
+    function hideRouteStatus(){
+      routeStatus.classList.add('hidden');
+      if(routeStatusTimer) clearTimeout(routeStatusTimer);
+    }
+
+    function getParams(){
+      const p = new URLSearchParams(window.location.search);
+      return {
+        event: p.get('event') || 'RaidersGames',
+        zone: p.get('zone') || '',
+        locationIndex: parseInt(p.get('locationIndex') || '0', 10),
+        dir: (p.get('dir') || 'outbound').toLowerCase()
+      };
+    }
+
+    function syncButtons(){
+      btnToggleDir.textContent = (currentDir === 'outbound') ? 'Return Route' : 'Outbound Route';
+    }
+
+    function getGeometryForDir(){
+      if(!currentLocation) return null;
+      return (currentDir === 'return') ? currentLocation.returnRouteGeometry : currentLocation.routeGeometry;
+    }
+
+    function getGmapsUrlForDir(){
+      if(!currentLocation) return '';
+      return (currentDir === 'return') ? (currentLocation.directionsReturn || '') : (currentLocation.directions || '');
+    }
+
+    function updateUrlDirParam(dir){
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('dir', dir);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {
+        console.warn('replaceState failed', e);
+      }
+    }
+
+    function normalizeToFeature(geo){
+      if(!geo) return null;
+      if(geo.type === 'Feature') return geo;
+      if(geo.type === 'FeatureCollection') return geo.features?.[0] || null;
+      if(geo.type === 'LineString') return { type:'Feature', properties:{}, geometry: geo };
+      return null;
+    }
+
+    function coordsToBounds(coords){
+      if(!coords || coords.length < 2) return null;
+      return coords.reduce((b, c) => b.extend(c), new mapboxgl.LngLatBounds(coords[0], coords[0]));
+    }
+
+    function setDestinationMarkerFromGeometry(feature){
+      if(!feature?.geometry?.coordinates?.length) return;
+
+      const coords = feature.geometry.coordinates;
+      const end = coords[coords.length - 1];
+
+      if(!Array.isArray(end) || end.length < 2) return;
+
+      const lng = Number(end[0]);
+      const lat = Number(end[1]);
+
+      if(!Number.isFinite(lng) || !Number.isFinite(lat)) return;
+
+      // Big, unmistakable destination marker
+      const el = document.createElement('div');
+      el.style.width = '18px';
+      el.style.height = '18px';
+      el.style.borderRadius = '999px';
+      el.style.background = '#f59e0b';
+      el.style.border = '3px solid #fff';
+      el.style.boxShadow = '0 0 0 4px rgba(245,158,11,0.25)';
+      el.style.zIndex = '5';
+
+      if(!destinationMarker){
+        destinationMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+          .setLngLat([lng, lat])
+          .addTo(map);
+      } else {
+        destinationMarker.setLngLat([lng, lat]);
+        destinationMarker.getElement().style.zIndex = '5';
+      }
+
+      recenterBtn.disabled = false;
+    }
+
+    /*****************
+     * ROUTE STYLE (Option B)
+     ***************/
+    function applyRouteVisualStyle(isOff){
+      if(!map || !map.getLayer(ROUTE_LAYER_ID)) return;
+
+      const style = isOff ? ROUTE_STYLE_OFF : ROUTE_STYLE_ON;
+
+      map.setPaintProperty(ROUTE_LAYER_ID, 'line-color', style.color);
+
+      // line-dasharray only works on line layers; set to null -> solid
+      if(style.dasharray){
+        map.setPaintProperty(ROUTE_LAYER_ID, 'line-dasharray', style.dasharray);
+      } else {
+        // remove dasharray by setting it to [1,0] (solid) - Mapbox doesn't accept null consistently across versions
+        map.setPaintProperty(ROUTE_LAYER_ID, 'line-dasharray', [1, 0]);
+      }
+    }
+
+    /***************
+     * GEO MATH: point-to-polyline distance (meters)
+     ***************/
+    function degToRad(d){ return d * Math.PI / 180; }
+
+    function projectMeters(lng, lat, refLat){
+      const R = 6371000;
+      const x = degToRad(lng) * Math.cos(degToRad(refLat)) * R;
+      const y = degToRad(lat) * R;
+      return { x, y };
+    }
+
+    function distPointToSegmentMeters(p, a, b){
+      const abx = b.x - a.x;
+      const aby = b.y - a.y;
+      const apx = p.x - a.x;
+      const apy = p.y - a.y;
+
+      const ab2 = abx*abx + aby*aby;
+      if (ab2 === 0) {
+        const dx = p.x - a.x, dy = p.y - a.y;
+        return Math.sqrt(dx*dx + dy*dy);
+      }
+
+      let t = (apx*abx + apy*aby) / ab2;
+      t = Math.max(0, Math.min(1, t));
+
+      const cx = a.x + t * abx;
+      const cy = a.y + t * aby;
+      const dx = p.x - cx, dy = p.y - cy;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    function distancePointToLineStringMeters(userLngLat, coords){
+      if(!coords || coords.length < 2) return null;
+
+      const userLng = userLngLat[0];
+      const userLat = userLngLat[1];
+      const refLat = userLat;
+
+      const p = projectMeters(userLng, userLat, refLat);
+
+      let min = Infinity;
+      for(let i=0; i<coords.length-1; i++){
+        const a = projectMeters(coords[i][0], coords[i][1], refLat);
+        const b = projectMeters(coords[i+1][0], coords[i+1][1], refLat);
+        const d = distPointToSegmentMeters(p, a, b);
+        if(d < min) min = d;
+      }
+      return min;
+    }
+
+    function evaluateOffRoute(){
+      if(!lastUserLngLat) return;
+      if(!lastRouteFeature?.geometry?.coordinates?.length) return;
+
+      if(typeof lastSpeedMps === 'number' && lastSpeedMps < OFF_ROUTE_MIN_SPEED_MPS){
         return;
       }
 
-      try {
-        mapboxgl.accessToken = MAPBOX_TOKEN;
+      const coords = lastRouteFeature.geometry.coordinates;
+      const d = distancePointToLineStringMeters(lastUserLngLat, coords);
+      if(d === null) return;
 
-        map = new mapboxgl.Map({
-          container: 'map',
-          style: 'mapbox://styles/mapbox/navigation-night-v1',
-          center: [destination.lng, destination.lat],
-          zoom: 14.5,
-          pitch: 60,
-          bearing: -17.6,
-          antialias: true
-        });
+      const onThreshold = OFF_ROUTE_THRESHOLD_M;
+      const backOnThreshold = Math.max(0, OFF_ROUTE_THRESHOLD_M - OFF_ROUTE_HYSTERESIS_M);
 
-        map.addControl(new mapboxgl.NavigationControl({ showZoom: false }), 'top-right');
+      const wasOff = isOffRoute;
 
-        map.on('load', () => {
-          setMapStatus(true, 'Map ready');
-          infoBanner.style.display = 'flex';
+      if(!isOffRoute && d >= onThreshold){
+        isOffRoute = true;
+      } else if(isOffRoute && d <= backOnThreshold){
+        isOffRoute = false;
+      }
 
-          // Destination marker
-          destinationMarker = new mapboxgl.Marker({ color: '#f97316' })
-            .setLngLat([destination.lng, destination.lat])
-            .addTo(map);
+      if(isOffRoute){
+        setRouteStatus(false, `Route: Off route (${Math.round(d)}m)`);
+      } else {
+        setRouteStatus(true, `Route: On route`);
+      }
 
-          add3DBuildings();
-          initRouteLine();
+      // Option B: visually change the route line only when state flips
+      if(wasOff !== isOffRoute){
 
-          // Enable recenter button now that map is ready
-          recenterBtn.disabled = false;
-		  
-		  //Start GPS Tracking
-		  initGPS();
-        });
+      // Toggle arrow layer visibility too
+      if(map.getLayer('routeArrowsLayerOn')){
+        map.setLayoutProperty('routeArrowsLayerOn', 'visibility', isOffRoute ? 'none' : 'visible');
+      }
+      if(map.getLayer('routeArrowsLayerOff')){
+        map.setLayoutProperty('routeArrowsLayerOff', 'visibility', isOffRoute ? 'visible' : 'none');
+      }
 
-        map.on('error', (e) => {
-          console.error('Mapbox error', e.error);
-          showError('Mapbox error: ' + (e.error && e.error.message ? e.error.message : 'Unknown'));
-        });
-
-      } catch (err) {
-        console.error('Map init failed', err);
-        showError('Map initialization failed. See console for details.');
+        applyRouteVisualStyle(isOffRoute);
       }
     }
-
-    function add3DBuildings() {
-      const layers = map.getStyle().layers;
-      let labelLayerId;
-      for (let i = 0; i < layers.length; i++) {
-        if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
-          labelLayerId = layers[i].id;
-          break;
-        }
-      }
-
-      if (!map.getSource('3d-buildings')) {
-        map.addSource('3d-buildings', {
-          type: 'vector',
-          url: 'mapbox://mapbox.3d-buildings'
-        });
-
-        map.addLayer(
-          {
-            id: '3d-buildings-layer',
-            source: '3d-buildings',
-            'source-layer': 'building',
-            filter: ['==', 'extrude', 'true'],
-            type: 'fill-extrusion',
-            minzoom: 15,
-            paint: {
-              'fill-extrusion-color': '#4b5563',
-              'fill-extrusion-height': [
-                'interpolate',
-                ['linear'],
-                ['zoom'],
-                15,
-                0,
-                16,
-                ['get', 'height']
-              ],
-              'fill-extrusion-opacity': 0.9
-            }
-          },
-          labelLayerId
-        );
-      }
-    }
-
-	function initRouteLine() {
-		if (!map.getSource('route')) {
-			map.addSource('route', {
-				type: 'geojson',
-				data: {
-					type: 'Feature',
-					geometry: {
-						type: 'LineString',
-						coordinates: [
-							[HUB_ORIGIN.lng, HUB_ORIGIN.lat],
-							[destination.lng, destination.lat]
-						]
-					}
-				}
-			});
-
-			map.addLayer({
-				id: 'route-line',
-				type: 'line',
-				source: 'route',
-				layout: {
-					'line-join': 'round',
-					'line-cap': 'round'
-				},
-				paint: {
-					'line-color': '#22c55e',
-					'line-width': 5
-				}
-			});
-		}
-	}
-
-	function updateRouteLine(originLng, originLat, destLng, destLat) {
-		const source = map.getSource('route');
-		if (!source) return;
-
-		const coords = [
-			[originLng, originLat],
-			[destLng, destLat]
-		];
-
-		source.setData({
-			type: 'Feature',
-			geometry: {
-				type: 'LineString',
-				coordinates: coords
-			}
-		});
-	}
-
-	/***************
-	* GPS TRACKING WITH KALMAN SMOOTHING
-	***************/
-	class OneDimKalman {
-		constructor({ q = 0.000001, r = 0.0001, p = 1, x = 0 } = {}) {
-			this.q = q; // process noise
-			this.r = r; // measurement noise
-			this.p = p; // estimation error
-			this.x = x; // value
-			this.k = 0; // Kalman gain
-		}
-		
-		filter(measurement) {
-			// prediction
-			this.p = this.p + this.q;
-		
-			// measurement update
-			this.k = this.p / (this.p + this.r);
-			this.x = this.x + this.k * (measurement - this.x);
-			this.p = (1 - this.k) * this.p;
-		
-			return this.x;
-		}
-	
-		setState(x, p) {
-			this.x = x;
-			this.p = p;
-		}
-	}
-
-	const gpsStatusEl = document.getElementById('gpsStatus');
-	const gpsDotEl = document.getElementById('gpsDot');
-	const gpsTextEl = document.getElementById('gpsText');
-	
-	const kalmanLat = new OneDimKalman();
-	const kalmanLng = new OneDimKalman();
-	
-	let watchId = null;
-	let userMarker = null;
-	let lastPosition = null;
-	
-	let followMode = false;
-	let lastHeading = null;
-
-	function setGpsStatus(state, message) {
-	if (!gpsStatusEl) return;
-	gpsDotEl.classList.toggle('online', state === 'online');
-	gpsTextEl.textContent = message;
-	}
-	
-	function calculateHeading(prev, curr) {
-		const y = Math.sin(curr.lng - prev.lng) * Math.cos(curr.lat);
-		const x = Math.cos(prev.lat) * Math.sin(curr.lat) - Math.sin(prev.lat)* Math.cos(curr.lat) * Math.cos(curr.lng - prev.lng);
-		const angle = Math.atan2(y,x);
-		let degrees = (angle * 180) / Math.PI;
-		degrees = (degrees + 360) % 360; //normalize
-		
-		return degrees
-	}
-	
-	function initGPS() {
-		if (!('geolocation' in navigator)) {
-			setGpsStatus('error', 'GPS: not supported on this device');
-			return;
-		}
-	
-		setGpsStatus('waiting', 'GPS: requesting location…');
-		
-		const options = {
-			enableHighAccuracy: true,
-			timeout: 10000,
-			maximumAge: 5000
-		};
-	
-		watchId = navigator.geolocation.watchPosition(
-			handlePositionUpdate,
-			handlePositionError,
-			options
-		);
-	}
-
-	function handlePositionUpdate(pos) {
-		const { latitude, longitude, accuracy } = pos.coords;
-		const rawLat = latitude;
-		const rawLng = longitude;
-		
-		if (!lastPosition) {
-			// initialize Kalman filters with first reading
-			kalmanLat.setState(rawLat, 1);
-			kalmanLng.setState(rawLng, 1);
-		}
-		
-		const smoothLat = kalmanLat.filter(rawLat);
-		const smoothLng = kalmanLng.filter(rawLng);
-		
-		if (!lastPosition) {
-			lastPosition = {}
-		}
-		
-		if (lastPosition && typeof lastPosition.prevLat === 'number') {
-			// Calculate heading in degrees
-			lastHeading = calculateHeading(
-				{ lat: lastPosition.prevLat, lng: lastPosition.prevLng },
-				{ lat: smoothLat, lng: smoothLng }
-			);
-		}	
-		
-		// Store previous point for heading calculations
-		lastPosition.rawLat = rawLat;
-		lastPosition.rawLng = rawLng;
-		lastPosition.smoothLat = smoothLat;
-		lastPosition.smoothLng = smoothLng;
-		lastPosition.accuracy = accuracy;
-		lastPosition.prevLat = smoothLat;
-		lastPosition.prevLng = smoothLng;
-	
-		updateUserMarker(smoothLng, smoothLat);
-
-		setGpsStatus('online', `GPS: ~${Math.round(accuracy)}m`);
-		
-		// enable recenter as soon as we have a fix
-		if (recenterBtn.disabled) recenterBtn.disabled = false;
-		if (followBtn.disabled) followBtn.disabled = false;
-		
-		// If follow mode is on, keep map centered & rotated
-		if (followMode) {
-			map.easeTo({
-				center: [smoothLng, smoothLat],
-				bearing: lastHeading || map.getBearing(),
-				pitch: is3DView ? 60 : 0,
-				duration: 1000
-			});
-		}
-		
-		updateRouteLine(
-			smoothLng,
-			smoothLat,
-			destination.lng,
-			destination.lat
-		);
-	}
-
-	function handlePositionError(err) {
-		console.error('GPS error', err);
-		if (err.code === 1) {
-			setGpsStatus('error', 'GPS: permission denied');
-		} else if (err.code === 2) {
-			setGpsStatus('error', 'GPS: position unavailable');
-		} else if (err.code === 3) {
-			setGpsStatus('error', 'GPS: timeout');
-		} else {
-			setGpsStatus('error', 'GPS: error');
-		}
-	}
-
-	function updateUserMarker(lng, lat) {
-		if (!map) return;
-		
-		if (!userMarker) {
-			const el = document.createElement('div');
-			el.style.width = '16px';
-			el.style.height = '16px';
-			el.style.borderRadius = '999px';
-			el.style.boxShadow = '0 0 0 4px rgba(59,130,246,0.4)';
-			el.style.background = '#3b82f6'; // blue dot
-			userMarker = new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(map);
-		} else {
-			userMarker.setLngLat([lng, lat]);
-		}
-	}
-
-	// Pause/resume GPS for battery efficiency
-	document.addEventListener('visibilitychange', () => {
-		if (document.hidden) {
-			if (watchId !== null) {
-			navigator.geolocation.clearWatch(watchId);
-			watchId = null;
-			setGpsStatus('paused', 'GPS: paused (background)');
-			}
-		} else {
-			if (!watchId) {
-			initGPS();
-			}
-		}
-	});
 
 
     /***************
-     * UI BUTTONS
+     * ROUTE ARROWS (single-add + visibility toggle)
+     ***************/
+    const ROUTE_ARROW_IMAGE_ID = 'lv-route-arrow-v3';
+    const ROUTE_ARROWS_ON_ID   = 'routeArrowsLayerOn';
+    const ROUTE_ARROWS_OFF_ID  = 'routeArrowsLayerOff';
+
+    let routeArrowImageAdded = false;
+    let routeArrowImagePromise = null;
+
+    async function ensureRouteArrowImage(){
+      if(!map) return;
+
+      // If already present in current style, mark and return
+      if(map.hasImage(ROUTE_ARROW_IMAGE_ID)){
+        routeArrowImageAdded = true;
+        return;
+      }
+      // If we've already attempted during this style lifecycle, reuse the promise
+      if(routeArrowImagePromise) return routeArrowImagePromise;
+
+      // Embedded 48x48 PNG (simple arrow). No S3 upload needed.
+      const ARROW_DATA_URI =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABIklEQVR4nO2ZUQ7CMAxDW8Q92dHMScvP0dH0JHqgqgSVk6lA4y2J0lR7g0a9xH6g0tq6f3cEoKJp8wqgqkq5f+gE1l3y0gqgGk1i7k5z0cZtZlW1n8m7k3f8m3bYj2d2oO3m0Xk8m4m0w2oQxE0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXw==';
+
+      routeArrowImagePromise = new Promise((resolve) => {
+        map.loadImage(ARROW_DATA_URI, (err, img) => {
+          if(err || !img){
+            console.warn('Arrow image failed to load:', err);
+            routeArrowImageAdded = false;
+            routeArrowImagePromise = null;
+            resolve();
+            return;
+          }
+          try{
+            if(!map.hasImage(ROUTE_ARROW_IMAGE_ID)){
+              map.addImage(ROUTE_ARROW_IMAGE_ID, img, { sdf: true });
+            }
+            routeArrowImageAdded = true;
+          } catch(e){
+            // If Mapbox throws because it already exists, just mark as added
+            console.warn('Arrow image add skipped:', e);
+            routeArrowImageAdded = map.hasImage(ROUTE_ARROW_IMAGE_ID);
+          }
+          resolve();
+        });
+      });
+
+      return routeArrowImagePromise;
+    }
+
+    function ensureArrowLayersExist(){
+      if(!map) return;
+      if(!map.getSource(ROUTE_SOURCE_ID)) return;
+
+      ensureRouteArrowImage();
+
+      if(!map.getLayer(ROUTE_ARROWS_ON_ID)){
+        map.addLayer({
+          id: ROUTE_ARROWS_ON_ID,
+          type: 'symbol',
+          source: ROUTE_SOURCE_ID,
+          layout: {
+            'symbol-placement': 'line',
+            'symbol-spacing': 120,
+            'icon-image': ROUTE_ARROW_IMAGE_ID,
+            'icon-size': 1.05,
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+            'icon-keep-upright': false,
+            'icon-pitch-alignment': 'map',
+            'icon-rotation-alignment': 'map',
+            'visibility': 'visible'
+          },
+          paint: {
+            'icon-color': '#22c55e',
+            'icon-opacity': 0.98,
+            'icon-halo-color': 'rgba(0,0,0,0.55)',
+            'icon-halo-width': 2
+          }
+        });
+      }
+
+      if(!map.getLayer(ROUTE_ARROWS_OFF_ID)){
+        map.addLayer({
+          id: ROUTE_ARROWS_OFF_ID,
+          type: 'symbol',
+          source: ROUTE_SOURCE_ID,
+          layout: {
+            'symbol-placement': 'line',
+            'symbol-spacing': 120,
+            'icon-image': ROUTE_ARROW_IMAGE_ID,
+            'icon-size': 1.05,
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+            'icon-keep-upright': false,
+            'icon-pitch-alignment': 'map',
+            'icon-rotation-alignment': 'map',
+            'visibility': 'none'
+          },
+          paint: {
+            'icon-color': '#ef4444',
+            'icon-opacity': 0.98,
+            'icon-halo-color': 'rgba(0,0,0,0.55)',
+            'icon-halo-width': 2
+          }
+        });
+      }
+    }
+
+    function setArrowVisibility(offRoute){
+      if(!map) return;
+      if(map.getLayer(ROUTE_ARROWS_ON_ID)){
+        map.setLayoutProperty(ROUTE_ARROWS_ON_ID, 'visibility', offRoute ? 'none' : 'visible');
+      }
+      if(map.getLayer(ROUTE_ARROWS_OFF_ID)){
+        map.setLayoutProperty(ROUTE_ARROWS_OFF_ID, 'visibility', offRoute ? 'visible' : 'none');
+      }
+    }
+
+
+    /***************
+     * ROUTE RENDERING
+     ***************/
+    function renderRouteOnMap(){
+      const feature = normalizeToFeature(getGeometryForDir());
+
+      if(!feature){
+        lastRouteFeature = null;
+        setRouteStatus(null, 'Route: none');
+        showRouteStatus(`No ${currentDir} in-app route line available.`, false);
+        return false;
+      }
+
+      if(map.getSource(ROUTE_SOURCE_ID)){
+        map.getSource(ROUTE_SOURCE_ID).setData(feature);
+      } else {
+        map.addSource(ROUTE_SOURCE_ID, { type: 'geojson', data: feature });
+        map.addLayer({
+          id: ROUTE_LAYER_ID,
+          type: 'line',
+          source: ROUTE_SOURCE_ID,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-width': 6,
+            'line-opacity': 0.9,
+            'line-color': ROUTE_STYLE_ON.color,
+            'line-dasharray': [1, 0]
+          }
+        });
+        ensureArrowLayersExist();
+        setArrowVisibility(false);
+      }
+
+      lastRouteFeature = feature;
+      isOffRoute = false;
+      setRouteStatus(true, 'Route: On route');
+      applyRouteVisualStyle(false);
+
+      const bounds = coordsToBounds(feature.geometry.coordinates);
+      if(bounds){
+        map.fitBounds(bounds, { padding: 70, duration: 500 });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
+
+      setDestinationMarkerFromGeometry(feature);
+      document.getElementById('headerDestination').textContent = currentLocation?.label || 'Navigation';
+      showRouteStatus(`Showing ${currentDir} route: ${currentLocation?.label || ''}`, true);
+
+      evaluateOffRoute();
+      return true;
+    }
+
+    /***************
+     * API LOAD
+     ***************/
+    async function loadLocationFromApi(){
+      const { event, zone, locationIndex, dir } = getParams();
+      currentDir = (dir === 'return') ? 'return' : 'outbound';
+
+      showRouteStatus(`Loading ${currentDir} route…`, false);
+
+      const resp = await fetch(`${API_BASE_URL}?event=${encodeURIComponent(event)}&zone=${encodeURIComponent(zone)}`);
+      if(!resp.ok) throw new Error(`Destinations API error: ${resp.status}`);
+      const data = await resp.json();
+
+      if(!data.locations || !Array.isArray(data.locations)) throw new Error('Destinations API response missing locations[]');
+      if(!data.locations[locationIndex]) throw new Error(`No location at index ${locationIndex}. locations length=${data.locations.length}`);
+
+      currentLocation = data.locations[locationIndex];
+    }
+
+    /***************
+     * MAP INIT
+     ***************/
+    function initMap(){
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/standard',
+        center: [HUB_ORIGIN.lng, HUB_ORIGIN.lat],
+        zoom: 13,
+        pitch: 60,
+        bearing: -20
+      });
+
+      map.on('error', (e) => {
+        console.error('Mapbox error', e?.error || e);
+        setDot(mapDotEl, false);
+        mapTextEl.textContent = 'Map error';
+        showError('Map failed to load. Check network or Mapbox token.');
+      });
+
+  map.on('style.load', async () => {
+        // Images are cleared on style reloads
+        routeArrowImageAdded = false;
+        routeArrowImagePromise = null;
+        await ensureRouteArrowImage();
+      });
+
+  map.on('load', async () => {
+        clearError();
+        setDot(mapDotEl, true);
+        mapTextEl.textContent = 'Map loaded';
+
+        hubMarker = new mapboxgl.Marker({ color: '#22c55e' })
+          .setLngLat([HUB_ORIGIN.lng, HUB_ORIGIN.lat])
+          .addTo(map);
+
+        try{
+          await loadLocationFromApi();
+          syncButtons();
+
+          btnToggleDir.disabled = false;
+
+          renderRouteOnMap();
+          startGPS();
+
+        } catch(err){
+          console.error(err);
+          showRouteStatus(`Error loading route: ${err.message}`, false);
+          showError(`Route load error: ${err.message}`);
+          startGPS();
+        }
+      });
+    }
+
+    /***************
+     * GPS FILTER (smooth)
+     ***************/
+    class OneDimKalman {
+      constructor({ q = 0.000001, r = 0.0001, p = 1, x = 0 } = {}) {
+        this.q = q; this.r = r; this.p = p; this.x = x; this.k = 0;
+      }
+      filter(measurement) {
+        this.p = this.p + this.q;
+        this.k = this.p / (this.p + this.r);
+        this.x = this.x + this.k * (measurement - this.x);
+        this.p = (1 - this.k) * this.p;
+        return this.x;
+      }
+    }
+
+    const kalmanLat = new OneDimKalman({ q: 0.00001, r: 0.0005, p: 1, x: HUB_ORIGIN.lat });
+    const kalmanLng = new OneDimKalman({ q: 0.00001, r: 0.0005, p: 1, x: HUB_ORIGIN.lng });
+
+    function setGPSStatus(ok, message){
+      setDot(gpsDotEl, ok);
+      gpsTextEl.textContent = message;
+    }
+
+    function handlePositionUpdate(pos){
+      const { latitude, longitude, heading, speed } = pos.coords;
+
+      const smoothLat = kalmanLat.filter(latitude);
+      const smoothLng = kalmanLng.filter(longitude);
+      lastUserLngLat = [smoothLng, smoothLat];
+
+      lastSpeedMps = (typeof speed === 'number') ? speed : null;
+
+      if(typeof heading === 'number' && !Number.isNaN(heading)){
+        lastHeading = heading;
+      }
+
+      if(!userMarker){
+        userMarker = new mapboxgl.Marker({ color: '#3b82f6' })
+          .setLngLat([smoothLng, smoothLat])
+          .addTo(map);
+        recenterBtn.disabled = false;
+        followBtn.disabled = false;
+      } else {
+        userMarker.setLngLat([smoothLng, smoothLat]);
+      }
+
+      setGPSStatus(true, 'GPS: active');
+
+      evaluateOffRoute();
+
+      if(followMode){
+        map.easeTo({
+          center: [smoothLng, smoothLat],
+          bearing: (typeof lastHeading === 'number') ? lastHeading : map.getBearing(),
+          pitch: is3DView ? 60 : 0,
+          duration: 900
+        });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
+    }
+
+    function handlePositionError(err){
+      console.error('GPS error', err);
+      if(err.code === 1) setGPSStatus(false, 'GPS: permission denied');
+      else if(err.code === 2) setGPSStatus(false, 'GPS: position unavailable');
+      else if(err.code === 3) setGPSStatus(false, 'GPS: timeout');
+      else setGPSStatus(false, 'GPS: error');
+    }
+
+    function startGPS(){
+      if(!('geolocation' in navigator)){
+        setGPSStatus(false, 'GPS: not supported');
+        return;
+      }
+      if(watchId !== null) return;
+
+      watchId = navigator.geolocation.watchPosition(
+        handlePositionUpdate,
+        handlePositionError,
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+      );
+    }
+
+    /***************
+     * CONTROLS
      ***************/
     recenterBtn.addEventListener('click', () => {
-      let centerLng = destination.lng;
-	  let centerLat = destination.lat;
-	  
-	  if (lastPosition && typeof lastPosition.smoothLng === 'number') {
-		centerLng = lastPosition.smoothLng;
-		centerLat = lastPosition.smoothLat;
-	  }
-	  
-	  map.easeTo({
-        center: [centerLng, centerLat],
-        zoom: 15,
-        duration: 900,
-        pitch: is3DView ? 60 : 0,
-        bearing: is3DView ? -17.6 : 0
-      });
+      if(lastUserLngLat){
+        map.easeTo({ center: lastUserLngLat, zoom: Math.max(map.getZoom(), 14), duration: 600 });
+        return;
+      }
+      const feature = normalizeToFeature(getGeometryForDir());
+      if(feature?.geometry?.coordinates?.length){
+        const bounds = coordsToBounds(feature.geometry.coordinates);
+        if(bounds) map.fitBounds(bounds, { padding: 70, duration: 500 });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
     });
 
     viewToggleBtn.addEventListener('click', () => {
       is3DView = !is3DView;
-      viewToggleBtn.classList.toggle('secondary', !is3DView);
-      viewToggleBtn.innerHTML = is3DView ? '<span>🗺️</span> View: 3D' : '<span>🗺️</span> View: 2D';
-
-      map.easeTo({
-        pitch: is3DView ? 60 : 0,
-        bearing: is3DView ? -17.6 : 0,
-        duration: 700
-      });
+      viewToggleBtn.textContent = is3DView ? '🗺️ View: 3D' : '🗺️ View: 2D';
+      map.easeTo({ pitch: is3DView ? 60 : 0, duration: 500 });
     });
-	
-	const followBtn = document.getElementById('followBtn');
 
-	followBtn.addEventListener('click', () => {
-		followMode = !followMode;
-	
-		if (followMode) {
-			followBtn.classList.remove('secondary');
-			followBtn.innerHTML = '<span>🧭</span> Follow: On';
-	
-			// Immediately center on user
-			if (lastPosition) {
-				map.easeTo({
-					center: [lastPosition.smoothLng, lastPosition.smoothLat],
-					bearing: lastHeading || map.getBearing(),
-					pitch: is3DView ? 60 : 0,
-					zoom: Math.max(map.getZoom(), 15),
-					duration: 500
-				});
-			}
-		} else {
-			followBtn.classList.add('secondary');
-			followBtn.innerHTML = '<span>🧭</span> Follow: Off';
-		}
-	});
+    followBtn.addEventListener('click', () => {
+      followMode = !followMode;
+      followBtn.textContent = followMode ? '🧭 Follow: On' : '🧭 Follow: Off';
+      if(followMode && lastUserLngLat){
+        map.easeTo({ center: lastUserLngLat, pitch: is3DView ? 60 : 0, duration: 500 });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
+    });
+
+    btnToggleDir.addEventListener('click', () => {
+      if (!currentLocation) {
+        showRouteStatus('Loading route…', false);
+        return;
+      }
+      currentDir = (currentDir === 'outbound') ? 'return' : 'outbound';
+      updateUrlDirParam(currentDir);
+      syncButtons();
+      renderRouteOnMap();
+    });
+
+
+    // Route status close button
+    routeStatusClose.addEventListener('click', () => {
+      hideRouteStatus();
+    });
 
     /***************
-     * INIT
+     * SERVICE WORKER
      ***************/
-    setMapStatus(false, 'Loading map…');
-    initMapbox();
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .catch((e) => console.warn('SW register failed', e));
+      });
+    }
+
+    /***************
+     * BOOT
+     ***************/
+    initMap();
   </script>
 </body>
 </html>
