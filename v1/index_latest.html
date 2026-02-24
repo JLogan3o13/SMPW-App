@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LV Transportation - Driving Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+        
+        select:disabled {
+            background-color: #f9f9f9;
+            color: #999;
+        }
+        
+        /* Button Container for Two Buttons */
+        .button-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .nav-button {
+            padding: 15px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        
+        .go-button {
+            background-color: #4CAF50;
+        }
+        
+        .go-button:hover:not(:disabled) {
+            background-color: #45a049;
+        }
+        
+        .return-button {
+            background-color: #2196F3;
+        }
+        
+        .return-button:hover:not(:disabled) {
+            background-color: #0b7dda;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            margin: 10px 0;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Photo Modal Styles */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .photo-modal-content {
+            position: relative;
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80%;
+            overflow: auto;
+        }
+        
+        .photo-modal img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+        }
+        
+        .photo-modal h3 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        
+        .photo-modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .photo-modal-close:hover {
+            color: #000;
+        }
+        
+        .parking-info {
+            text-align: center;
+            margin-top: 15px;
+            color: #666;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>LV Transportation</h1>
+        <div id="eventInfo" style="text-align: center; margin-bottom: 20px; color: #666; font-size: 14px;"></div>
+        <form id="drivingForm">
+            <div class="form-group">
+                <label for="zone">Select Zone:</label>
+                <select id="zone" name="zone" required>
+                    <option value="">Loading zones...</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="location">Select Location:</label>
+                <select id="location" name="location" required disabled>
+                    <option value="">-- Select a Zone First --</option>
+                </select>
+            </div>
+            
+            <!-- Two Button Layout -->
+            <div class="button-container">
+                <button type="button" class="nav-button go-button" id="goButton" disabled>
+                    Navigate to Destination
+                </button>
+                <button type="button" class="nav-button return-button" id="returnButton" disabled>
+                    Return to Hub
+                </button>
+            </div>
+        </form>
+        
+        <div class="loading" id="loadingMessage" style="display: none;"></div>
+        <div class="error" id="errorMessage" style="display: none;"></div>
+    </div>
+    
+    <!-- Photo Modal -->
+    <div class="photo-modal" id="photoModal">
+        <div class="photo-modal-content">
+            <span class="photo-modal-close" id="closeModal">&times;</span>
+            <h3 id="modalTitle">Parking Location</h3>
+            <img id="modalImage" src="" alt="Parking location">
+            <div class="parking-info">
+                <p><strong>📍 Follow the arrow in the image to find your parking spot</strong></p>
+                <p>Click "Navigate to Destination" to get turn-by-turn directions</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Your us-west-1 API Gateway URL
+        const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
+        
+        const zoneSelect = document.getElementById('zone');
+        const locationSelect = document.getElementById('location');
+        const goButton = document.getElementById('goButton');
+        const returnButton = document.getElementById('returnButton');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const eventInfo = document.getElementById('eventInfo');
+        
+        // Photo modal elements
+        const photoModal = document.getElementById('photoModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeModal = document.getElementById('closeModal');
+        
+        let currentLocations = {};
+        let currentEvent = '';
+
+        // Extract event parameter from URL
+        function getEventFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('event') || 'RaidersGames';
+        }
+
+        // Modal event listeners
+        closeModal.addEventListener('click', function() {
+            photoModal.style.display = 'none';
+        });
+        
+        window.addEventListener('click', function(event) {
+            if (event.target === photoModal) {
+                photoModal.style.display = 'none';
+            }
+        });
+
+        // Load zones when page loads
+        window.addEventListener('load', loadZones);
+
+        async function loadZones() {
+            try {
+                currentEvent = getEventFromURL();
+                eventInfo.textContent = `Current Event: ${currentEvent}`;
+                
+                showLoading('Loading zones...');
+                
+                const response = await fetch(`${API_BASE_URL}?event=${currentEvent}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Clear existing options
+                zoneSelect.innerHTML = '<option value="">-- Choose a Zone --</option>';
+                
+                // Add zones to dropdown
+                data.zones.forEach(zone => {
+                    const option = document.createElement('option');
+                    option.value = zone;
+                    option.textContent = `Zone ${zone}`;
+                    zoneSelect.appendChild(option);
+                });
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Error loading zones:', error);
+                showError('Failed to load zones. Please refresh the page.');
+                zoneSelect.innerHTML = '<option value="">Error loading zones</option>';
+            }
+        }
+
+        // Handle zone selection
+        zoneSelect.addEventListener('change', async function() {
+            const selectedZone = this.value;
+            
+            // Reset location dropdown and buttons
+            locationSelect.innerHTML = '<option value="">-- Choose a Location --</option>';
+            locationSelect.disabled = true;
+            goButton.disabled = true;
+            returnButton.disabled = true;
+            currentLocations = {};
+            
+            if (selectedZone) {
+                try {
+                    showLoading('Loading locations...');
+                    
+                    const response = await fetch(`${API_BASE_URL}?event=${currentEvent}&zone=${selectedZone}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    
+                    const data = await response.json();
+                    
+                    // Populate location dropdown
+                    data.locations.forEach((location, index) => {
+                        const option = document.createElement('option');
+                        option.value = index;
+                        option.textContent = location.label;
+                        locationSelect.appendChild(option);
+                        
+                        // Store both outbound and return URLs for this location
+                        currentLocations[index] = {
+                            directions: location.directions,
+                            directionsReturn: location.directionsReturn,
+                            label: location.label,
+                            parkingPhoto: location.parkingPhoto || ''
+                        };
+                    });
+                    
+                    locationSelect.disabled = false;
+                    hideLoading();
+                    
+                } catch (error) {
+                    console.error('Error loading locations:', error);
+                    showError('Failed to load locations for this zone.');
+                }
+            }
+        });
+
+        // Handle location selection
+        locationSelect.addEventListener('change', function() {
+            const locationIndex = this.value;
+            goButton.disabled = !locationIndex;
+            returnButton.disabled = !locationIndex;
+            
+            // Show parking photo only if location is selected AND has a valid photo
+            if (locationIndex && currentLocations[locationIndex] && hasValidParkingPhoto(locationIndex)) {
+                showParkingPhoto(locationIndex);
+            }
+        });
+
+        // Check if location has a valid parking photo
+        function hasValidParkingPhoto(locationIndex) {
+            const location = currentLocations[locationIndex];
+            if (!location || !location.parkingPhoto) {
+                return false;
+            }
+            
+            // Check if photo URL is not empty, null, undefined, or just whitespace
+            const photoUrl = location.parkingPhoto.trim();
+            return photoUrl.length > 0;
+        }
+
+        // Show parking photo modal
+        function showParkingPhoto(locationIndex) {
+            const location = currentLocations[locationIndex];
+            const photoUrl = location.parkingPhoto.trim();
+            
+            // DEBUG: Log the values
+            console.log('Location:', location);
+            console.log('Photo URL from DB:', photoUrl);
+            
+            // Double-check photo exists before showing modal
+            if (photoUrl && photoUrl.length > 0) {
+                // Construct full URL for the photo (served via CloudFront or S3)
+                const fullPhotoUrl = photoUrl.startsWith('http') 
+                    ? photoUrl 
+                    : `https://d3czxqxcb96n5u.cloudfront.net/${photoUrl}`;
+                
+                console.log('Full Photo URL:', fullPhotoUrl);
+                
+                modalTitle.textContent = `Parking: ${location.label}`;
+                modalImage.src = fullPhotoUrl;
+                modalImage.alt = `Parking location for ${location.label}`;
+                
+                // Add error handling for broken images
+                modalImage.onerror = function() {
+                    console.log(`Failed to load parking photo: ${fullPhotoUrl}`);
+                    photoModal.style.display = 'none';
+                };
+                
+                console.log('Showing modal');
+                photoModal.style.display = 'block';
+            } else {
+                console.log('No photo URL found');
+            }
+        }
+
+        // Handle "Navigate to Destination" button click
+        goButton.addEventListener('click', function() {
+            const locationIndex = locationSelect.value;
+            
+            if (!locationIndex || !currentLocations[locationIndex]) {
+                showError('Please select both zone and location.');
+                return;
+            }
+            
+            // Get the outbound directions URL and redirect
+            const directionsUrl = currentLocations[locationIndex].directions;
+            
+            if (!directionsUrl) {
+                showError('No route available for this location.');
+                return;
+            }
+            
+            // Open Google Maps directions in new tab/window
+            window.open(directionsUrl, '_blank');
+        });
+
+        // Handle "Return to Hub" button click
+        returnButton.addEventListener('click', function() {
+            const locationIndex = locationSelect.value;
+            
+            if (!locationIndex || !currentLocations[locationIndex]) {
+                showError('Please select both zone and location.');
+                return;
+            }
+            
+            // Get the return directions URL and redirect
+            const returnUrl = currentLocations[locationIndex].directionsReturn;
+            
+            if (!returnUrl) {
+                showError('No return route available for this location.');
+                return;
+            }
+            
+            // Open Google Maps return directions in new tab/window
+            window.open(returnUrl, '_blank');
+        });
+
+        function showLoading(message) {
+            loadingMessage.textContent = message;
+            loadingMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+
+        function hideLoading() {
+            loadingMessage.style.display = 'none';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            loadingMessage.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

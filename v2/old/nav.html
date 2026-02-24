@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LV Transportation - Navigation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <link rel="manifest" href="/manifest.json" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
+
+  <!-- iOS PWA meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+
+  <!-- Mapbox GL JS v3 -->
+  <link
+    href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css"
+    rel="stylesheet"
+  />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
+
+  <style>
+    :root {
+      color-scheme: dark;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      margin: 0;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right)
+        env(safe-area-inset-bottom) env(safe-area-inset-left);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #020617;
+      color: #e5e7eb;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      padding: 0.5rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #1f2937, #020617);
+      z-index: 3;
+    }
+    header .title {
+      display: flex;
+      flex-direction: column;
+    }
+    header .title span:first-child {
+      font-size: 0.8rem;
+      opacity: 0.7;
+    }
+    header .title span:last-child {
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+    header .status {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid #374151;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    header .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #f97316;
+    }
+    header .status-dot.ok {
+      background: #22c55e;
+    }
+
+    #map {
+      flex: 1 1 auto;
+      width: 100%;
+    }
+
+    .error-banner {
+      position: absolute;
+      top: calc(env(safe-area-inset-top) + 52px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(127, 29, 29, 0.95);
+      border: 1px solid rgba(239, 68, 68, 0.9);
+      font-size: 0.75rem;
+      display: none;
+      align-items: center;
+      gap: 0.5rem;
+      z-index: 4;
+    }
+
+    .error-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #fecaca;
+    }
+
+    .info-banner {
+      position: absolute;
+      top: calc(env(safe-area-inset-top) + 52px);
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.4rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(55, 65, 81, 0.9);
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      z-index: 3;
+    }
+
+    .info-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .controls {
+      position: absolute;
+      bottom: calc(env(safe-area-inset-bottom) + 12px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(480px, 100% - 24px);
+      padding: 0.75rem;
+      border-radius: 1rem;
+      background: rgba(15, 23, 42, 0.94);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.5rem;
+      z-index: 3;
+    }
+
+    .controls button {
+      border: none;
+      border-radius: 999px;
+      padding: 0.7rem 0.4rem;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #f9fafb;
+      background: #2563eb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.5);
+      cursor: pointer;
+    }
+
+    .controls button.secondary {
+      background: #020617;
+      border: 1px solid #374151;
+      box-shadow: none;
+      color: #e5e7eb;
+    }
+
+    .controls button:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    @media (orientation: landscape) {
+      body {
+        flex-direction: row;
+      }
+      header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+      }
+      .controls {
+        width: 360px;
+      }
+    }
+	
+	.gps-status {
+	padding: 0.25rem 1rem;
+	font-size: 0.75rem;
+	display: flex;
+	align-items: center;
+	gap: 0.35rem;
+	background: #020617;
+	border-bottom: 1px solid #111827;
+	z-index: 2;
+	}
+
+	.gps-dot {
+	width: 8px;
+	height: 8px;
+	border-radius: 999px;
+	background: #f97316; /* orange (waiting/error) */
+	}
+	
+	.gps-dot.online {
+	background: #22c55e; /* green (online) */
+	}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title">
+      <span>LV Transportation</span>
+      <span id="headerDestination">Navigation</span>
+    </div>
+    <div class="status" id="mapStatus">
+      <span class="status-dot" id="mapDot"></span>
+      <span id="mapText">Loading map…</span>
+    </div>
+	<div class="gps-status" id="gpsStatus">
+		<span class="gps-dot" id="gpsDot"></span>
+		<span id="gpsText">GPS: waiting…</span>
+	</div>
+  </header>
+
+  <!-- Shown when everything is OK -->
+  <div class="info-banner" id="infoBanner">
+    <span class="info-dot"></span>
+    <span id="infoText">PWA ready. Add to Home Screen for full-screen navigation.</span>
+  </div>
+
+  <!-- Shown if Mapbox init fails -->
+  <div class="error-banner" id="errorBanner">
+    <span class="error-dot"></span>
+    <span id="errorText">Map failed to load. Check network or Mapbox token.</span>
+  </div>
+
+  <div id="map"></div>
+
+  <div class="controls">
+    <button id="recenterBtn" disabled>
+      <span>📍</span> Re-center
+    </button>
+    <button id="viewToggleBtn" class="secondary">
+      <span>🗺️</span> View: 3D
+    </button>
+	<button id="followBtn" class="secondary" disabled>
+	  <span>🧭</span> Follow: Off
+	</button>
+  </div>
+
+  <script>
+    /***************
+     * CONFIG
+     ***************/
+    const MAPBOX_TOKEN = 'pk.eyJ1IjoiamxvZ2FuM28xMyIsImEiOiJjbWlpNzZuOHYwYnIzM2Nwd2xobTlkZzRyIn0.RiVncFBsWabC5_qCRvEqXg';
+
+    // Basic default destination: central-ish Strip
+    const DEFAULT_DESTINATION = {
+      lat: 36.1147,
+      lng: -115.1728,
+      label: 'Las Vegas Strip'
+    };
+	
+	const HUB_ORIGIN = {
+	  lat: 36.07744,
+	  lng: -115.23981
+	};
+	
+	const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
+	
+	function getNavParams() {
+		const params = new URLSearchParams(window.location.search);
+		return {
+			eventId: params.get('event') || 'RaidersGames',
+			zone: params.get('zone') || '',
+			locationIndex: params.get('locationIndex'),
+			dir: (params.get('dir') || 'outbound').toLowerCase()
+		};
+	}
+
+    function getDestinationFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      const lat = parseFloat(params.get('destLat'));
+      const lng = parseFloat(params.get('destLng'));
+      const label = params.get('label') || DEFAULT_DESTINATION.label;
+
+      if (!isNaN(lat) && !isNaN(lng)) {
+        return { lat, lng, label };
+      }
+      return DEFAULT_DESTINATION;
+    }
+
+    const destination = getDestinationFromURL();
+    document.getElementById('headerDestination').textContent = destination.label;
+
+    /***************
+     * SERVICE WORKER REGISTRATION
+     ***************/
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker
+          .register('/service-worker.js')
+          .catch(err => console.error('SW registration failed', err));
+      });
+    }
+
+    /***************
+     * MAPBOX INIT
+     ***************/
+    const mapStatusEl = document.getElementById('mapStatus');
+    const mapDotEl = document.getElementById('mapDot');
+    const mapTextEl = document.getElementById('mapText');
+    const errorBanner = document.getElementById('errorBanner');
+    const errorText = document.getElementById('errorText');
+    const infoBanner = document.getElementById('infoBanner');
+    const recenterBtn = document.getElementById('recenterBtn');
+    const viewToggleBtn = document.getElementById('viewToggleBtn');
+
+    let map;
+    let destinationMarker;
+    let is3DView = true;
+
+    function setMapStatus(ok, message) {
+      mapDotEl.classList.toggle('ok', !!ok);
+      mapTextEl.textContent = message || (ok ? 'Map ready' : 'Loading map…');
+    }
+
+    function showError(msg) {
+      errorText.textContent = msg;
+      errorBanner.style.display = 'flex';
+      infoBanner.style.display = 'none';
+      setMapStatus(false, 'Map error');
+    }
+
+    function initMapbox() {
+      if (!MAPBOX_TOKEN) {
+        showError('Missing Mapbox token. Update MAPBOX_TOKEN in nav.html.');
+        return;
+      }
+
+      try {
+        mapboxgl.accessToken = MAPBOX_TOKEN;
+
+        map = new mapboxgl.Map({
+          container: 'map',
+          style: 'mapbox://styles/mapbox/navigation-night-v1',
+          center: [destination.lng, destination.lat],
+          zoom: 14.5,
+          pitch: 60,
+          bearing: -17.6,
+          antialias: true
+        });
+
+        map.addControl(new mapboxgl.NavigationControl({ showZoom: false }), 'top-right');
+
+        map.on('load', () => {
+          setMapStatus(true, 'Map ready');
+          infoBanner.style.display = 'flex';
+
+          // Destination marker
+          destinationMarker = new mapboxgl.Marker({ color: '#f97316' })
+            .setLngLat([destination.lng, destination.lat])
+            .addTo(map);
+
+          add3DBuildings();
+          initRouteLine();
+		  initRealRouteFromApi();
+
+          // Enable recenter button now that map is ready
+          recenterBtn.disabled = false;
+		  
+		  //Start GPS Tracking
+		  initGPS();
+        });
+
+        map.on('error', (e) => {
+          console.error('Mapbox error', e.error);
+          showError('Mapbox error: ' + (e.error && e.error.message ? e.error.message : 'Unknown'));
+        });
+
+      } catch (err) {
+        console.error('Map init failed', err);
+        showError('Map initialization failed. See console for details.');
+      }
+    }
+
+    function add3DBuildings() {
+      const layers = map.getStyle().layers;
+      let labelLayerId;
+      for (let i = 0; i < layers.length; i++) {
+        if (layers[i].type === 'symbol' && layers[i].layout['text-field']) {
+          labelLayerId = layers[i].id;
+          break;
+        }
+      }
+
+      if (!map.getSource('3d-buildings')) {
+        map.addSource('3d-buildings', {
+          type: 'vector',
+          url: 'mapbox://mapbox.3d-buildings'
+        });
+
+        map.addLayer(
+          {
+            id: '3d-buildings-layer',
+            source: '3d-buildings',
+            'source-layer': 'building',
+            filter: ['==', 'extrude', 'true'],
+            type: 'fill-extrusion',
+            minzoom: 15,
+            paint: {
+              'fill-extrusion-color': '#4b5563',
+              'fill-extrusion-height': [
+                'interpolate',
+                ['linear'],
+                ['zoom'],
+                15,
+                0,
+                16,
+                ['get', 'height']
+              ],
+              'fill-extrusion-opacity': 0.9
+            }
+          },
+          labelLayerId
+        );
+      }
+    }
+
+	function initRouteLine() {
+		if (!map.getSource('route')) {
+			map.addSource('route', {
+				type: 'geojson',
+				data: {
+					type: 'Feature',
+					geometry: {
+						type: 'LineString',
+						coordinates: [
+							[HUB_ORIGIN.lng, HUB_ORIGIN.lat],
+							[destination.lng, destination.lat]
+						]
+					}
+				}
+			});
+
+			map.addLayer({
+				id: 'route-line',
+				type: 'line',
+				source: 'route',
+				layout: {
+					'line-join': 'round',
+					'line-cap': 'round'
+				},
+				paint: {
+					'line-color': '#22c55e',
+					'line-width': 5
+				}
+			});
+		}
+	}
+
+	function updateRouteLine(originLng, originLat, destLng, destLat) {
+		const source = map.getSource('route');
+		if (!source) return;
+
+		const coords = [
+			[originLng, originLat],
+			[destLng, destLat]
+		];
+
+		source.setData({
+			type: 'Feature',
+			geometry: {
+				type: 'LineString',
+				coordinates: coords
+			}
+		});
+	}
+	
+	let activeLocation = null;        // the location object from API
+	let routeMode = 'outbound';       // 'outbound' or 'return'
+
+	// Convert API geometry into a GeoJSON Feature for Mapbox source.setData()
+	function toRouteFeature(geometry) {
+	return {
+		type: 'Feature',
+		geometry: geometry
+	};
+	}
+
+	async function loadLocationFromApi() {
+		const { eventId, zone, locationIndex, dir } = getNavParams();
+		routeMode = (dir === 'return') ? 'return' : 'outbound';
+	
+		// If zone/index not provided, we fall back to your current straight-line behavior
+		if (!zone || locationIndex === null) {
+			console.warn('nav.html: missing zone or locationIndex in URL; using fallback straight line.');
+			return null;
+		}
+		
+		const url = `${API_BASE_URL}?event=${encodeURIComponent(eventId)}&zone=${encodeURIComponent(zone)}`;
+		const resp = await fetch(url);
+		if (!resp.ok) throw new Error(`Destinations API error: ${resp.status}`);
+		
+		const data = await resp.json();
+		if (!data.locations || !Array.isArray(data.locations)) {
+			throw new Error('Destinations API response missing locations[]');
+		}
+		
+		const idx = parseInt(locationIndex, 10);
+		if (Number.isNaN(idx) || idx < 0 || idx >= data.locations.length) {
+			throw new Error(`Invalid locationIndex=${locationIndex}; locations length=${data.locations.length}`);
+		}
+		
+		return data.locations[idx];
+	}
+
+	function applyLocationToMap(location) {
+		activeLocation = location;
+	
+		// Update header label
+		if (location && location.label) {
+			document.getElementById('headerDestination').textContent = location.label;
+		}
+	
+		// If your API doesn’t provide destLat/destLng (yet), we can at least "fit bounds" to the route.
+		// If it DOES in the future, we can place the orange marker on destination coords.
+	}
+
+	function setRouteGeometryOnMap(geometry) {
+		if (!geometry || geometry.type !== 'LineString' || !Array.isArray(geometry.coordinates) || geometry.coordinates.length < 2) {
+			console.warn('No valid LineString geometry; keeping fallback route line.');
+			return;
+		}
+	
+		const source = map.getSource('route');
+		if (!source) return;
+	
+		source.setData(toRouteFeature(geometry));
+	
+		// Fit map to the route bounds
+		const bounds = new mapboxgl.LngLatBounds();
+		geometry.coordinates.forEach(([lng, lat]) => bounds.extend([lng, lat]));
+		map.fitBounds(bounds, { padding: 60, duration: 800 });
+	}
+
+	async function initRealRouteFromApi() {
+		try {
+			const location = await loadLocationFromApi();
+			if (!location) return; // fall back
+		
+			applyLocationToMap(location);
+		
+			const geometry = (routeMode === 'return')
+			? location.returnRouteGeometry
+			: location.routeGeometry;
+		
+			setRouteGeometryOnMap(geometry);
+		
+		} catch (err) {
+			console.error('Failed to load real route geometry:', err);
+			// Don’t hard-fail the page; keep your straight-line fallback
+		}
+	}
+
+
+	/***************
+	* GPS TRACKING WITH KALMAN SMOOTHING
+	***************/
+	class OneDimKalman {
+		constructor({ q = 0.000001, r = 0.0001, p = 1, x = 0 } = {}) {
+			this.q = q; // process noise
+			this.r = r; // measurement noise
+			this.p = p; // estimation error
+			this.x = x; // value
+			this.k = 0; // Kalman gain
+		}
+		
+		filter(measurement) {
+			// prediction
+			this.p = this.p + this.q;
+		
+			// measurement update
+			this.k = this.p / (this.p + this.r);
+			this.x = this.x + this.k * (measurement - this.x);
+			this.p = (1 - this.k) * this.p;
+		
+			return this.x;
+		}
+	
+		setState(x, p) {
+			this.x = x;
+			this.p = p;
+		}
+	}
+
+	const gpsStatusEl = document.getElementById('gpsStatus');
+	const gpsDotEl = document.getElementById('gpsDot');
+	const gpsTextEl = document.getElementById('gpsText');
+	
+	const kalmanLat = new OneDimKalman();
+	const kalmanLng = new OneDimKalman();
+	
+	let watchId = null;
+	let userMarker = null;
+	let lastPosition = null;
+	
+	let followMode = false;
+	let lastHeading = null;
+
+	function setGpsStatus(state, message) {
+	if (!gpsStatusEl) return;
+	gpsDotEl.classList.toggle('online', state === 'online');
+	gpsTextEl.textContent = message;
+	}
+	
+	function calculateHeading(prev, curr) {
+		const y = Math.sin(curr.lng - prev.lng) * Math.cos(curr.lat);
+		const x = Math.cos(prev.lat) * Math.sin(curr.lat) - Math.sin(prev.lat)* Math.cos(curr.lat) * Math.cos(curr.lng - prev.lng);
+		const angle = Math.atan2(y,x);
+		let degrees = (angle * 180) / Math.PI;
+		degrees = (degrees + 360) % 360; //normalize
+		
+		return degrees
+	}
+	
+	function initGPS() {
+		if (!('geolocation' in navigator)) {
+			setGpsStatus('error', 'GPS: not supported on this device');
+			return;
+		}
+	
+		setGpsStatus('waiting', 'GPS: requesting location…');
+		
+		const options = {
+			enableHighAccuracy: true,
+			timeout: 10000,
+			maximumAge: 5000
+		};
+	
+		watchId = navigator.geolocation.watchPosition(
+			handlePositionUpdate,
+			handlePositionError,
+			options
+		);
+	}
+
+	function handlePositionUpdate(pos) {
+		const { latitude, longitude, accuracy } = pos.coords;
+		const rawLat = latitude;
+		const rawLng = longitude;
+		
+		if (!lastPosition) {
+			// initialize Kalman filters with first reading
+			kalmanLat.setState(rawLat, 1);
+			kalmanLng.setState(rawLng, 1);
+		}
+		
+		const smoothLat = kalmanLat.filter(rawLat);
+		const smoothLng = kalmanLng.filter(rawLng);
+		
+		if (!lastPosition) {
+			lastPosition = {}
+		}
+		
+		if (lastPosition && typeof lastPosition.prevLat === 'number') {
+			// Calculate heading in degrees
+			lastHeading = calculateHeading(
+				{ lat: lastPosition.prevLat, lng: lastPosition.prevLng },
+				{ lat: smoothLat, lng: smoothLng }
+			);
+		}	
+		
+		// Store previous point for heading calculations
+		lastPosition.rawLat = rawLat;
+		lastPosition.rawLng = rawLng;
+		lastPosition.smoothLat = smoothLat;
+		lastPosition.smoothLng = smoothLng;
+		lastPosition.accuracy = accuracy;
+		lastPosition.prevLat = smoothLat;
+		lastPosition.prevLng = smoothLng;
+	
+		updateUserMarker(smoothLng, smoothLat);
+
+		setGpsStatus('online', `GPS: ~${Math.round(accuracy)}m`);
+		
+		// enable recenter as soon as we have a fix
+		if (recenterBtn.disabled) recenterBtn.disabled = false;
+		if (followBtn.disabled) followBtn.disabled = false;
+		
+		// If follow mode is on, keep map centered & rotated
+		if (followMode) {
+			map.easeTo({
+				center: [smoothLng, smoothLat],
+				bearing: lastHeading || map.getBearing(),
+				pitch: is3DView ? 60 : 0,
+				duration: 1000
+			});
+		}
+		
+		// Don't overwrite the official route polyline with a straight line.
+		// (If we want a "you-to-route" helper line later, we’ll add a second layer.)
+
+	}
+
+	function handlePositionError(err) {
+		console.error('GPS error', err);
+		if (err.code === 1) {
+			setGpsStatus('error', 'GPS: permission denied');
+		} else if (err.code === 2) {
+			setGpsStatus('error', 'GPS: position unavailable');
+		} else if (err.code === 3) {
+			setGpsStatus('error', 'GPS: timeout');
+		} else {
+			setGpsStatus('error', 'GPS: error');
+		}
+	}
+
+	function updateUserMarker(lng, lat) {
+		if (!map) return;
+		
+		if (!userMarker) {
+			const el = document.createElement('div');
+			el.style.width = '16px';
+			el.style.height = '16px';
+			el.style.borderRadius = '999px';
+			el.style.boxShadow = '0 0 0 4px rgba(59,130,246,0.4)';
+			el.style.background = '#3b82f6'; // blue dot
+			userMarker = new mapboxgl.Marker(el).setLngLat([lng, lat]).addTo(map);
+		} else {
+			userMarker.setLngLat([lng, lat]);
+		}
+	}
+
+	// Pause/resume GPS for battery efficiency
+	document.addEventListener('visibilitychange', () => {
+		if (document.hidden) {
+			if (watchId !== null) {
+			navigator.geolocation.clearWatch(watchId);
+			watchId = null;
+			setGpsStatus('paused', 'GPS: paused (background)');
+			}
+		} else {
+			if (!watchId) {
+			initGPS();
+			}
+		}
+	});
+
+
+    /***************
+     * UI BUTTONS
+     ***************/
+    recenterBtn.addEventListener('click', () => {
+      let centerLng = destination.lng;
+	  let centerLat = destination.lat;
+	  
+	  if (lastPosition && typeof lastPosition.smoothLng === 'number') {
+		centerLng = lastPosition.smoothLng;
+		centerLat = lastPosition.smoothLat;
+	  }
+	  
+	  map.easeTo({
+        center: [centerLng, centerLat],
+        zoom: 15,
+        duration: 900,
+        pitch: is3DView ? 60 : 0,
+        bearing: is3DView ? -17.6 : 0
+      });
+    });
+
+    viewToggleBtn.addEventListener('click', () => {
+      is3DView = !is3DView;
+      viewToggleBtn.classList.toggle('secondary', !is3DView);
+      viewToggleBtn.innerHTML = is3DView ? '<span>🗺️</span> View: 3D' : '<span>🗺️</span> View: 2D';
+
+      map.easeTo({
+        pitch: is3DView ? 60 : 0,
+        bearing: is3DView ? -17.6 : 0,
+        duration: 700
+      });
+    });
+	
+	const followBtn = document.getElementById('followBtn');
+
+	followBtn.addEventListener('click', () => {
+		followMode = !followMode;
+	
+		if (followMode) {
+			followBtn.classList.remove('secondary');
+			followBtn.innerHTML = '<span>🧭</span> Follow: On';
+	
+			// Immediately center on user
+			if (lastPosition) {
+				map.easeTo({
+					center: [lastPosition.smoothLng, lastPosition.smoothLat],
+					bearing: lastHeading || map.getBearing(),
+					pitch: is3DView ? 60 : 0,
+					zoom: Math.max(map.getZoom(), 15),
+					duration: 500
+				});
+			}
+		} else {
+			followBtn.classList.add('secondary');
+			followBtn.innerHTML = '<span>🧭</span> Follow: Off';
+		}
+	});
+
+    /***************
+     * INIT
+     ***************/
+    setMapStatus(false, 'Loading map…');
+    initMapbox();
+  </script>
+</body>
+</html>

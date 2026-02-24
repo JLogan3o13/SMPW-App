@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LV Transportation - Navigation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <link rel="manifest" href="/manifest.json" />
+
+  <!-- iOS PWA meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+
+  <!-- Mapbox GL -->
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: #0b1220; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+
+    header{
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 10;
+      padding: 10px 12px;
+      background: rgba(10, 15, 30, 0.92);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .title{
+      display:flex; justify-content: space-between; gap: 10px; align-items: baseline;
+      font-weight: 800; letter-spacing: 0.2px;
+    }
+    .title span:first-child{ color: #9fb4ff; font-size: 14px; }
+    #headerDestination{ color: #ffffff; font-size: 16px; }
+
+    .statusRow{
+      display:flex; gap: 10px; margin-top: 8px; align-items: center; flex-wrap: wrap;
+    }
+
+    .pill{
+      display:inline-flex; gap: 8px; align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.08);
+      font-size: 12px;
+      color: rgba(255,255,255,0.92);
+    }
+    .dot{
+      width: 10px; height: 10px; border-radius: 50%;
+      background: #f59e0b;
+      box-shadow: 0 0 0 3px rgba(245,158,11,0.15);
+    }
+    .dot.ok{ background:#22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,0.15); }
+    .dot.bad{ background:#ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.15); }
+
+    #errorBanner{
+      position: fixed;
+      top: 104px; left: 12px; right: 12px;
+      z-index: 12;
+      display:none;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(239, 68, 68, 0.18);
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      color: #fff;
+      font-size: 13px;
+    }
+
+    #map{
+      position: fixed;
+      top: 112px;
+      left: 0; right: 0;
+      bottom: 90px;
+    }
+
+    .controls{
+      position: fixed;
+      left: 12px; right: 12px;
+      bottom: 12px;
+      z-index: 10;
+      display:flex; gap: 10px;
+    }
+    .controls button{
+      flex: 1;
+      padding: 14px 10px;
+      border: none;
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.92);
+      color:#0b1220;
+    }
+    .controls button.secondary{
+      background: rgba(255,255,255,0.10);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.92);
+    }
+    .controls button:disabled{
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    /* Route Controls Overlay */
+    .route-controls{
+      position: fixed;
+      top: 116px;
+      left: 12px;
+      right: 12px;
+      z-index: 11;
+      pointer-events: none;
+    }
+    .route-controls .route-row,
+    .route-controls .route-status{
+      pointer-events: auto;
+    }
+    .route-row{
+      display:flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .route-btn{
+      flex:1;
+      padding: 12px 10px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 900;
+      font-size: 14px;
+      cursor: pointer;
+      background: rgba(255,255,255,0.92);
+      color:#0b1220;
+    }
+    .route-btn.primary{
+      background: rgba(46, 204, 113, 0.95);
+      color: #fff;
+    }
+    .route-status{
+      margin-top: 8px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.65);
+      color: #fff;
+      font-size: 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .route-status.hidden{
+      display: none;
+    }
+    .route-status-close{
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 0;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0.7;
+      flex-shrink: 0;
+    }
+    .route-status-close:hover{
+      opacity: 1;
+    }
+    .route-status-text{
+      flex: 1;
+    }
+    .route-status-text{
+      flex: 1;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="title">
+      <span>LV Transportation</span>
+      <span id="headerDestination">Navigation</span>
+    </div>
+
+    <div class="statusRow">
+      <div class="pill">
+        <span class="dot" id="mapDot"></span>
+        <span id="mapText">Loading map…</span>
+      </div>
+      <div class="pill">
+        <span class="dot" id="gpsDot"></span>
+        <span id="gpsText">GPS: waiting…</span>
+      </div>
+      <div class="pill">
+        <span class="dot" id="routeDot"></span>
+        <span id="routeText">Route: waiting…</span>
+      </div>
+    </div>
+  </header>
+
+  <div id="errorBanner"><span id="errorText"></span></div>
+
+  <div id="map"></div>
+
+  <!-- Route Controls Overlay -->
+  <div id="routeControls" class="route-controls">
+    <div class="route-row">
+      <button id="btnToggleDir" class="route-btn primary" type="button">Return Route</button>
+    </div>
+    <div id="routeStatus" class="route-status">
+      <span class="route-status-text">Loading route…</span>
+      <button class="route-status-close" id="routeStatusClose" type="button">×</button>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="recenterBtn" disabled><span>📍</span> Re-center</button>
+    <button id="viewToggleBtn" class="secondary"><span>🗺️</span> View: 3D</button>
+    <button id="followBtn" class="secondary" disabled><span>🧭</span> Follow: Off</button>
+  </div>
+
+  <script>
+    /***************
+     * CONFIG
+     ***************/
+    const MAPBOX_TOKEN = 'pk.eyJ1IjoiamxvZ2FuM28xMyIsImEiOiJjbWlpNzZuOHYwYnIzM2Nwd2xobTlkZzRyIn0.RiVncFBsWabC5_qCRvEqXg';
+    const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
+
+    const HUB_ORIGIN = { lat: 36.07744, lng: -115.23981 };
+
+    // Off-route tuning
+    const OFF_ROUTE_THRESHOLD_M = 75;
+    const OFF_ROUTE_HYSTERESIS_M = 20;
+    const OFF_ROUTE_MIN_SPEED_MPS = 2.0;
+
+    // Route line visuals (Option B)
+    const ROUTE_STYLE_ON = {
+      color: '#22c55e',          // green
+      dasharray: null            // solid
+    };
+    const ROUTE_STYLE_OFF = {
+      color: '#ef4444',          // red
+      dasharray: [1.5, 1.5]      // dashed
+    };
+
+    /***************
+     * DOM
+     ***************/
+    const mapDotEl = document.getElementById('mapDot');
+    const mapTextEl = document.getElementById('mapText');
+    const gpsDotEl = document.getElementById('gpsDot');
+    const gpsTextEl = document.getElementById('gpsText');
+    const routeDotEl = document.getElementById('routeDot');
+    const routeTextEl = document.getElementById('routeText');
+
+    const errorBanner = document.getElementById('errorBanner');
+    const errorText = document.getElementById('errorText');
+
+    const recenterBtn = document.getElementById('recenterBtn');
+    const viewToggleBtn = document.getElementById('viewToggleBtn');
+    const followBtn = document.getElementById('followBtn');
+
+    const btnToggleDir = document.getElementById('btnToggleDir');
+    const routeStatus = document.getElementById('routeStatus');
+    const routeStatusClose = document.getElementById('routeStatusClose');
+
+    /***************
+     * STATE
+     ***************/
+    let map;
+    let is3DView = true;
+
+    let currentLocation = null;
+    let currentDir = 'outbound'; // outbound | return
+
+    let destinationMarker = null;
+    let hubMarker = null;
+    let userMarker = null;
+
+    // GPS
+    let watchId = null;
+    let followMode = false;
+    let lastHeading = null;
+    let lastUserLngLat = null;
+    let lastSpeedMps = null;
+
+    // Off-route state
+    let lastRouteFeature = null;
+    let isOffRoute = false;
+
+    // Route layer IDs (single source of truth)
+    const ROUTE_SOURCE_ID = 'routeLine';
+    const ROUTE_LAYER_ID  = 'routeLineLayer';
+
+    // Disable route buttons until loaded
+    btnToggleDir.disabled = true;
+
+    /***************
+     * HELPERS UI
+     ***************/
+    function setDot(dotEl, okState) {
+      dotEl.classList.remove('ok', 'bad');
+      if (okState === true) dotEl.classList.add('ok');
+      if (okState === false) dotEl.classList.add('bad');
+    }
+
+    function showError(message) {
+      errorText.textContent = message;
+      errorBanner.style.display = 'block';
+    }
+
+    function clearError() {
+      errorBanner.style.display = 'none';
+      errorText.textContent = '';
+    }
+
+    function setRouteStatus(okState, text){
+      setDot(routeDotEl, okState);
+      routeTextEl.textContent = text;
+    }
+
+    let routeStatusTimer = null;
+
+    function showRouteStatus(text, autoHide = true){
+      const textEl = routeStatus.querySelector('.route-status-text');
+      if(textEl) textEl.textContent = text;
+      routeStatus.classList.remove('hidden');
+      
+      // Clear any existing timer
+      if(routeStatusTimer) clearTimeout(routeStatusTimer);
+      
+      // Auto-hide after 3 seconds if enabled
+      if(autoHide){
+        routeStatusTimer = setTimeout(() => {
+          routeStatus.classList.add('hidden');
+        }, 3000);
+      }
+    }
+
+    function hideRouteStatus(){
+      routeStatus.classList.add('hidden');
+      if(routeStatusTimer) clearTimeout(routeStatusTimer);
+    }
+
+    function getParams(){
+      const p = new URLSearchParams(window.location.search);
+      return {
+        event: p.get('event') || 'RaidersGames',
+        zone: p.get('zone') || '',
+        locationIndex: parseInt(p.get('locationIndex') || '0', 10),
+        dir: (p.get('dir') || 'outbound').toLowerCase()
+      };
+    }
+
+    function syncButtons(){
+      btnToggleDir.textContent = (currentDir === 'outbound') ? 'Return Route' : 'Outbound Route';
+    }
+
+    function getGeometryForDir(){
+      if(!currentLocation) return null;
+      return (currentDir === 'return') ? currentLocation.returnRouteGeometry : currentLocation.routeGeometry;
+    }
+
+    function getGmapsUrlForDir(){
+      if(!currentLocation) return '';
+      return (currentDir === 'return') ? (currentLocation.directionsReturn || '') : (currentLocation.directions || '');
+    }
+
+    function updateUrlDirParam(dir){
+      try {
+        const url = new URL(window.location.href);
+        url.searchParams.set('dir', dir);
+        window.history.replaceState({}, '', url.toString());
+      } catch (e) {
+        console.warn('replaceState failed', e);
+      }
+    }
+
+    function normalizeToFeature(geo){
+      if(!geo) return null;
+      if(geo.type === 'Feature') return geo;
+      if(geo.type === 'FeatureCollection') return geo.features?.[0] || null;
+      if(geo.type === 'LineString') return { type:'Feature', properties:{}, geometry: geo };
+      return null;
+    }
+
+    function coordsToBounds(coords){
+      if(!coords || coords.length < 2) return null;
+      return coords.reduce((b, c) => b.extend(c), new mapboxgl.LngLatBounds(coords[0], coords[0]));
+    }
+
+    function setDestinationMarkerFromGeometry(feature){
+      if(!feature?.geometry?.coordinates?.length) return;
+
+      const coords = feature.geometry.coordinates;
+      const end = coords[coords.length - 1];
+
+      if(!Array.isArray(end) || end.length < 2) return;
+
+      const lng = Number(end[0]);
+      const lat = Number(end[1]);
+
+      if(!Number.isFinite(lng) || !Number.isFinite(lat)) return;
+
+      // Big, unmistakable destination marker
+      const el = document.createElement('div');
+      el.style.width = '18px';
+      el.style.height = '18px';
+      el.style.borderRadius = '999px';
+      el.style.background = '#f59e0b';
+      el.style.border = '3px solid #fff';
+      el.style.boxShadow = '0 0 0 4px rgba(245,158,11,0.25)';
+      el.style.zIndex = '5';
+
+      if(!destinationMarker){
+        destinationMarker = new mapboxgl.Marker({ element: el, anchor: 'center' })
+          .setLngLat([lng, lat])
+          .addTo(map);
+      } else {
+        destinationMarker.setLngLat([lng, lat]);
+        destinationMarker.getElement().style.zIndex = '5';
+      }
+
+      recenterBtn.disabled = false;
+    }
+
+    /*****************
+     * ROUTE STYLE (Option B)
+     ***************/
+    function applyRouteVisualStyle(isOff){
+      if(!map || !map.getLayer(ROUTE_LAYER_ID)) return;
+
+      const style = isOff ? ROUTE_STYLE_OFF : ROUTE_STYLE_ON;
+
+      map.setPaintProperty(ROUTE_LAYER_ID, 'line-color', style.color);
+
+      // line-dasharray only works on line layers; set to null -> solid
+      if(style.dasharray){
+        map.setPaintProperty(ROUTE_LAYER_ID, 'line-dasharray', style.dasharray);
+      } else {
+        // remove dasharray by setting it to [1,0] (solid) - Mapbox doesn't accept null consistently across versions
+        map.setPaintProperty(ROUTE_LAYER_ID, 'line-dasharray', [1, 0]);
+      }
+    }
+
+    /***************
+     * GEO MATH: point-to-polyline distance (meters)
+     ***************/
+    function degToRad(d){ return d * Math.PI / 180; }
+
+    function projectMeters(lng, lat, refLat){
+      const R = 6371000;
+      const x = degToRad(lng) * Math.cos(degToRad(refLat)) * R;
+      const y = degToRad(lat) * R;
+      return { x, y };
+    }
+
+    function distPointToSegmentMeters(p, a, b){
+      const abx = b.x - a.x;
+      const aby = b.y - a.y;
+      const apx = p.x - a.x;
+      const apy = p.y - a.y;
+
+      const ab2 = abx*abx + aby*aby;
+      if (ab2 === 0) {
+        const dx = p.x - a.x, dy = p.y - a.y;
+        return Math.sqrt(dx*dx + dy*dy);
+      }
+
+      let t = (apx*abx + apy*aby) / ab2;
+      t = Math.max(0, Math.min(1, t));
+
+      const cx = a.x + t * abx;
+      const cy = a.y + t * aby;
+      const dx = p.x - cx, dy = p.y - cy;
+      return Math.sqrt(dx*dx + dy*dy);
+    }
+
+    function distancePointToLineStringMeters(userLngLat, coords){
+      if(!coords || coords.length < 2) return null;
+
+      const userLng = userLngLat[0];
+      const userLat = userLngLat[1];
+      const refLat = userLat;
+
+      const p = projectMeters(userLng, userLat, refLat);
+
+      let min = Infinity;
+      for(let i=0; i<coords.length-1; i++){
+        const a = projectMeters(coords[i][0], coords[i][1], refLat);
+        const b = projectMeters(coords[i+1][0], coords[i+1][1], refLat);
+        const d = distPointToSegmentMeters(p, a, b);
+        if(d < min) min = d;
+      }
+      return min;
+    }
+
+    function evaluateOffRoute(){
+      if(!lastUserLngLat) return;
+      if(!lastRouteFeature?.geometry?.coordinates?.length) return;
+
+      if(typeof lastSpeedMps === 'number' && lastSpeedMps < OFF_ROUTE_MIN_SPEED_MPS){
+        return;
+      }
+
+      const coords = lastRouteFeature.geometry.coordinates;
+      const d = distancePointToLineStringMeters(lastUserLngLat, coords);
+      if(d === null) return;
+
+      const onThreshold = OFF_ROUTE_THRESHOLD_M;
+      const backOnThreshold = Math.max(0, OFF_ROUTE_THRESHOLD_M - OFF_ROUTE_HYSTERESIS_M);
+
+      const wasOff = isOffRoute;
+
+      if(!isOffRoute && d >= onThreshold){
+        isOffRoute = true;
+      } else if(isOffRoute && d <= backOnThreshold){
+        isOffRoute = false;
+      }
+
+      if(isOffRoute){
+        setRouteStatus(false, `Route: Off route (${Math.round(d)}m)`);
+      } else {
+        setRouteStatus(true, `Route: On route`);
+      }
+
+      // Option B: visually change the route line only when state flips
+      if(wasOff !== isOffRoute){
+
+      // Toggle arrow layer visibility too
+      if(map.getLayer('routeArrowsLayerOn')){
+        map.setLayoutProperty('routeArrowsLayerOn', 'visibility', isOffRoute ? 'none' : 'visible');
+      }
+      if(map.getLayer('routeArrowsLayerOff')){
+        map.setLayoutProperty('routeArrowsLayerOff', 'visibility', isOffRoute ? 'visible' : 'none');
+      }
+
+        applyRouteVisualStyle(isOffRoute);
+      }
+    }
+
+
+    /***************
+     * ROUTE ARROWS (single-add + visibility toggle)
+     ***************/
+    const ROUTE_ARROW_IMAGE_ID = 'lv-route-arrow-v3';
+    const ROUTE_ARROWS_ON_ID   = 'routeArrowsLayerOn';
+    const ROUTE_ARROWS_OFF_ID  = 'routeArrowsLayerOff';
+
+    let routeArrowImageAdded = false;
+    let routeArrowImagePromise = null;
+
+    async function ensureRouteArrowImage(){
+      if(!map) return;
+
+      // If already present in current style, mark and return
+      if(map.hasImage(ROUTE_ARROW_IMAGE_ID)){
+        routeArrowImageAdded = true;
+        return;
+      }
+      // If we've already attempted during this style lifecycle, reuse the promise
+      if(routeArrowImagePromise) return routeArrowImagePromise;
+
+      // Embedded 48x48 PNG (simple arrow). No S3 upload needed.
+      const ARROW_DATA_URI =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAABIklEQVR4nO2ZUQ7CMAxDW8Q92dHMScvP0dH0JHqgqgSVk6lA4y2J0lR7g0a9xH6g0tq6f3cEoKJp8wqgqkq5f+gE1l3y0gqgGk1i7k5z0cZtZlW1n8m7k3f8m3bYj2d2oO3m0Xk8m4m0w2oQxE0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXwGmY0m2oQzI0m9mQyXw==';
+
+      routeArrowImagePromise = new Promise((resolve) => {
+        map.loadImage(ARROW_DATA_URI, (err, img) => {
+          if(err || !img){
+            console.warn('Arrow image failed to load:', err);
+            routeArrowImageAdded = false;
+            routeArrowImagePromise = null;
+            resolve();
+            return;
+          }
+          try{
+            if(!map.hasImage(ROUTE_ARROW_IMAGE_ID)){
+              map.addImage(ROUTE_ARROW_IMAGE_ID, img, { sdf: true });
+            }
+            routeArrowImageAdded = true;
+          } catch(e){
+            // If Mapbox throws because it already exists, just mark as added
+            console.warn('Arrow image add skipped:', e);
+            routeArrowImageAdded = map.hasImage(ROUTE_ARROW_IMAGE_ID);
+          }
+          resolve();
+        });
+      });
+
+      return routeArrowImagePromise;
+    }
+
+    function ensureArrowLayersExist(){
+      if(!map) return;
+      if(!map.getSource(ROUTE_SOURCE_ID)) return;
+
+      ensureRouteArrowImage();
+
+      if(!map.getLayer(ROUTE_ARROWS_ON_ID)){
+        map.addLayer({
+          id: ROUTE_ARROWS_ON_ID,
+          type: 'symbol',
+          source: ROUTE_SOURCE_ID,
+          layout: {
+            'symbol-placement': 'line',
+            'symbol-spacing': 120,
+            'icon-image': ROUTE_ARROW_IMAGE_ID,
+            'icon-size': 1.05,
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+            'icon-keep-upright': false,
+            'icon-pitch-alignment': 'map',
+            'icon-rotation-alignment': 'map',
+            'visibility': 'visible'
+          },
+          paint: {
+            'icon-color': '#22c55e',
+            'icon-opacity': 0.98,
+            'icon-halo-color': 'rgba(0,0,0,0.55)',
+            'icon-halo-width': 2
+          }
+        });
+      }
+
+      if(!map.getLayer(ROUTE_ARROWS_OFF_ID)){
+        map.addLayer({
+          id: ROUTE_ARROWS_OFF_ID,
+          type: 'symbol',
+          source: ROUTE_SOURCE_ID,
+          layout: {
+            'symbol-placement': 'line',
+            'symbol-spacing': 120,
+            'icon-image': ROUTE_ARROW_IMAGE_ID,
+            'icon-size': 1.05,
+            'icon-allow-overlap': true,
+            'icon-ignore-placement': true,
+            'icon-keep-upright': false,
+            'icon-pitch-alignment': 'map',
+            'icon-rotation-alignment': 'map',
+            'visibility': 'none'
+          },
+          paint: {
+            'icon-color': '#ef4444',
+            'icon-opacity': 0.98,
+            'icon-halo-color': 'rgba(0,0,0,0.55)',
+            'icon-halo-width': 2
+          }
+        });
+      }
+    }
+
+    function setArrowVisibility(offRoute){
+      if(!map) return;
+      if(map.getLayer(ROUTE_ARROWS_ON_ID)){
+        map.setLayoutProperty(ROUTE_ARROWS_ON_ID, 'visibility', offRoute ? 'none' : 'visible');
+      }
+      if(map.getLayer(ROUTE_ARROWS_OFF_ID)){
+        map.setLayoutProperty(ROUTE_ARROWS_OFF_ID, 'visibility', offRoute ? 'visible' : 'none');
+      }
+    }
+
+
+    /***************
+     * ROUTE RENDERING
+     ***************/
+    function renderRouteOnMap(){
+      const feature = normalizeToFeature(getGeometryForDir());
+
+      if(!feature){
+        lastRouteFeature = null;
+        setRouteStatus(null, 'Route: none');
+        showRouteStatus(`No ${currentDir} in-app route line available.`, false);
+        return false;
+      }
+
+      if(map.getSource(ROUTE_SOURCE_ID)){
+        map.getSource(ROUTE_SOURCE_ID).setData(feature);
+      } else {
+        map.addSource(ROUTE_SOURCE_ID, { type: 'geojson', data: feature });
+        map.addLayer({
+          id: ROUTE_LAYER_ID,
+          type: 'line',
+          source: ROUTE_SOURCE_ID,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: {
+            'line-width': 6,
+            'line-opacity': 0.9,
+            'line-color': ROUTE_STYLE_ON.color,
+            'line-dasharray': [1, 0]
+          }
+        });
+        ensureArrowLayersExist();
+        setArrowVisibility(false);
+      }
+
+      lastRouteFeature = feature;
+      isOffRoute = false;
+      setRouteStatus(true, 'Route: On route');
+      applyRouteVisualStyle(false);
+
+      const bounds = coordsToBounds(feature.geometry.coordinates);
+      if(bounds){
+        map.fitBounds(bounds, { padding: 70, duration: 500 });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
+
+      setDestinationMarkerFromGeometry(feature);
+      document.getElementById('headerDestination').textContent = currentLocation?.label || 'Navigation';
+      showRouteStatus(`Showing ${currentDir} route: ${currentLocation?.label || ''}`, true);
+
+      evaluateOffRoute();
+      return true;
+    }
+
+    /***************
+     * API LOAD
+     ***************/
+    async function loadLocationFromApi(){
+      const { event, zone, locationIndex, dir } = getParams();
+      currentDir = (dir === 'return') ? 'return' : 'outbound';
+
+      showRouteStatus(`Loading ${currentDir} route…`, false);
+
+      const resp = await fetch(`${API_BASE_URL}?event=${encodeURIComponent(event)}&zone=${encodeURIComponent(zone)}`);
+      if(!resp.ok) throw new Error(`Destinations API error: ${resp.status}`);
+      const data = await resp.json();
+
+      if(!data.locations || !Array.isArray(data.locations)) throw new Error('Destinations API response missing locations[]');
+      if(!data.locations[locationIndex]) throw new Error(`No location at index ${locationIndex}. locations length=${data.locations.length}`);
+
+      currentLocation = data.locations[locationIndex];
+    }
+
+    /***************
+     * MAP INIT
+     ***************/
+    function initMap(){
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/standard',
+        center: [HUB_ORIGIN.lng, HUB_ORIGIN.lat],
+        zoom: 13,
+        pitch: 60,
+        bearing: -20
+      });
+
+      map.on('error', (e) => {
+        console.error('Mapbox error', e?.error || e);
+        setDot(mapDotEl, false);
+        mapTextEl.textContent = 'Map error';
+        showError('Map failed to load. Check network or Mapbox token.');
+      });
+
+  map.on('style.load', async () => {
+        // Images are cleared on style reloads
+        routeArrowImageAdded = false;
+        routeArrowImagePromise = null;
+        await ensureRouteArrowImage();
+      });
+
+  map.on('load', async () => {
+        clearError();
+        setDot(mapDotEl, true);
+        mapTextEl.textContent = 'Map loaded';
+
+        hubMarker = new mapboxgl.Marker({ color: '#22c55e' })
+          .setLngLat([HUB_ORIGIN.lng, HUB_ORIGIN.lat])
+          .addTo(map);
+
+        try{
+          await loadLocationFromApi();
+          syncButtons();
+
+          btnToggleDir.disabled = false;
+
+          renderRouteOnMap();
+          startGPS();
+
+        } catch(err){
+          console.error(err);
+          showRouteStatus(`Error loading route: ${err.message}`, false);
+          showError(`Route load error: ${err.message}`);
+          startGPS();
+        }
+      });
+    }
+
+    /***************
+     * GPS FILTER (smooth)
+     ***************/
+    class OneDimKalman {
+      constructor({ q = 0.000001, r = 0.0001, p = 1, x = 0 } = {}) {
+        this.q = q; this.r = r; this.p = p; this.x = x; this.k = 0;
+      }
+      filter(measurement) {
+        this.p = this.p + this.q;
+        this.k = this.p / (this.p + this.r);
+        this.x = this.x + this.k * (measurement - this.x);
+        this.p = (1 - this.k) * this.p;
+        return this.x;
+      }
+    }
+
+    const kalmanLat = new OneDimKalman({ q: 0.00001, r: 0.0005, p: 1, x: HUB_ORIGIN.lat });
+    const kalmanLng = new OneDimKalman({ q: 0.00001, r: 0.0005, p: 1, x: HUB_ORIGIN.lng });
+
+    function setGPSStatus(ok, message){
+      setDot(gpsDotEl, ok);
+      gpsTextEl.textContent = message;
+    }
+
+    function handlePositionUpdate(pos){
+      const { latitude, longitude, heading, speed } = pos.coords;
+
+      const smoothLat = kalmanLat.filter(latitude);
+      const smoothLng = kalmanLng.filter(longitude);
+      lastUserLngLat = [smoothLng, smoothLat];
+
+      lastSpeedMps = (typeof speed === 'number') ? speed : null;
+
+      if(typeof heading === 'number' && !Number.isNaN(heading)){
+        lastHeading = heading;
+      }
+
+      if(!userMarker){
+        userMarker = new mapboxgl.Marker({ color: '#3b82f6' })
+          .setLngLat([smoothLng, smoothLat])
+          .addTo(map);
+        recenterBtn.disabled = false;
+        followBtn.disabled = false;
+      } else {
+        userMarker.setLngLat([smoothLng, smoothLat]);
+      }
+
+      setGPSStatus(true, 'GPS: active');
+
+      evaluateOffRoute();
+
+      if(followMode){
+        map.easeTo({
+          center: [smoothLng, smoothLat],
+          bearing: (typeof lastHeading === 'number') ? lastHeading : map.getBearing(),
+          pitch: is3DView ? 60 : 0,
+          duration: 900
+        });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
+    }
+
+    function handlePositionError(err){
+      console.error('GPS error', err);
+      if(err.code === 1) setGPSStatus(false, 'GPS: permission denied');
+      else if(err.code === 2) setGPSStatus(false, 'GPS: position unavailable');
+      else if(err.code === 3) setGPSStatus(false, 'GPS: timeout');
+      else setGPSStatus(false, 'GPS: error');
+    }
+
+    function startGPS(){
+      if(!('geolocation' in navigator)){
+        setGPSStatus(false, 'GPS: not supported');
+        return;
+      }
+      if(watchId !== null) return;
+
+      watchId = navigator.geolocation.watchPosition(
+        handlePositionUpdate,
+        handlePositionError,
+        { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
+      );
+    }
+
+    /***************
+     * CONTROLS
+     ***************/
+    recenterBtn.addEventListener('click', () => {
+      if(lastUserLngLat){
+        map.easeTo({ center: lastUserLngLat, zoom: Math.max(map.getZoom(), 14), duration: 600 });
+        return;
+      }
+      const feature = normalizeToFeature(getGeometryForDir());
+      if(feature?.geometry?.coordinates?.length){
+        const bounds = coordsToBounds(feature.geometry.coordinates);
+        if(bounds) map.fitBounds(bounds, { padding: 70, duration: 500 });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
+    });
+
+    viewToggleBtn.addEventListener('click', () => {
+      is3DView = !is3DView;
+      viewToggleBtn.textContent = is3DView ? '🗺️ View: 3D' : '🗺️ View: 2D';
+      map.easeTo({ pitch: is3DView ? 60 : 0, duration: 500 });
+    });
+
+    followBtn.addEventListener('click', () => {
+      followMode = !followMode;
+      followBtn.textContent = followMode ? '🧭 Follow: On' : '🧭 Follow: Off';
+      if(followMode && lastUserLngLat){
+        map.easeTo({ center: lastUserLngLat, pitch: is3DView ? 60 : 0, duration: 500 });
+        ensureArrowLayersExist();
+        setArrowVisibility(isOffRoute);
+      }
+    });
+
+    btnToggleDir.addEventListener('click', () => {
+      if (!currentLocation) {
+        showRouteStatus('Loading route…', false);
+        return;
+      }
+      currentDir = (currentDir === 'outbound') ? 'return' : 'outbound';
+      updateUrlDirParam(currentDir);
+      syncButtons();
+      renderRouteOnMap();
+    });
+
+
+    // Route status close button
+    routeStatusClose.addEventListener('click', () => {
+      hideRouteStatus();
+    });
+
+    /***************
+     * SERVICE WORKER
+     ***************/
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .catch((e) => console.warn('SW register failed', e));
+      });
+    }
+
+    /***************
+     * BOOT
+     ***************/
+    initMap();
+  </script>
+</body>
+</html>
