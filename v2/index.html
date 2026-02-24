@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="apple-touch-icon" href="/icons/apple-touch-icon.png">
     <title>LV Transportation - Driving Form</title>
     <style>
         body {
@@ -210,7 +211,7 @@
             <h3 id="modalTitle">Parking Location</h3>
             <img id="modalImage" src="" alt="Parking location">
             <div class="parking-info">
-                <p><strong>📍 Follow the arrow in the image to find your parking spot</strong></p>
+                <p id="parkingInstructionText"><strong>📍 Follow the arrow in the image to find your parking spot</strong></p>
                 <p>Click "Navigate to Destination" to get turn-by-turn directions</p>
             </div>
         </div>
@@ -325,7 +326,12 @@
                             directions: location.directions,
                             directionsReturn: location.directionsReturn,
                             label: location.label,
-                            parkingPhoto: location.parkingPhoto || ''
+                            parkingPhoto: location.parkingPhoto || '',
+							event: currentEvent,
+							zone: selectedZone,
+							locationIndex: index,
+							hasRouteGeometry: !!location.routeGeometry,
+							hasReturnRouteGeometry: !!location.returnRouteGeometry
                         };
                     });
                     
@@ -385,6 +391,17 @@
                 modalImage.src = fullPhotoUrl;
                 modalImage.alt = `Parking location for ${location.label}`;
                 
+                // Update parking instruction text based on location
+                const parkingInstructionText = document.getElementById('parkingInstructionText');
+                const locationLabel = location.label.toLowerCase();
+                
+                // Check if this is Caesar's/Harrah's location
+                if (locationLabel.includes('caesar') || locationLabel.includes('harrah')) {
+                    parkingInstructionText.innerHTML = '<strong>📍 Proceed inside garage to Nobu Rideshare Valet area</strong>';
+                } else {
+                    parkingInstructionText.innerHTML = '<strong>📍 Follow the arrow in the image to find your parking spot</strong>';
+                }
+                
                 // Add error handling for broken images
                 modalImage.onerror = function() {
                     console.log(`Failed to load parking photo: ${fullPhotoUrl}`);
@@ -407,16 +424,17 @@
                 return;
             }
             
-            // Get the outbound directions URL and redirect
-            const directionsUrl = currentLocations[locationIndex].directions;
-            
-            if (!directionsUrl) {
-                showError('No route available for this location.');
-                return;
-            }
-            
-            // Open Google Maps directions in new tab/window
-            window.open(directionsUrl, '_blank');
+			const loc = currentLocations[locationIndex];
+			
+			//Open the PWA Navigation Map (official route line + GPS follow)
+			const navUrl =
+				`/nav.html?event=${encodeURIComponent(loc.event)}` +
+				`&zone=${encodeURIComponent(loc.zone)}` +
+				`&locationIndex=${encodeURIComponent(loc.locationIndex)}` +
+				`&dir=outbound`;
+			
+			console.log("NAV URL: ", navUrl);
+			window.location.href = navUrl;
         });
 
         // Handle "Return to Hub" button click
@@ -428,16 +446,16 @@
                 return;
             }
             
-            // Get the return directions URL and redirect
-            const returnUrl = currentLocations[locationIndex].directionsReturn;
-            
-            if (!returnUrl) {
-                showError('No return route available for this location.');
-                return;
-            }
-            
-            // Open Google Maps return directions in new tab/window
-            window.open(returnUrl, '_blank');
+			const loc = currentLocations[locationIndex];
+			
+			const navUrl = 
+				`/nav.html?event=${encodeURIComponent(loc.event)}` +
+				`&zone=${encodeURIComponent(loc.zone)}` +
+				`&locationIndex=${encodeURIComponent(loc.locationIndex)}` +
+				`&dir=return`;
+			
+			console.log("NAV URL: ", navUrl);
+			window.location.href = navUrl;
         });
 
         function showLoading(message) {
