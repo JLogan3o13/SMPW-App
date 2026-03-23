@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Tracking - Transportation Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            background-color: #f0f0f0;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        .stats-bar {
+            display: flex;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            gap: 30px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .table-section {
+            padding: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .table-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-badge {
+            background-color: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: #f8f9fa;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            padding-right: 24px;
+        }
+
+        th.sortable:hover {
+            background-color: #e9ecef;
+        }
+
+        th.sortable::after {
+            content: '⇅';
+            position: absolute;
+            right: 8px;
+            opacity: 0.3;
+            font-size: 12px;
+        }
+
+        th.sortable.asc::after {
+            content: '▲';
+            opacity: 1;
+        }
+
+        th.sortable.desc::after {
+            content: '▼';
+            opacity: 1;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            color: #333;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .editable {
+            cursor: pointer;
+            min-height: 20px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+        .editable:hover {
+            background-color: #e3f2fd;
+        }
+
+        .editable.editing {
+            background-color: white;
+            border: 2px solid #667eea;
+        }
+
+        .editable input,
+        .editable select {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            font-family: inherit;
+            outline: none;
+            padding: 2px;
+        }
+
+        .non-editable {
+            color: #666;
+            padding: 4px 8px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .status-available {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status-in-transit {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .status-dropped-off {
+            background-color: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-picked-up {
+            background-color: #e2e3e5;
+            color: #383d41;
+        }
+
+        .status-assigned {
+            background-color: #cfe2ff;
+            color: #084298;
+        }
+
+        .status-checked-out {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .type-normal {
+            background-color: #e7f3ff;
+            color: #0066cc;
+        }
+
+        .type-reserved {
+            background-color: #fff4e6;
+            color: #cc6600;
+        }
+
+        .type-staged {
+            background-color: #f0e6ff;
+            color: #6600cc;
+        }
+
+        .empty-cell {
+            color: #999;
+            font-style: italic;
+        }
+
+        .zone-cell {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .zone-capacity-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+
+        .zone-capacity-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .zone-capacity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+        }
+
+        .zone-capacity-item {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.2s;
+        }
+
+        .zone-capacity-item:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .zone-capacity-zone {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .zone-capacity-value {
+            font-size: 24px;
+            color: white;
+            font-weight: 700;
+        }
+
+        .zone-capacity-label {
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 2px;
+        }
+
+        .zone-capacity-empty {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            font-style: italic;
+        }
+
+        .last-updated {
+            text-align: center;
+            padding: 12px;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .stats-bar {
+                flex-wrap: wrap;
+            }
+            
+            .table-section {
+                padding: 15px;
+            }
+
+            th, td {
+                padding: 8px;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚗 Transportation Hub - Driver Tracking</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="goToZoneSummary()">📊 Zone Summary</button>
+                <button class="btn btn-primary" onclick="refreshData()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-label">Assigned Capacity</span>
+                <span class="stat-value" id="assigned-drivers">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Active Drivers</span>
+                <span class="stat-value" id="active-drivers">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Available</span>
+                <span class="stat-value" id="available-drivers">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">In Transit</span>
+                <span class="stat-value" id="in-transit-drivers">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Total Capacity</span>
+                <span class="stat-value" id="total-capacity">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Reserved Capacity</span>
+                <span class="stat-value" id="reserved-capacity">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Master List</span>
+                <span class="stat-value" id="master-list-count">0</span>
+            </div>
+        </div>
+
+        <!-- Assigned Drivers Table -->
+        <div class="table-section">
+            <div class="section-header">
+                <div class="section-title">
+                    📌 Assigned Drivers
+                    <span class="section-badge" id="assigned-count">0</span>
+                </div>
+            </div>
+            
+            <!-- Zone Capacity Counter -->
+            <div class="zone-capacity-container" id="zone-capacity-container">
+                <div class="zone-capacity-title">🎯 Zone Assigned Capacity</div>
+                <div class="zone-capacity-grid" id="zone-capacity-grid">
+                    <!-- Zone capacity items will be populated here -->
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <table id="assigned-table">
+                    <thead>
+                        <tr>
+                            <th class="sortable" onclick="sortTable('assigned', 'name')">Driver Name</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'carNumber')">Car #</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'make')">Make</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'model')">Model</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'seatCapacity')">Seat Capacity</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'passengers')"># of Passengers</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'zone')">Zone</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'driverType')">Driver Type</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'status')">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assigned-tbody">
+                        <!-- Assigned drivers will be populated here -->
+                    </tbody>
+                </table>
+                <div id="assigned-empty" class="empty-state" style="display: none;">
+                    No assigned drivers. Set driver status to "Assigned" to pre-assign them to a location.
+                </div>
+            </div>
+        </div>
+
+        <!-- Active Drivers Table -->
+        <div class="table-section">
+            <div class="section-header">
+                <div class="section-title">
+                    ⚡ Active Drivers
+                    <span class="section-badge" id="active-count">0</span>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="active-table">
+                    <thead>
+                        <tr>
+                            <th class="sortable" onclick="sortTable('active', 'name')">Driver Name</th>
+                            <th class="sortable" onclick="sortTable('active', 'carNumber')">Car #</th>
+                            <th class="sortable" onclick="sortTable('active', 'make')">Make</th>
+                            <th class="sortable" onclick="sortTable('active', 'model')">Model</th>
+                            <th class="sortable" onclick="sortTable('active', 'seatCapacity')">Seat Capacity</th>
+                            <th class="sortable" onclick="sortTable('active', 'passengers')"># of Passengers</th>
+                            <th class="sortable" onclick="sortTable('active', 'zone')">Zone</th>
+                            <th class="sortable" onclick="sortTable('active', 'driverType')">Driver Type</th>
+                            <th class="sortable" onclick="sortTable('active', 'status')">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="active-tbody">
+                        <!-- Active drivers will be populated here -->
+                    </tbody>
+                </table>
+                <div id="active-empty" class="empty-state" style="display: none;">
+                    No active drivers. Assign car numbers or change status to "Available" to activate drivers from the master list below.
+                </div>
+            </div>
+        </div>
+
+        <!-- Master Driver List Table -->
+        <div class="table-section">
+            <div class="section-header">
+                <div class="section-title">
+                    📋 Master Driver List (Checked Out)
+                    <span class="section-badge" id="master-count">0</span>
+                </div>
+            </div>
+            <div class="table-container">
+                <table id="master-table">
+                    <thead>
+                        <tr>
+                            <th>Driver Name</th>
+                            <th>Car #</th>
+                            <th>Make</th>
+                            <th>Model</th>
+                            <th>Seat Capacity</th>
+                            <th>Driver Type</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="master-tbody">
+                        <!-- Master list drivers will be populated here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="last-updated">
+            Last updated: <span id="last-updated-time">--</span>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'https://x6wxqzeqw9.execute-api.us-west-1.amazonaws.com/prod';
+        
+        // FIXED: Use local date instead of UTC to avoid timezone issues
+        const getLocalDate = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        const EVENT_DATE = getLocalDate(); // Today's date in local time (YYYY-MM-DD format)
+
+        let drivers = [];
+        let editingCell = null;
+        let pollingInterval = null;
+        
+        // Sorting state
+        let sortState = {
+            assigned: { column: 'carNumber', direction: 'asc' },
+            active: { column: 'carNumber', direction: 'asc' }
+        };
+
+        // Fetch data from API
+        async function fetchData() {
+            // Don't fetch if user is actively editing
+            if (editingCell) {
+                console.log('Skipping refresh - user is editing');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/operations?eventDate=${EVENT_DATE}`);
+                const data = await response.json();
+                drivers = data;
+                renderTables();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Update driver in database
+        async function updateDriver(driverId, field, value) {
+            try {
+                const updateData = {
+                    driverId: driverId,
+                    eventDate: EVENT_DATE,
+                    [field]: value
+                };
+
+                const response = await fetch(`${API_BASE_URL}/operations`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updateData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to update driver');
+                }
+
+                console.log(`Updated driver ${driverId}, field ${field} to ${value}`);
+            } catch (error) {
+                console.error('Error updating driver:', error);
+                alert('Failed to update driver. Please try again.');
+            }
+        }
+
+        function sortTable(tableType, column) {
+            // Update sort state
+            if (sortState[tableType].column === column) {
+                // Toggle direction if same column
+                sortState[tableType].direction = sortState[tableType].direction === 'asc' ? 'desc' : 'asc';
+            } else {
+                // New column, default to ascending
+                sortState[tableType].column = column;
+                sortState[tableType].direction = 'asc';
+            }
+            
+            // Re-render tables with new sort
+            renderTables();
+        }
+
+        function compareValues(a, b, column, direction) {
+            let valueA = a[column];
+            let valueB = b[column];
+            
+            // Handle numeric columns
+            if (column === 'carNumber' || column === 'seatCapacity' || column === 'passengers') {
+                valueA = parseInt(valueA) || 0;
+                valueB = parseInt(valueB) || 0;
+                return direction === 'asc' ? valueA - valueB : valueB - valueA;
+            }
+            
+            // Handle string columns
+            valueA = (valueA || '').toString().toLowerCase();
+            valueB = (valueB || '').toString().toLowerCase();
+            
+            if (direction === 'asc') {
+                return valueA.localeCompare(valueB);
+            } else {
+                return valueB.localeCompare(valueA);
+            }
+        }
+
+        function updateSortIndicators() {
+            // Update assigned table headers
+            const assignedHeaders = document.querySelectorAll('#assigned-table th.sortable');
+            assignedHeaders.forEach(th => {
+                th.classList.remove('asc', 'desc');
+            });
+            const assignedSortHeader = Array.from(assignedHeaders).find(th => 
+                th.textContent.toLowerCase().includes(getColumnLabel(sortState.assigned.column).toLowerCase())
+            );
+            if (assignedSortHeader) {
+                assignedSortHeader.classList.add(sortState.assigned.direction);
+            }
+            
+            // Update active table headers
+            const activeHeaders = document.querySelectorAll('#active-table th.sortable');
+            activeHeaders.forEach(th => {
+                th.classList.remove('asc', 'desc');
+            });
+            const activeSortHeader = Array.from(activeHeaders).find(th => 
+                th.textContent.toLowerCase().includes(getColumnLabel(sortState.active.column).toLowerCase())
+            );
+            if (activeSortHeader) {
+                activeSortHeader.classList.add(sortState.active.direction);
+            }
+        }
+
+        function getColumnLabel(column) {
+            const labels = {
+                'name': 'driver name',
+                'carNumber': 'car',
+                'make': 'make',
+                'model': 'model',
+                'seatCapacity': 'seat capacity',
+                'passengers': 'passengers',
+                'zone': 'zone',
+                'driverType': 'driver type',
+                'status': 'status'
+            };
+            return labels[column] || column;
+        }
+
+        function renderTables() {
+            const assignedTbody = document.getElementById('assigned-tbody');
+            const activeTbody = document.getElementById('active-tbody');
+            const masterTbody = document.getElementById('master-tbody');
+            const assignedEmpty = document.getElementById('assigned-empty');
+            const activeEmpty = document.getElementById('active-empty');
+            
+            assignedTbody.innerHTML = '';
+            activeTbody.innerHTML = '';
+            masterTbody.innerHTML = '';
+
+            // Separate drivers into assigned, active, and checked out
+            const assignedDrivers = drivers.filter(d => d.status === 'Assigned');
+            const activeDrivers = drivers.filter(d => d.status === 'Available' || d.status === 'In Transit' || d.status === 'Dropped Off' || d.status === 'Picked Up');
+            const checkedOutDrivers = drivers.filter(d => d.status === 'Checked Out');
+
+            // Sort Assigned table by selected column
+            const assignedSort = sortState.assigned;
+            assignedDrivers.sort((a, b) => {
+                return compareValues(a, b, assignedSort.column, assignedSort.direction);
+            });
+
+            // Sort Active table by selected column
+            const activeSort = sortState.active;
+            activeDrivers.sort((a, b) => {
+                return compareValues(a, b, activeSort.column, activeSort.direction);
+            });
+
+            // Sort Checked Out table by Driver Name (alphabetical)
+            checkedOutDrivers.sort((a, b) => {
+                return a.name.localeCompare(b.name);
+            });
+
+            // Update header sort indicators
+            updateSortIndicators();
+
+            // Render Assigned Drivers table
+            if (assignedDrivers.length === 0) {
+                assignedEmpty.style.display = 'block';
+                document.getElementById('assigned-table').style.display = 'none';
+            } else {
+                assignedEmpty.style.display = 'none';
+                document.getElementById('assigned-table').style.display = 'table';
+                
+                assignedDrivers.forEach(driver => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <div class="non-editable">${driver.name}</div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', true)">
+                                ${driver.carNumber ? driver.carNumber : '<span class="empty-cell">Not assigned</span>'}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.make}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.model}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.seatCapacity}</div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'passengers', true)">${driver.passengers}</div>
+                        </td>
+                        <td>
+                            <div class="editable zone-cell" onclick="editCell(this, '${driver.driverId}', 'zone', true)">
+                                ${driver.zone ? driver.zone : '<span class="empty-cell">Not assigned</span>'}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'driverType', true)">
+                                <span class="type-badge type-${driver.driverType.toLowerCase()}">${driver.driverType}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'status', true)">
+                                <span class="status-badge status-${driver.status.toLowerCase().replace(' ', '-')}">${driver.status}</span>
+                            </div>
+                        </td>
+                    `;
+                    assignedTbody.appendChild(row);
+                });
+            }
+
+            // Render Active Drivers table
+            if (activeDrivers.length === 0) {
+                activeEmpty.style.display = 'block';
+                document.getElementById('active-table').style.display = 'none';
+            } else {
+                activeEmpty.style.display = 'none';
+                document.getElementById('active-table').style.display = 'table';
+                
+                activeDrivers.forEach(driver => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>
+                            <div class="non-editable">${driver.name}</div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', true)">
+                                ${driver.carNumber ? driver.carNumber : '<span class="empty-cell">Not assigned</span>'}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.make}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.model}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.seatCapacity}</div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'passengers', true)">${driver.passengers}</div>
+                        </td>
+                        <td>
+                            <div class="editable zone-cell" onclick="editCell(this, '${driver.driverId}', 'zone', true)">
+                                ${driver.zone ? driver.zone : '<span class="empty-cell">Not assigned</span>'}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'driverType', true)">
+                                <span class="type-badge type-${driver.driverType.toLowerCase()}">${driver.driverType}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'status', true)">
+                                <span class="status-badge status-${driver.status.toLowerCase().replace(' ', '-')}">${driver.status}</span>
+                            </div>
+                        </td>
+                    `;
+                    activeTbody.appendChild(row);
+                });
+            }
+
+            // Render Master List table
+            checkedOutDrivers.forEach(driver => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <div class="non-editable">${driver.name}</div>
+                    </td>
+                    <td>
+                        <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', false)">
+                            ${driver.carNumber ? driver.carNumber : '<span class="empty-cell">Not assigned</span>'}
+                        </div>
+                    </td>
+                    <td>
+                        <div class="non-editable">${driver.make}</div>
+                    </td>
+                    <td>
+                        <div class="non-editable">${driver.model}</div>
+                    </td>
+                    <td>
+                        <div class="non-editable">${driver.seatCapacity}</div>
+                    </td>
+                    <td>
+                        <div class="non-editable">
+                            <span class="type-badge type-${driver.driverType.toLowerCase()}">${driver.driverType}</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="editable" onclick="editCell(this, '${driver.driverId}', 'status', false)">
+                            <span class="status-badge status-${driver.status.toLowerCase().replace(' ', '-')}">${driver.status}</span>
+                        </div>
+                    </td>
+                `;
+                masterTbody.appendChild(row);
+            });
+
+            updateStats();
+            updateLastUpdatedTime();
+        }
+
+        function editCell(cell, driverId, field, isActiveTable) {
+            // If already editing this exact cell, do nothing
+            if (editingCell && editingCell.cell === cell) {
+                return;
+            }
+            
+            // If already editing a different cell, save it first
+            if (editingCell) {
+                saveCell();
+            }
+
+            editingCell = { cell, driverId, field, isActiveTable };
+            cell.classList.add('editing');
+
+            const driver = drivers.find(d => d.driverId === driverId);
+            let currentValue = driver[field];
+
+            if (field === 'driverType') {
+                cell.innerHTML = `
+                    <select onchange="updateValue(this, '${driverId}', '${field}')">
+                        <option value="Normal" ${currentValue === 'Normal' ? 'selected' : ''}>Normal</option>
+                        <option value="Reserved" ${currentValue === 'Reserved' ? 'selected' : ''}>Reserved</option>
+                        <option value="Staged" ${currentValue === 'Staged' ? 'selected' : ''}>Staged</option>
+                    </select>
+                `;
+            } else if (field === 'status') {
+                cell.innerHTML = `
+                    <select onchange="updateValue(this, '${driverId}', '${field}')">
+                        <option value="Available" ${currentValue === 'Available' ? 'selected' : ''}>Available</option>
+                        <option value="Assigned" ${currentValue === 'Assigned' ? 'selected' : ''}>Assigned</option>
+                        <option value="In Transit" ${currentValue === 'In Transit' ? 'selected' : ''}>In Transit</option>
+                        <option value="Dropped Off" ${currentValue === 'Dropped Off' ? 'selected' : ''}>Dropped Off</option>
+                        <option value="Picked Up" ${currentValue === 'Picked Up' ? 'selected' : ''}>Picked Up</option>
+                        <option value="Checked Out" ${currentValue === 'Checked Out' ? 'selected' : ''}>Checked Out</option>
+                    </select>
+                `;
+            } else if (field === 'zone') {
+                // Zone dropdown with master zones
+                const zones = ['A', 'B', 'C', 'D', 'E', 'F', 'Z'];
+                let options = '<option value="">Not assigned</option>';
+                zones.forEach(zone => {
+                    options += `<option value="${zone}" ${currentValue === zone ? 'selected' : ''}>${zone}</option>`;
+                });
+                cell.innerHTML = `<select onchange="updateValue(this, '${driverId}', '${field}')">${options}</select>`;
+            } else {
+                const inputType = (field === 'passengers' || field === 'carNumber') ? 'number' : 'text';
+                const minValue = (field === 'passengers' || field === 'carNumber') ? '0' : '';
+                const inputAttrs = (field === 'passengers' || field === 'carNumber') ? `type="${inputType}" min="${minValue}"` : `type="${inputType}"`;
+                cell.innerHTML = `<input ${inputAttrs} value="${currentValue}" onblur="saveCell()" onkeypress="handleKeyPress(event)">`;
+                cell.querySelector('input').focus();
+            }
+        }
+
+        function updateValue(select, driverId, field) {
+            const driver = drivers.find(d => d.driverId === driverId);
+            const newValue = select.value;
+            driver[field] = newValue;
+            
+            // Call saveCell asynchronously but don't wait
+            saveCell();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                saveCell();
+            }
+        }
+
+        async function saveCell() {
+            if (!editingCell) return;
+
+            const { cell, driverId, field } = editingCell;
+            const input = cell.querySelector('input');
+            
+            const driver = drivers.find(d => d.driverId === driverId);
+            let value = driver[field]; // Get current value from driver object
+            
+            if (input) {
+                value = input.value.trim();
+                
+                if (field === 'passengers') {
+                    value = parseInt(value) || 0;
+                }
+                
+                driver[field] = value;
+
+                // Auto-update status ONLY when editing car number field
+                if (field === 'carNumber') {
+                    if (value) {
+                        driver.status = 'Available';
+                        await updateDriver(driverId, 'status', 'Available');
+                    } else {
+                        driver.status = 'Checked Out';
+                        await updateDriver(driverId, 'status', 'Checked Out');
+                    }
+                }
+            }
+
+            // Validate that driver has car number if trying to set status to Available/In Transit/Assigned
+            if (field === 'status' && (driver.status === 'Available' || driver.status === 'In Transit' || driver.status === 'Assigned')) {
+                if (!driver.carNumber || driver.carNumber === '') {
+                    alert('Please assign a car number before setting status to Available, Assigned, or In Transit.');
+                    driver.status = 'Checked Out';
+                    value = 'Checked Out';
+                }
+            }
+
+            // Update in database
+            await updateDriver(driverId, field, value);
+
+            // Clear editing state and re-render
+            cell.classList.remove('editing');
+            editingCell = null;
+            renderTables();
+        }
+
+        function updateZoneCapacity() {
+            // Get all assigned drivers with their zones
+            const assignedDrivers = drivers.filter(d => d.status === 'Assigned' && d.zone);
+            
+            // Calculate total seat capacity per zone
+            const zoneCapacities = {};
+            assignedDrivers.forEach(driver => {
+                const zone = driver.zone;
+                if (!zoneCapacities[zone]) {
+                    zoneCapacities[zone] = 0;
+                }
+                zoneCapacities[zone] += driver.seatCapacity;
+            });
+            
+            // Sort zones alphabetically
+            const sortedZones = Object.keys(zoneCapacities).sort();
+            
+            // Update the zone capacity display
+            const zoneCapacityGrid = document.getElementById('zone-capacity-grid');
+            const zoneCapacityContainer = document.getElementById('zone-capacity-container');
+            
+            if (sortedZones.length === 0) {
+                // No assigned drivers with zones
+                zoneCapacityGrid.innerHTML = '<div class="zone-capacity-empty">No zones assigned yet</div>';
+            } else {
+                // Create zone capacity items
+                zoneCapacityGrid.innerHTML = sortedZones.map(zone => `
+                    <div class="zone-capacity-item">
+                        <div class="zone-capacity-zone">Zone ${zone}</div>
+                        <div class="zone-capacity-value">${zoneCapacities[zone]}</div>
+                        <div class="zone-capacity-label">seats assigned</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateStats() {
+            const assignedDrivers = drivers.filter(d => d.status === 'Assigned');
+            const activeDrivers = drivers.filter(d => d.status === 'Available' || d.status === 'In Transit' || d.status === 'Dropped Off' || d.status === 'Picked Up');
+            const available = drivers.filter(d => d.status === 'Available').length;
+            const inTransit = drivers.filter(d => d.status === 'In Transit' || d.status === 'Dropped Off' || d.status === 'Picked Up').length;
+            
+            // Assigned Capacity = Total seat capacity of drivers with status "Assigned"
+            const assignedCapacity = assignedDrivers.reduce((sum, d) => sum + d.seatCapacity, 0);
+            
+            // Total Capacity = Normal + Staged drivers (not Checked Out and not Assigned)
+            const totalCapacity = drivers
+                .filter(d => d.status !== 'Checked Out' && d.status !== 'Assigned' && (d.driverType === 'Normal' || d.driverType === 'Staged'))
+                .reduce((sum, d) => sum + d.seatCapacity, 0);
+            
+            // Reserved Capacity = Reserved drivers (not Checked Out and not Assigned)
+            const reservedCapacity = drivers
+                .filter(d => d.status !== 'Checked Out' && d.status !== 'Assigned' && d.driverType === 'Reserved')
+                .reduce((sum, d) => sum + d.seatCapacity, 0);
+            
+            const checkedOut = drivers.filter(d => d.status === 'Checked Out').length;
+
+            document.getElementById('assigned-drivers').textContent = assignedCapacity;
+            document.getElementById('active-drivers').textContent = activeDrivers.length;
+            document.getElementById('available-drivers').textContent = available;
+            document.getElementById('in-transit-drivers').textContent = inTransit;
+            document.getElementById('total-capacity').textContent = totalCapacity;
+            document.getElementById('reserved-capacity').textContent = reservedCapacity;
+            document.getElementById('master-list-count').textContent = checkedOut;
+            
+            document.getElementById('assigned-count').textContent = assignedDrivers.length;
+            document.getElementById('active-count').textContent = activeDrivers.length;
+            document.getElementById('master-count').textContent = checkedOut;
+            
+            // Update zone capacity display
+            updateZoneCapacity();
+        }
+
+        function updateLastUpdatedTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            document.getElementById('last-updated-time').textContent = timeStr;
+        }
+
+        function refreshData() {
+            fetchData();
+        }
+
+        function goToZoneSummary() {
+            window.location.href = 'zone-summary.html';
+        }
+
+        // Poll for updates every 3 seconds
+        pollingInterval = setInterval(() => {
+            fetchData();
+        }, 3000);
+
+        // Initial load
+        fetchData();
+    </script>
+</body>
+</html>

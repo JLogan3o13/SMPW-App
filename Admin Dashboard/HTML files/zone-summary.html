@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zone Summary Dashboard - Transportation Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background-color: white;
+            color: #667eea;
+        }
+
+        .btn-primary:hover {
+            background-color: #f0f0f0;
+        }
+
+        .btn-secondary {
+            background-color: rgba(255,255,255,0.2);
+            color: white;
+            border: 1px solid white;
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.3);
+        }
+
+        .stats-bar {
+            display: flex;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .zone-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .zone-card {
+            background-color: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.2s;
+        }
+
+        .zone-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+
+        .zone-card.overbooked {
+            border-color: #dc3545;
+            background-color: #fff5f5;
+        }
+
+        .zone-card.at-capacity {
+            border-color: #ffc107;
+            background-color: #fffbf0;
+        }
+
+        .zone-card.under-capacity {
+            border-color: #28a745;
+            background-color: #f0fff4;
+        }
+
+        .zone-card.empty {
+            border-color: #e0e0e0;
+            background-color: #fafafa;
+            opacity: 0.7;
+        }
+
+        .zone-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .zone-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .zone-status-badge {
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-overbooked {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .status-at-capacity {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .status-ok {
+            background-color: #28a745;
+            color: white;
+        }
+
+        .status-empty {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .zone-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .metric-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .capacity-bar-container {
+            margin-top: 12px;
+        }
+
+        .capacity-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .capacity-bar {
+            height: 24px;
+            background-color: #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .capacity-fill.ok {
+            background-color: #28a745;
+        }
+
+        .capacity-fill.warning {
+            background-color: #ffc107;
+        }
+
+        .capacity-fill.danger {
+            background-color: #dc3545;
+        }
+
+        .vehicle-count {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e0e0e0;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .vehicle-count strong {
+            color: #333;
+        }
+
+        .last-updated {
+            text-align: center;
+            padding: 12px;
+            font-size: 12px;
+            color: #999;
+            border-top: 1px solid #f0f0f0;
+        }
+
+        .alert-banner {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 6px;
+            padding: 12px 20px;
+            margin: 20px 30px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .alert-banner.danger {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+        }
+
+        .alert-text {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .modal-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: white;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            line-height: 28px;
+        }
+
+        .modal-close:hover {
+            opacity: 0.8;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-select,
+        .form-input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+
+        .form-select:focus,
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input[type="radio"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .radio-option label {
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-submit {
+            background-color: #667eea;
+            color: white;
+        }
+
+        .btn-submit:hover {
+            background-color: #5568d3;
+        }
+
+        @media (max-width: 768px) {
+            .zone-grid {
+                grid-template-columns: 1fr;
+                padding: 15px;
+            }
+
+            .stats-bar {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Zone Summary Dashboard</h1>
+            <div class="header-actions">
+                <button class="btn btn-secondary" onclick="goToDriverTracking()">← Back to Drivers</button>
+                <button class="btn btn-primary" onclick="refreshData()">🔄 Refresh</button>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat">
+                <span class="stat-label">Net Passengers</span>
+                <span class="stat-value" id="total-passengers">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Total Delivered</span>
+                <span class="stat-value" id="total-seats">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Total Picked Up</span>
+                <span class="stat-value" id="total-vehicles">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">In Zones</span>
+                <span class="stat-value" id="available-capacity">0</span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Active Zones</span>
+                <span class="stat-value" id="active-zones">0</span>
+            </div>
+        </div>
+
+        <div id="alert-container"></div>
+
+        <div class="zone-grid" id="zone-grid">
+            <!-- Zone cards will be populated here -->
+        </div>
+
+        <div class="last-updated">
+            Last updated: <span id="last-updated-time">--</span>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'https://x6wxqzeqw9.execute-api.us-west-1.amazonaws.com/prod';
+        
+        // FIXED: Use local date instead of UTC to avoid timezone issues
+        const getLocalDate = () => {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        };
+        const EVENT_DATE = getLocalDate(); // Today's date in local time (YYYY-MM-DD format)
+
+        // Master list of all zones
+        const masterZones = ['A', 'A3', 'B', 'C', 'D', 'E', 'F'];
+
+        let zoneTotals = [];
+        let drivers = [];
+
+
+        // Fetch data from API
+        async function fetchData() {
+            try {
+                // Fetch zone totals
+                const zoneTotalsResponse = await fetch(`${API_BASE_URL}/zone-totals?eventDate=${EVENT_DATE}`);
+                const zoneTotalsData = await zoneTotalsResponse.json();
+                zoneTotals = zoneTotalsData;
+
+                // Fetch driver operations to calculate staged counts
+                const driversResponse = await fetch(`${API_BASE_URL}/operations?eventDate=${EVENT_DATE}`);
+                const driversData = await driversResponse.json();
+                drivers = driversData;
+
+                renderZoneSummary();
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        function calculateStagedByZone() {
+            const stagedByZone = {};
+            
+            // Initialize all zones
+            const allZones = ['A', 'A3', 'B', 'C', 'D', 'E', 'F', 'Z'];
+            allZones.forEach(zone => {
+                stagedByZone[zone] = 0;
+            });
+
+            // Count staged drivers per zone (only Available status)
+            drivers.forEach(driver => {
+                if (driver.driverType === 'Staged' && driver.status === 'Available' && driver.zone) {
+                    if (!stagedByZone[driver.zone]) {
+                        stagedByZone[driver.zone] = 0;
+                    }
+                    stagedByZone[driver.zone]++;
+                }
+            });
+
+            return stagedByZone;
+        }
+
+        function renderZoneSummary() {
+            const stagedByZone = calculateStagedByZone();
+            const zoneGrid = document.getElementById('zone-grid');
+            zoneGrid.innerHTML = '';
+
+            let totalPassengers = 0;
+            let totalDelivered = 0;
+            let totalPickedUp = 0;
+            let activeZones = 0;
+            let overbookedZones = [];
+
+            zoneTotals.forEach(zoneData => {
+                const zone = zoneData.zone;
+                const netPassengers = zoneData.netPassengers || 0;
+                const delivered = zoneData.totalDelivered || 0;
+                const pickedUp = zoneData.totalPickedUp || 0;
+                const staged = stagedByZone[zone] || 0;
+                
+                if (netPassengers > 0) {
+                    activeZones++;
+                }
+
+                totalPassengers += netPassengers;
+                totalDelivered += delivered;
+                totalPickedUp += pickedUp;
+
+                const status = netPassengers === 0 ? 'empty' : 'under-capacity';
+
+                const card = document.createElement('div');
+                card.className = `zone-card ${status}`;
+                card.innerHTML = `
+                    <div class="zone-header">
+                        <div class="zone-name">${zone}</div>
+                        ${netPassengers === 0 ? '<span class="zone-status-badge status-empty">Empty</span>' : '<span class="zone-status-badge status-ok">Active</span>'}
+                    </div>
+                    <div class="zone-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Current</span>
+                            <span class="metric-value">${netPassengers}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Delivered</span>
+                            <span class="metric-value">${delivered}</span>
+                        </div>
+                    </div>
+                    <div class="zone-metrics">
+                        <div class="metric">
+                            <span class="metric-label">Picked Up</span>
+                            <span class="metric-value">${pickedUp}</span>
+                        </div>
+                        <div class="metric">
+                            <span class="metric-label">Staged</span>
+                            <span class="metric-value">${staged}</span>
+                        </div>
+                    </div>
+                `;
+                zoneGrid.appendChild(card);
+            });
+
+            // Update overall stats
+            document.getElementById('total-passengers').textContent = totalPassengers;
+            document.getElementById('total-seats').textContent = totalDelivered;
+            document.getElementById('total-vehicles').textContent = totalPickedUp;
+            document.getElementById('available-capacity').textContent = totalPassengers;
+            document.getElementById('active-zones').textContent = activeZones;
+
+            // Clear any alerts
+            const alertContainer = document.getElementById('alert-container');
+            alertContainer.innerHTML = '';
+
+            updateLastUpdatedTime();
+        }
+
+        function updateLastUpdatedTime() {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString();
+            document.getElementById('last-updated-time').textContent = timeStr;
+        }
+
+        function refreshData() {
+            fetchData();
+        }
+
+        function goToDriverTracking() {
+            window.location.href = 'driver-tracking.html';
+        }
+
+        async function resetZoneTotals() {
+            if (!confirm('Are you sure you want to reset ALL zone totals for today? This cannot be undone.')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/zone-totals?eventDate=${EVENT_DATE}`, {
+                    method: 'DELETE'
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to reset zone totals');
+                }
+
+                const result = await response.json();
+                alert(result.message || 'Zone totals reset successfully!');
+                
+                // Refresh the page
+                await fetchData();
+            } catch (error) {
+                console.error('Error resetting zone totals:', error);
+                alert('Failed to reset zone totals. Please try again.');
+            }
+        }
+
+        // Poll for updates every 3 seconds
+        setInterval(() => {
+            fetchData();
+        }, 3000);
+
+        // Initial load
+        fetchData();
+    </script>
+</body>
+</html>

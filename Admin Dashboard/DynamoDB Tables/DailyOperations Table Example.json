@@ -1,0 +1,29 @@
+{
+  "driverId": {
+    "S": "9ea35634-f18c-43cc-bcef-3e5320a44fa9"
+  },
+  "eventDate": {
+    "S": "2025-11-22"
+  },
+  "carNumber": {
+    "S": ""
+  },
+  "DriverID": {
+    "S": "9ea35634-f18c-43cc-bcef-3e5320a44fa9"
+  },
+  "driverType": {
+    "S": "Normal"
+  },
+  "EventDate": {
+    "S": "2025-11-22"
+  },
+  "passengers": {
+    "N": "0"
+  },
+  "status": {
+    "S": "Checked Out"
+  },
+  "zone": {
+    "S": ""
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "EventDate": {
+    "S": "2025-11-19"
+  },
+  "zone": {
+    "S": "A"
+  },
+  "netPassengers": {
+    "N": "18"
+  },
+  "totalDelivered": {
+    "N": "36"
+  },
+  "totalPickedUp": {
+    "N": "18"
+  }
+}

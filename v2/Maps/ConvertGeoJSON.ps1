@@ -87,6 +87,4 @@ $coordsJoined
 }
 "@
 
-# Output to console (you can redirect to a file)
-
 $snippet

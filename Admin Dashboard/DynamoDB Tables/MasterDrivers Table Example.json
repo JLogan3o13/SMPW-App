@@ -1,0 +1,20 @@
+{
+  "driverId": {
+    "S": "bc1e43a3-98a3-426e-843c-cc27bc2f2545"
+  },
+  "make": {
+    "S": "Jeep"
+  },
+  "model": {
+    "S": "Wagoneer"
+  },
+  "name": {
+    "S": "Lawrence Washington"
+  },
+  "phoneNumber": {
+    "S": "702-274-9815"
+  },
+  "seatCapacity": {
+    "N": "7"
+  }
+}
