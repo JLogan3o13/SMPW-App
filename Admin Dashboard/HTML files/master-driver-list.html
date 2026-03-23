@@ -481,7 +481,8 @@
             <table id="drivers-table">
                 <thead>
                     <tr>
-                        <th onclick="toggleSort()">Driver Name <span id="sort-indicator">▼</span></th>
+                        <th onclick="toggleSort('lastName')">Last Name <span id="sort-indicator-last">▲</span></th>
+                        <th onclick="toggleSort('firstName')">First Name <span id="sort-indicator-first"></span></th>
                         <th>Phone Number</th>
                         <th>Make</th>
                         <th>Model</th>
@@ -513,8 +514,13 @@
                     <input type="hidden" id="driver-id">
                     
                     <div class="form-group">
-                        <label class="form-label" for="driver-name">Driver Name *</label>
-                        <input type="text" id="driver-name" class="form-input" required placeholder="e.g., JOHN SMITH">
+                        <label class="form-label" for="driver-firstName">First Name *</label>
+                        <input type="text" id="driver-firstName" class="form-input" required placeholder="e.g., JOHN">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="driver-lastName">Last Name *</label>
+                        <input type="text" id="driver-lastName" class="form-input" required placeholder="e.g., SMITH">
                     </div>
 
                     <div class="form-group">
@@ -633,7 +639,44 @@
 
         let drivers = [];
         let filteredDrivers = [];
-        let sortDirection = 'asc'; // 'asc' or 'desc'
+        let sortColumn = 'lastName';
+        let sortDirection = 'asc';
+
+        function toggleSort(column) {
+            if (sortColumn === column) {
+                sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortDirection = 'asc';
+            }
+            sortDrivers();
+            renderTable();
+            updateSortIndicator();
+        }
+
+        function sortDrivers() {
+            filteredDrivers.sort((a, b) => {
+                const primaryA = (a[sortColumn] || '').toLowerCase();
+                const primaryB = (b[sortColumn] || '').toLowerCase();
+                // Secondary sort: the other name field
+                const secondaryField = sortColumn === 'lastName' ? 'firstName' : 'lastName';
+                const secondaryA = (a[secondaryField] || '').toLowerCase();
+                const secondaryB = (b[secondaryField] || '').toLowerCase();
+
+                const primaryCmp = sortDirection === 'asc'
+                    ? primaryA.localeCompare(primaryB)
+                    : primaryB.localeCompare(primaryA);
+
+                return primaryCmp !== 0 ? primaryCmp : secondaryA.localeCompare(secondaryB);
+            });
+        }
+
+        function updateSortIndicator() {
+            document.getElementById('sort-indicator-last').textContent =
+                sortColumn === 'lastName' ? (sortDirection === 'asc' ? '▲' : '▼') : '';
+            document.getElementById('sort-indicator-first').textContent =
+                sortColumn === 'firstName' ? (sortDirection === 'asc' ? '▲' : '▼') : '';
+        }
 
         // Fetch drivers from API
         async function fetchDrivers() {
@@ -648,31 +691,6 @@
                 console.error('Error fetching drivers:', error);
                 showAlert('Failed to load drivers', 'danger');
             }
-        }
-
-        function toggleSort() {
-            sortDirection = sortDirection === 'asc' ? 'desc' : 'asc';
-            sortDrivers();
-            renderTable();
-            updateSortIndicator();
-        }
-
-        function sortDrivers() {
-            filteredDrivers.sort((a, b) => {
-                const nameA = a.name.toLowerCase();
-                const nameB = b.name.toLowerCase();
-                
-                if (sortDirection === 'asc') {
-                    return nameA.localeCompare(nameB);
-                } else {
-                    return nameB.localeCompare(nameA);
-                }
-            });
-        }
-
-        function updateSortIndicator() {
-            const indicator = document.getElementById('sort-indicator');
-            indicator.textContent = sortDirection === 'asc' ? '▲' : '▼';
         }
 
         function renderTable() {
@@ -692,7 +710,8 @@
                 filteredDrivers.forEach(driver => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${driver.name}</td>
+                        <td>${driver.lastName || ''}</td>
+                        <td>${driver.firstName || ''}</td>
                         <td>${driver.phoneNumber || 'N/A'}</td>
                         <td>${driver.make}</td>
                         <td>${driver.model}</td>
@@ -722,12 +741,13 @@
         function filterDrivers() {
             const searchTerm = document.getElementById('search-input').value.toLowerCase();
             filteredDrivers = drivers.filter(driver => 
-                driver.name.toLowerCase().includes(searchTerm) ||
+                (driver.firstName || '').toLowerCase().includes(searchTerm) ||
+                (driver.lastName || '').toLowerCase().includes(searchTerm) ||
                 driver.make.toLowerCase().includes(searchTerm) ||
                 driver.model.toLowerCase().includes(searchTerm) ||
                 (driver.phoneNumber && driver.phoneNumber.toLowerCase().includes(searchTerm))
             );
-            sortDrivers(); // Maintain sort order after filtering
+            sortDrivers();
             renderTable();
         }
 
@@ -744,8 +764,9 @@
 
             document.getElementById('modal-title').textContent = 'Edit Driver';
             document.getElementById('driver-id').value = driver.driverId;
-            document.getElementById('driver-name').value = driver.name;
-			 document.getElementById('driver-phone').value = driver.phoneNumber || '';
+            document.getElementById('driver-firstName').value = driver.firstName || '';
+            document.getElementById('driver-lastName').value = driver.lastName || '';
+            document.getElementById('driver-phone').value = driver.phoneNumber || '';
             document.getElementById('driver-make').value = driver.make;
             document.getElementById('driver-model').value = driver.model;
             document.getElementById('driver-capacity').value = driver.seatCapacity;
@@ -759,62 +780,54 @@
 
         async function saveDriver() {
             const driverId = document.getElementById('driver-id').value;
-            const name = document.getElementById('driver-name').value.trim();
-			const phoneNumber = document.getElementById('driver-phone').value.trim();
+            const firstName = document.getElementById('driver-firstName').value.trim();
+            const lastName = document.getElementById('driver-lastName').value.trim();
+            const phoneNumber = document.getElementById('driver-phone').value.trim();
             const make = document.getElementById('driver-make').value.trim();
             const model = document.getElementById('driver-model').value.trim();
             const capacity = parseInt(document.getElementById('driver-capacity').value);
 
-            // Validate form
-            if (!name || !phoneNumber || !make || !model || !capacity) {
+            if (!firstName || !lastName || !phoneNumber || !make || !model || !capacity) {
                 showAlert('Please fill in all required fields', 'danger');
                 return;
             }
 
+            const displayName = `${firstName} ${lastName}`;
+
             try {
                 if (driverId) {
-                    // Edit existing driver
                     const response = await fetch(`${API_BASE_URL}/drivers`, {
                         method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             driverId: driverId,
-                            name: name,
-							phoneNumber: phoneNumber,
+                            firstName: firstName,
+                            lastName: lastName,
+                            phoneNumber: phoneNumber,
                             make: make,
                             model: model,
                             seatCapacity: capacity
                         })
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Failed to update driver');
-                    }
-
-                    showAlert(`Driver "${name}" updated successfully`, 'success');
+                    if (!response.ok) throw new Error('Failed to update driver');
+                    showAlert(`Driver "${displayName}" updated successfully`, 'success');
                 } else {
-                    // Add new driver
                     const response = await fetch(`${API_BASE_URL}/drivers`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
+                        headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            name: name,
-							phoneNumber: phoneNumber,
+                            firstName: firstName,
+                            lastName: lastName,
+                            phoneNumber: phoneNumber,
                             make: make,
                             model: model,
                             seatCapacity: capacity
                         })
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Failed to add driver');
-                    }
-
-                    showAlert(`Driver "${name}" added successfully`, 'success');
+                    if (!response.ok) throw new Error('Failed to add driver');
+                    showAlert(`Driver "${displayName}" added successfully`, 'success');
                 }
 
                 closeModal();
@@ -830,7 +843,7 @@
             if (!driver) return;
 
             document.getElementById('delete-driver-id').value = driver.driverId;
-            document.getElementById('delete-driver-name').textContent = driver.name;
+            document.getElementById('delete-driver-name').textContent = `${driver.firstName || ''} ${driver.lastName || ''}`.trim();
             document.getElementById('delete-modal').classList.add('active');
         }
 
@@ -846,19 +859,14 @@
                 try {
                     const response = await fetch(`${API_BASE_URL}/drivers`, {
                         method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            driverId: driverId
-                        })
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ driverId: driverId })
                     });
 
-                    if (!response.ok) {
-                        throw new Error('Failed to delete driver');
-                    }
+                    if (!response.ok) throw new Error('Failed to delete driver');
 
-                    showAlert(`Driver "${driver.name}" deleted successfully`, 'success');
+                    const displayName = `${driver.firstName || ''} ${driver.lastName || ''}`.trim();
+                    showAlert(`Driver "${displayName}" deleted successfully`, 'success');
                     closeDeleteModal();
                     await fetchDrivers();
                 } catch (error) {

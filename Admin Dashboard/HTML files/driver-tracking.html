@@ -139,6 +139,16 @@
 
         .table-container {
             overflow-x: auto;
+            max-height: 450px;
+            overflow-y: auto;
+        }
+
+        thead th {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);
         }
 
         table {
@@ -461,7 +471,9 @@
                 <table id="assigned-table">
                     <thead>
                         <tr>
-                            <th class="sortable" onclick="sortTable('assigned', 'name')">Driver Name</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'lastName')">Last Name</th>
+                            <th class="sortable" onclick="sortTable('assigned', 'firstName')">First Name</th>
+                            <th>Phone</th>
                             <th class="sortable" onclick="sortTable('assigned', 'carNumber')">Car #</th>
                             <th class="sortable" onclick="sortTable('assigned', 'make')">Make</th>
                             <th class="sortable" onclick="sortTable('assigned', 'model')">Model</th>
@@ -494,7 +506,9 @@
                 <table id="active-table">
                     <thead>
                         <tr>
-                            <th class="sortable" onclick="sortTable('active', 'name')">Driver Name</th>
+                            <th class="sortable" onclick="sortTable('active', 'lastName')">Last Name</th>
+                            <th class="sortable" onclick="sortTable('active', 'firstName')">First Name</th>
+                            <th>Phone</th>
                             <th class="sortable" onclick="sortTable('active', 'carNumber')">Car #</th>
                             <th class="sortable" onclick="sortTable('active', 'make')">Make</th>
                             <th class="sortable" onclick="sortTable('active', 'model')">Model</th>
@@ -527,7 +541,9 @@
                 <table id="master-table">
                     <thead>
                         <tr>
-                            <th>Driver Name</th>
+                            <th>Last Name</th>
+                            <th>First Name</th>
+                            <th>Phone</th>
                             <th>Car #</th>
                             <th>Make</th>
                             <th>Model</th>
@@ -560,9 +576,10 @@
             const day = String(now.getDate()).padStart(2, '0');
             return `${year}-${month}-${day}`;
         };
-        const EVENT_DATE = getLocalDate(); // Today's date in local time (YYYY-MM-DD format)
+        const EVENT_DATE = getLocalDate();
 
         let drivers = [];
+        let masterDriverMap = {}; // keyed by driverId, holds phoneNumber, firstName, lastName
         let editingCell = null;
         let pollingInterval = null;
         
@@ -572,9 +589,26 @@
             active: { column: 'carNumber', direction: 'asc' }
         };
 
+        // Fetch master driver list once to get phone numbers and names
+        async function fetchMasterDrivers() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/drivers`);
+                const data = await response.json();
+                masterDriverMap = {};
+                data.forEach(d => {
+                    masterDriverMap[d.driverId] = {
+                        phoneNumber: d.phoneNumber || '',
+                        firstName: d.firstName || '',
+                        lastName: d.lastName || ''
+                    };
+                });
+            } catch (error) {
+                console.error('Error fetching master drivers:', error);
+            }
+        }
+
         // Fetch data from API
         async function fetchData() {
-            // Don't fetch if user is actively editing
             if (editingCell) {
                 console.log('Skipping refresh - user is editing');
                 return;
@@ -583,7 +617,13 @@
             try {
                 const response = await fetch(`${API_BASE_URL}/operations?eventDate=${EVENT_DATE}`);
                 const data = await response.json();
-                drivers = data;
+                // Merge phone number and name fields from master driver map
+                drivers = data.map(d => ({
+                    ...d,
+                    phoneNumber: masterDriverMap[d.driverId]?.phoneNumber || '',
+                    firstName: masterDriverMap[d.driverId]?.firstName || '',
+                    lastName: masterDriverMap[d.driverId]?.lastName || ''
+                }));
                 renderTables();
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -656,34 +696,25 @@
         }
 
         function updateSortIndicators() {
-            // Update assigned table headers
             const assignedHeaders = document.querySelectorAll('#assigned-table th.sortable');
-            assignedHeaders.forEach(th => {
-                th.classList.remove('asc', 'desc');
-            });
-            const assignedSortHeader = Array.from(assignedHeaders).find(th => 
+            assignedHeaders.forEach(th => th.classList.remove('asc', 'desc'));
+            const assignedSortHeader = Array.from(assignedHeaders).find(th =>
                 th.textContent.toLowerCase().includes(getColumnLabel(sortState.assigned.column).toLowerCase())
             );
-            if (assignedSortHeader) {
-                assignedSortHeader.classList.add(sortState.assigned.direction);
-            }
-            
-            // Update active table headers
+            if (assignedSortHeader) assignedSortHeader.classList.add(sortState.assigned.direction);
+
             const activeHeaders = document.querySelectorAll('#active-table th.sortable');
-            activeHeaders.forEach(th => {
-                th.classList.remove('asc', 'desc');
-            });
-            const activeSortHeader = Array.from(activeHeaders).find(th => 
+            activeHeaders.forEach(th => th.classList.remove('asc', 'desc'));
+            const activeSortHeader = Array.from(activeHeaders).find(th =>
                 th.textContent.toLowerCase().includes(getColumnLabel(sortState.active.column).toLowerCase())
             );
-            if (activeSortHeader) {
-                activeSortHeader.classList.add(sortState.active.direction);
-            }
+            if (activeSortHeader) activeSortHeader.classList.add(sortState.active.direction);
         }
 
         function getColumnLabel(column) {
             const labels = {
-                'name': 'driver name',
+                'firstName': 'first name',
+                'lastName': 'last name',
                 'carNumber': 'car',
                 'make': 'make',
                 'model': 'model',
@@ -744,7 +775,13 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>
-                            <div class="non-editable">${driver.name}</div>
+                            <div class="non-editable">${driver.lastName || ''}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.firstName || ''}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.phoneNumber || ''}</div>
                         </td>
                         <td>
                             <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', true)">
@@ -795,7 +832,13 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>
-                            <div class="non-editable">${driver.name}</div>
+                            <div class="non-editable">${driver.lastName || ''}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.firstName || ''}</div>
+                        </td>
+                        <td>
+                            <div class="non-editable">${driver.phoneNumber || ''}</div>
                         </td>
                         <td>
                             <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', true)">
@@ -834,12 +877,17 @@
                 });
             }
 
-            // Render Master List table
             checkedOutDrivers.forEach(driver => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
-                        <div class="non-editable">${driver.name}</div>
+                        <div class="non-editable">${driver.lastName || ''}</div>
+                    </td>
+                    <td>
+                        <div class="non-editable">${driver.firstName || ''}</div>
+                    </td>
+                    <td>
+                        <div class="non-editable">${driver.phoneNumber || ''}</div>
                     </td>
                     <td>
                         <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', false)">
@@ -1081,8 +1129,8 @@
             fetchData();
         }, 3000);
 
-        // Initial load
-        fetchData();
+        // Initial load: fetch master drivers once, then start polling operations
+        fetchMasterDrivers().then(() => fetchData());
     </script>
 </body>
 </html>
