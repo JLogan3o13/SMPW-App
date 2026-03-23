@@ -407,6 +407,83 @@
                 font-size: 12px;
             }
         }
+
+        /* ── Duplicate car number warning dialog ── */
+        .car-warning-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .car-warning-overlay.active {
+            display: flex;
+        }
+
+        .car-warning-dialog {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+            width: 100%;
+            max-width: 420px;
+            margin: 20px;
+            overflow: hidden;
+        }
+
+        .car-warning-header {
+            background: #fff3cd;
+            border-bottom: 2px solid #ffc107;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .car-warning-header .warn-icon {
+            font-size: 22px;
+            flex-shrink: 0;
+        }
+
+        .car-warning-header h3 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #664d03;
+            margin: 0;
+        }
+
+        .car-warning-body {
+            padding: 20px;
+        }
+
+        .car-warning-body p {
+            font-size: 14px;
+            color: #333;
+            margin: 0 0 8px;
+            line-height: 1.5;
+        }
+
+        .car-conflict-detail {
+            background: #f8f9fa;
+            border-left: 4px solid #ffc107;
+            border-radius: 0 6px 6px 0;
+            padding: 10px 14px;
+            margin: 12px 0 4px;
+            font-size: 13px;
+        }
+
+        .car-conflict-detail .conflict-driver {
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .car-conflict-detail .conflict-status {
+            color: #6c757d;
+            font-size: 12px;
+            margin-top: 2px;
+        }
     </style>
 </head>
 <body>
@@ -564,6 +641,26 @@
         </div>
     </div>
 
+    <!-- Duplicate car number warning dialog -->
+    <div class="car-warning-overlay" id="carWarningOverlay">
+        <div class="car-warning-dialog">
+            <div class="car-warning-header">
+                <span class="warn-icon">⚠️</span>
+                <h3>Car Number Already Assigned</h3>
+            </div>
+            <div class="car-warning-body">
+                <p>Car <strong id="warnCarNum"></strong> is currently assigned to another driver:</p>
+                <div class="car-conflict-detail">
+                    <div class="conflict-driver" id="warnDriverName"></div>
+                    <div class="conflict-status" id="warnDriverStatus"></div>
+                </div>
+                <p style="margin-top:12px; color:#6c757d; font-size:13px;">
+                    Please enter a different car number.
+                </p>
+            </div>
+        </div>
+    </div>
+
     <script>
         // API Configuration
         const API_BASE_URL = 'https://x6wxqzeqw9.execute-api.us-west-1.amazonaws.com/prod';
@@ -588,6 +685,30 @@
             assigned: { column: 'carNumber', direction: 'asc' },
             active: { column: 'carNumber', direction: 'asc' }
         };
+
+        // ── Duplicate car number warning ──
+        // Shows the dialog for 2 seconds then auto-dismisses. Always cancels the edit.
+        function showCarWarning(carNum, conflictingDriver) {
+            return new Promise((resolve) => {
+                const firstName = conflictingDriver.firstName || '';
+                const lastName  = conflictingDriver.lastName  || '';
+                const fullName  = `${firstName} ${lastName}`.trim() || 'Unknown Driver';
+
+                document.getElementById('warnCarNum').textContent = carNum;
+                document.getElementById('warnDriverName').textContent = fullName;
+                document.getElementById('warnDriverStatus').textContent =
+                    `Status: ${conflictingDriver.status}` +
+                    (conflictingDriver.zone ? `  ·  Zone: ${conflictingDriver.zone}` : '');
+
+                const overlay = document.getElementById('carWarningOverlay');
+                overlay.classList.add('active');
+
+                setTimeout(() => {
+                    overlay.classList.remove('active');
+                    resolve(false); // always cancel
+                }, 2000);
+            });
+        }
 
         // Fetch master driver list once to get phone numbers and names
         async function fetchMasterDrivers() {
@@ -996,7 +1117,7 @@
             const input = cell.querySelector('input');
             
             const driver = drivers.find(d => d.driverId === driverId);
-            let value = driver[field]; // Get current value from driver object
+            let value = driver[field];
             
             if (input) {
                 value = input.value.trim();
@@ -1004,7 +1125,26 @@
                 if (field === 'passengers') {
                     value = parseInt(value) || 0;
                 }
-                
+
+                // ── Duplicate car number check ──
+                if (field === 'carNumber' && value) {
+                    const conflict = drivers.find(d =>
+                        d.driverId !== driverId &&
+                        d.carNumber &&
+                        d.carNumber.toString() === value.toString()
+                    );
+                    if (conflict) {
+                        const proceed = await showCarWarning(value, conflict);
+                        if (!proceed) {
+                            // Restore original value and cancel edit
+                            cell.classList.remove('editing');
+                            editingCell = null;
+                            renderTables();
+                            return;
+                        }
+                    }
+                }
+
                 driver[field] = value;
 
                 // Auto-update status ONLY when editing car number field
