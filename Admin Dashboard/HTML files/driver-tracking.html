@@ -393,6 +393,60 @@
             font-style: italic;
         }
 
+        /* ── Copilot expand rows ── */
+        .expand-toggle {
+            width: 22px;
+            height: 22px;
+            border: none;
+            background: #e9ecef;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: #6c757d;
+            flex-shrink: 0;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .expand-toggle:hover { background: #667eea; color: white; }
+        .expand-toggle.open  { background: #667eea; color: white; transform: rotate(90deg); }
+
+        .copilot-row { display: none; }
+        .copilot-row.visible { display: table-row; }
+
+        .copilot-cell {
+            background: linear-gradient(90deg, #f5f7ff 0%, #fafbff 100%);
+            border-left: 3px solid #667eea;
+            padding: 10px 14px 10px 14px !important;
+        }
+
+        .copilot-inner {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .copilot-field { display: flex; flex-direction: column; gap: 1px; }
+
+        .copilot-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .copilot-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #212529;
+        }
+
         @media (max-width: 768px) {
             .stats-bar {
                 flex-wrap: wrap;
@@ -548,6 +602,7 @@
                 <table id="assigned-table">
                     <thead>
                         <tr>
+                            <th style="width:32px;"></th>
                             <th class="sortable" onclick="sortTable('assigned', 'lastName')">Last Name</th>
                             <th class="sortable" onclick="sortTable('assigned', 'firstName')">First Name</th>
                             <th>Phone</th>
@@ -583,6 +638,7 @@
                 <table id="active-table">
                     <thead>
                         <tr>
+                            <th style="width:32px;"></th>
                             <th class="sortable" onclick="sortTable('active', 'lastName')">Last Name</th>
                             <th class="sortable" onclick="sortTable('active', 'firstName')">First Name</th>
                             <th>Phone</th>
@@ -618,6 +674,7 @@
                 <table id="master-table">
                     <thead>
                         <tr>
+                            <th style="width:32px;"></th>
                             <th>Last Name</th>
                             <th>First Name</th>
                             <th>Phone</th>
@@ -706,7 +763,7 @@
                 setTimeout(() => {
                     overlay.classList.remove('active');
                     resolve(false); // always cancel
-                }, 3000);
+                }, 2000);
             });
         }
 
@@ -720,7 +777,10 @@
                     masterDriverMap[d.driverId] = {
                         phoneNumber: d.phoneNumber || '',
                         firstName: d.firstName || '',
-                        lastName: d.lastName || ''
+                        lastName: d.lastName || '',
+                        copilotFirstName: d.copilotFirstName || '',
+                        copilotLastName: d.copilotLastName || '',
+                        copilotPhone: d.copilotPhone || ''
                     };
                 });
             } catch (error) {
@@ -743,7 +803,10 @@
                     ...d,
                     phoneNumber: masterDriverMap[d.driverId]?.phoneNumber || '',
                     firstName: masterDriverMap[d.driverId]?.firstName || '',
-                    lastName: masterDriverMap[d.driverId]?.lastName || ''
+                    lastName: masterDriverMap[d.driverId]?.lastName || '',
+                    copilotFirstName: masterDriverMap[d.driverId]?.copilotFirstName || '',
+                    copilotLastName: masterDriverMap[d.driverId]?.copilotLastName || '',
+                    copilotPhone: masterDriverMap[d.driverId]?.copilotPhone || ''
                 }));
                 renderTables();
             } catch (error) {
@@ -893,34 +956,25 @@
                 document.getElementById('assigned-table').style.display = 'table';
                 
                 assignedDrivers.forEach(driver => {
+                    const hasCopilot = driver.copilotFirstName || driver.copilotLastName;
+                    const copilotRowId = `cp-${driver.driverId}`;
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>
-                            <div class="non-editable">${driver.lastName || ''}</div>
+                        <td style="text-align:center;">
+                            ${hasCopilot ? `<button class="expand-toggle" onclick="toggleCopilot(this,'${copilotRowId}')" title="Show copilot">▶</button>` : ''}
                         </td>
-                        <td>
-                            <div class="non-editable">${driver.firstName || ''}</div>
-                        </td>
-                        <td>
-                            <div class="non-editable">${driver.phoneNumber || ''}</div>
-                        </td>
+                        <td><div class="non-editable">${driver.lastName || ''}</div></td>
+                        <td><div class="non-editable">${driver.firstName || ''}</div></td>
+                        <td><div class="non-editable">${driver.phoneNumber || ''}</div></td>
                         <td>
                             <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', true)">
                                 ${driver.carNumber ? driver.carNumber : '<span class="empty-cell">Not assigned</span>'}
                             </div>
                         </td>
-                        <td>
-                            <div class="non-editable">${driver.make}</div>
-                        </td>
-                        <td>
-                            <div class="non-editable">${driver.model}</div>
-                        </td>
-                        <td>
-                            <div class="non-editable">${driver.seatCapacity}</div>
-                        </td>
-                        <td>
-                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'passengers', true)">${driver.passengers}</div>
-                        </td>
+                        <td><div class="non-editable">${driver.make}</div></td>
+                        <td><div class="non-editable">${driver.model}</div></td>
+                        <td><div class="non-editable">${driver.seatCapacity}</div></td>
+                        <td><div class="editable" onclick="editCell(this, '${driver.driverId}', 'passengers', true)">${driver.passengers}</div></td>
                         <td>
                             <div class="editable zone-cell" onclick="editCell(this, '${driver.driverId}', 'zone', true)">
                                 ${driver.zone ? driver.zone : '<span class="empty-cell">Not assigned</span>'}
@@ -938,6 +992,28 @@
                         </td>
                     `;
                     assignedTbody.appendChild(row);
+
+                    if (hasCopilot) {
+                        const cpRow = document.createElement('tr');
+                        cpRow.className = 'copilot-row';
+                        cpRow.id = copilotRowId;
+                        cpRow.innerHTML = `
+                            <td></td>
+                            <td class="copilot-cell" colspan="11">
+                                <div class="copilot-inner">
+                                    <div class="copilot-field">
+                                        <span class="copilot-label">👥 Copilot Name</span>
+                                        <span class="copilot-value">${driver.copilotFirstName || ''} ${driver.copilotLastName || ''}</span>
+                                    </div>
+                                    <div class="copilot-field">
+                                        <span class="copilot-label">📱 Copilot Phone</span>
+                                        <span class="copilot-value">${driver.copilotPhone || '—'}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        `;
+                        assignedTbody.appendChild(cpRow);
+                    }
                 });
             }
 
@@ -950,34 +1026,25 @@
                 document.getElementById('active-table').style.display = 'table';
                 
                 activeDrivers.forEach(driver => {
+                    const hasCopilot = driver.copilotFirstName || driver.copilotLastName;
+                    const copilotRowId = `cp-${driver.driverId}`;
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>
-                            <div class="non-editable">${driver.lastName || ''}</div>
+                        <td style="text-align:center;">
+                            ${hasCopilot ? `<button class="expand-toggle" onclick="toggleCopilot(this,'${copilotRowId}')" title="Show copilot">▶</button>` : ''}
                         </td>
-                        <td>
-                            <div class="non-editable">${driver.firstName || ''}</div>
-                        </td>
-                        <td>
-                            <div class="non-editable">${driver.phoneNumber || ''}</div>
-                        </td>
+                        <td><div class="non-editable">${driver.lastName || ''}</div></td>
+                        <td><div class="non-editable">${driver.firstName || ''}</div></td>
+                        <td><div class="non-editable">${driver.phoneNumber || ''}</div></td>
                         <td>
                             <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', true)">
                                 ${driver.carNumber ? driver.carNumber : '<span class="empty-cell">Not assigned</span>'}
                             </div>
                         </td>
-                        <td>
-                            <div class="non-editable">${driver.make}</div>
-                        </td>
-                        <td>
-                            <div class="non-editable">${driver.model}</div>
-                        </td>
-                        <td>
-                            <div class="non-editable">${driver.seatCapacity}</div>
-                        </td>
-                        <td>
-                            <div class="editable" onclick="editCell(this, '${driver.driverId}', 'passengers', true)">${driver.passengers}</div>
-                        </td>
+                        <td><div class="non-editable">${driver.make}</div></td>
+                        <td><div class="non-editable">${driver.model}</div></td>
+                        <td><div class="non-editable">${driver.seatCapacity}</div></td>
+                        <td><div class="editable" onclick="editCell(this, '${driver.driverId}', 'passengers', true)">${driver.passengers}</div></td>
                         <td>
                             <div class="editable zone-cell" onclick="editCell(this, '${driver.driverId}', 'zone', true)">
                                 ${driver.zone ? driver.zone : '<span class="empty-cell">Not assigned</span>'}
@@ -995,35 +1062,50 @@
                         </td>
                     `;
                     activeTbody.appendChild(row);
+
+                    if (hasCopilot) {
+                        const cpRow = document.createElement('tr');
+                        cpRow.className = 'copilot-row';
+                        cpRow.id = copilotRowId;
+                        cpRow.innerHTML = `
+                            <td></td>
+                            <td class="copilot-cell" colspan="11">
+                                <div class="copilot-inner">
+                                    <div class="copilot-field">
+                                        <span class="copilot-label">👥 Copilot Name</span>
+                                        <span class="copilot-value">${driver.copilotFirstName || ''} ${driver.copilotLastName || ''}</span>
+                                    </div>
+                                    <div class="copilot-field">
+                                        <span class="copilot-label">📱 Copilot Phone</span>
+                                        <span class="copilot-value">${driver.copilotPhone || '—'}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        `;
+                        activeTbody.appendChild(cpRow);
+                    }
                 });
             }
 
             checkedOutDrivers.forEach(driver => {
+                const hasCopilot = driver.copilotFirstName || driver.copilotLastName;
+                const copilotRowId = `cp-${driver.driverId}`;
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td>
-                        <div class="non-editable">${driver.lastName || ''}</div>
+                    <td style="text-align:center;">
+                        ${hasCopilot ? `<button class="expand-toggle" onclick="toggleCopilot(this,'${copilotRowId}')" title="Show copilot">▶</button>` : ''}
                     </td>
-                    <td>
-                        <div class="non-editable">${driver.firstName || ''}</div>
-                    </td>
-                    <td>
-                        <div class="non-editable">${driver.phoneNumber || ''}</div>
-                    </td>
+                    <td><div class="non-editable">${driver.lastName || ''}</div></td>
+                    <td><div class="non-editable">${driver.firstName || ''}</div></td>
+                    <td><div class="non-editable">${driver.phoneNumber || ''}</div></td>
                     <td>
                         <div class="editable" onclick="editCell(this, '${driver.driverId}', 'carNumber', false)">
                             ${driver.carNumber ? driver.carNumber : '<span class="empty-cell">Not assigned</span>'}
                         </div>
                     </td>
-                    <td>
-                        <div class="non-editable">${driver.make}</div>
-                    </td>
-                    <td>
-                        <div class="non-editable">${driver.model}</div>
-                    </td>
-                    <td>
-                        <div class="non-editable">${driver.seatCapacity}</div>
-                    </td>
+                    <td><div class="non-editable">${driver.make}</div></td>
+                    <td><div class="non-editable">${driver.model}</div></td>
+                    <td><div class="non-editable">${driver.seatCapacity}</div></td>
                     <td>
                         <div class="non-editable">
                             <span class="type-badge type-${driver.driverType.toLowerCase()}">${driver.driverType}</span>
@@ -1036,10 +1118,39 @@
                     </td>
                 `;
                 masterTbody.appendChild(row);
+
+                if (hasCopilot) {
+                    const cpRow = document.createElement('tr');
+                    cpRow.className = 'copilot-row';
+                    cpRow.id = copilotRowId;
+                    cpRow.innerHTML = `
+                        <td></td>
+                        <td class="copilot-cell" colspan="9">
+                            <div class="copilot-inner">
+                                <div class="copilot-field">
+                                    <span class="copilot-label">👥 Copilot Name</span>
+                                    <span class="copilot-value">${driver.copilotFirstName || ''} ${driver.copilotLastName || ''}</span>
+                                </div>
+                                <div class="copilot-field">
+                                    <span class="copilot-label">📱 Copilot Phone</span>
+                                    <span class="copilot-value">${driver.copilotPhone || '—'}</span>
+                                </div>
+                            </div>
+                        </td>
+                    `;
+                    masterTbody.appendChild(cpRow);
+                }
             });
 
             updateStats();
             updateLastUpdatedTime();
+        }
+
+        function toggleCopilot(btn, rowId) {
+            const row = document.getElementById(rowId);
+            const isOpen = row.classList.toggle('visible');
+            btn.classList.toggle('open', isOpen);
+            btn.title = isOpen ? 'Hide copilot' : 'Show copilot';
         }
 
         function editCell(cell, driverId, field, isActiveTable) {

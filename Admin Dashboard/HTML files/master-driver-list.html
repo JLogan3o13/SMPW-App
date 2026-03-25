@@ -542,6 +542,26 @@
                         <label class="form-label" for="driver-capacity">Seat Capacity *</label>
                         <input type="number" id="driver-capacity" class="form-input" required min="1" max="20" placeholder="e.g., 7">
                     </div>
+
+                    <div style="margin: 20px 0 12px; border-top: 1px solid #e0e0e0; padding-top: 16px;">
+                        <div style="font-size: 13px; font-weight: 600; color: #667eea; margin-bottom: 4px;">👥 Copilot (Optional)</div>
+                        <div style="font-size: 12px; color: #999; margin-bottom: 14px;">Leave blank if this driver has no copilot.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="copilot-firstName">Copilot First Name</label>
+                        <input type="text" id="copilot-firstName" class="form-input" placeholder="e.g., SOFIA">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="copilot-lastName">Copilot Last Name</label>
+                        <input type="text" id="copilot-lastName" class="form-input" placeholder="e.g., MARTINEZ">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="copilot-phone">Copilot Phone</label>
+                        <input type="tel" id="copilot-phone" class="form-input" placeholder="e.g., 702-555-0199">
+                    </div>
                 </form>
             </div>
             <div class="modal-footer">
@@ -755,6 +775,9 @@
             document.getElementById('modal-title').textContent = 'Add New Driver';
             document.getElementById('driver-form').reset();
             document.getElementById('driver-id').value = '';
+            document.getElementById('copilot-firstName').value = '';
+            document.getElementById('copilot-lastName').value = '';
+            document.getElementById('copilot-phone').value = '';
             document.getElementById('driver-modal').classList.add('active');
         }
 
@@ -770,6 +793,9 @@
             document.getElementById('driver-make').value = driver.make;
             document.getElementById('driver-model').value = driver.model;
             document.getElementById('driver-capacity').value = driver.seatCapacity;
+            document.getElementById('copilot-firstName').value = driver.copilotFirstName || '';
+            document.getElementById('copilot-lastName').value = driver.copilotLastName || '';
+            document.getElementById('copilot-phone').value = driver.copilotPhone || '';
             
             document.getElementById('driver-modal').classList.add('active');
         }
@@ -786,6 +812,9 @@
             const make = document.getElementById('driver-make').value.trim();
             const model = document.getElementById('driver-model').value.trim();
             const capacity = parseInt(document.getElementById('driver-capacity').value);
+            const copilotFirstName = document.getElementById('copilot-firstName').value.trim();
+            const copilotLastName = document.getElementById('copilot-lastName').value.trim();
+            const copilotPhone = document.getElementById('copilot-phone').value.trim();
 
             if (!firstName || !lastName || !phoneNumber || !make || !model || !capacity) {
                 showAlert('Please fill in all required fields', 'danger');
@@ -794,22 +823,23 @@
 
             const displayName = `${firstName} ${lastName}`;
 
+            // Build payload — only include copilot fields if at least one has a value
+            const hasCopilot = copilotFirstName || copilotLastName || copilotPhone;
+            const copilotPayload = hasCopilot ? { copilotFirstName, copilotLastName, copilotPhone } : {};
+
             try {
                 if (driverId) {
                     const response = await fetch(`${API_BASE_URL}/drivers`, {
                         method: 'PUT',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            driverId: driverId,
-                            firstName: firstName,
-                            lastName: lastName,
-                            phoneNumber: phoneNumber,
-                            make: make,
-                            model: model,
-                            seatCapacity: capacity
+                            driverId,
+                            firstName, lastName, phoneNumber,
+                            make, model,
+                            seatCapacity: capacity,
+                            ...copilotPayload
                         })
                     });
-
                     if (!response.ok) throw new Error('Failed to update driver');
                     showAlert(`Driver "${displayName}" updated successfully`, 'success');
                 } else {
@@ -817,15 +847,12 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            firstName: firstName,
-                            lastName: lastName,
-                            phoneNumber: phoneNumber,
-                            make: make,
-                            model: model,
-                            seatCapacity: capacity
+                            firstName, lastName, phoneNumber,
+                            make, model,
+                            seatCapacity: capacity,
+                            ...copilotPayload
                         })
                     });
-
                     if (!response.ok) throw new Error('Failed to add driver');
                     showAlert(`Driver "${displayName}" added successfully`, 'success');
                 }
