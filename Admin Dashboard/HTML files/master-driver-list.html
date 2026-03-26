@@ -913,9 +913,8 @@
 
             const displayName = `${firstName} ${lastName}`;
 
-            // Build payload — only include copilot fields if at least one has a value
-            const hasCopilot = copilotFirstName || copilotLastName || copilotPhone;
-            const copilotPayload = hasCopilot ? { copilotFirstName, copilotLastName, copilotPhone } : {};
+            // Always send copilot fields so the Lambda can remove them if cleared
+            const copilotPayload = { copilotFirstName, copilotLastName, copilotPhone };
 
             try {
                 if (driverId) {

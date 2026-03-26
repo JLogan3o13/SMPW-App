@@ -14,8 +14,8 @@ def lambda_handler(event, context):
 
         driver_id = body['driverId']
 
-        # Build update expression dynamically so copilot fields are optional
-        update_parts = [
+        # Core fields always present
+        set_parts = [
             'firstName = :firstName',
             'lastName = :lastName',
             'phoneNumber = :phoneNumber',
@@ -33,20 +33,22 @@ def lambda_handler(event, context):
             ':capacity':    int(body['seatCapacity'])
         }
 
-        # Include copilot fields only if present in the payload
-        if 'copilotFirstName' in body:
-            update_parts.append('copilotFirstName = :copilotFirstName')
-            expression_values[':copilotFirstName'] = body['copilotFirstName']
+        # Copilot fields: SET if non-empty, REMOVE if empty
+        remove_parts = []
+        copilot_fields = ['copilotFirstName', 'copilotLastName', 'copilotPhone']
 
-        if 'copilotLastName' in body:
-            update_parts.append('copilotLastName = :copilotLastName')
-            expression_values[':copilotLastName'] = body['copilotLastName']
+        for field in copilot_fields:
+            if field in body:
+                if body[field]:  # non-empty value — set it
+                    set_parts.append(f'{field} = :{field}')
+                    expression_values[f':{field}'] = body[field]
+                else:  # empty string — remove the attribute entirely
+                    remove_parts.append(field)
 
-        if 'copilotPhone' in body:
-            update_parts.append('copilotPhone = :copilotPhone')
-            expression_values[':copilotPhone'] = body['copilotPhone']
-
-        update_expression = 'SET ' + ', '.join(update_parts)
+        # Build final update expression
+        update_expression = 'SET ' + ', '.join(set_parts)
+        if remove_parts:
+            update_expression += ' REMOVE ' + ', '.join(remove_parts)
 
         response = table.update_item(
             Key={'driverId': driver_id},
