@@ -675,15 +675,15 @@
                     <thead>
                         <tr>
                             <th style="width:32px;"></th>
-                            <th>Last Name</th>
-                            <th>First Name</th>
+                            <th class="sortable" onclick="sortTable('master', 'lastName')">Last Name</th>
+                            <th class="sortable" onclick="sortTable('master', 'firstName')">First Name</th>
                             <th>Phone</th>
-                            <th>Car #</th>
-                            <th>Make</th>
-                            <th>Model</th>
-                            <th>Seat Capacity</th>
-                            <th>Driver Type</th>
-                            <th>Status</th>
+                            <th class="sortable" onclick="sortTable('master', 'carNumber')">Car #</th>
+                            <th class="sortable" onclick="sortTable('master', 'make')">Make</th>
+                            <th class="sortable" onclick="sortTable('master', 'model')">Model</th>
+                            <th class="sortable" onclick="sortTable('master', 'seatCapacity')">Seat Capacity</th>
+                            <th class="sortable" onclick="sortTable('master', 'driverType')">Driver Type</th>
+                            <th class="sortable" onclick="sortTable('master', 'status')">Status</th>
                         </tr>
                     </thead>
                     <tbody id="master-tbody">
@@ -741,7 +741,8 @@
         // Sorting state
         let sortState = {
             assigned: { column: 'carNumber', direction: 'asc' },
-            active: { column: 'carNumber', direction: 'asc' }
+            active: { column: 'carNumber', direction: 'asc' },
+            master: { column: 'lastName', direction: 'asc' }
         };
 
         // ── Duplicate car number warning ──
@@ -894,6 +895,13 @@
                 th.textContent.toLowerCase().includes(getColumnLabel(sortState.active.column).toLowerCase())
             );
             if (activeSortHeader) activeSortHeader.classList.add(sortState.active.direction);
+
+            const masterHeaders = document.querySelectorAll('#master-table th.sortable');
+            masterHeaders.forEach(th => th.classList.remove('asc', 'desc'));
+            const masterSortHeader = Array.from(masterHeaders).find(th =>
+                th.textContent.toLowerCase().includes(getColumnLabel(sortState.master.column).toLowerCase())
+            );
+            if (masterSortHeader) masterSortHeader.classList.add(sortState.master.direction);
         }
 
         function getColumnLabel(column) {
@@ -940,9 +948,10 @@
                 return compareValues(a, b, activeSort.column, activeSort.direction);
             });
 
-            // Sort Checked Out table by Driver Name (alphabetical)
+            // Sort Checked Out table using sortState
+            const masterSort = sortState.master;
             checkedOutDrivers.sort((a, b) => {
-                return a.name.localeCompare(b.name);
+                return compareValues(a, b, masterSort.column, masterSort.direction);
             });
 
             // Update header sort indicators
