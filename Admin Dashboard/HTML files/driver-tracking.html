@@ -736,6 +736,7 @@
         let masterDriverMap = {}; // keyed by driverId, holds phoneNumber, firstName, lastName
         let editingCell = null;
         let pollingInterval = null;
+        let expandedCopilots = new Set(); // tracks which driverIds have copilot row open
         
         // Sorting state
         let sortState = {
@@ -1144,6 +1145,25 @@
 
             updateStats();
             updateLastUpdatedTime();
+            restoreExpandedCopilots();
+        }
+
+        function restoreExpandedCopilots() {
+            expandedCopilots.forEach(driverId => {
+                const rowId = `cp-${driverId}`;
+                const cpRow = document.getElementById(rowId);
+                if (!cpRow) return;
+                cpRow.classList.add('visible');
+                // Find the toggle button in the preceding row and mark it open
+                const prevRow = cpRow.previousElementSibling;
+                if (prevRow) {
+                    const btn = prevRow.querySelector('.expand-toggle');
+                    if (btn) {
+                        btn.classList.add('open');
+                        btn.title = 'Hide copilot';
+                    }
+                }
+            });
         }
 
         function toggleCopilot(btn, rowId) {
@@ -1151,6 +1171,13 @@
             const isOpen = row.classList.toggle('visible');
             btn.classList.toggle('open', isOpen);
             btn.title = isOpen ? 'Hide copilot' : 'Show copilot';
+            // Extract driverId from rowId (format: "cp-{driverId}")
+            const driverId = rowId.replace(/^cp-/, '');
+            if (isOpen) {
+                expandedCopilots.add(driverId);
+            } else {
+                expandedCopilots.delete(driverId);
+            }
         }
 
         function editCell(cell, driverId, field, isActiveTable) {

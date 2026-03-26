@@ -441,6 +441,60 @@
                 width: 95%;
             }
         }
+
+        /* ── Copilot expand rows ── */
+        .expand-toggle {
+            width: 22px;
+            height: 22px;
+            border: none;
+            background: #e9ecef;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            color: #6c757d;
+            flex-shrink: 0;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .expand-toggle:hover { background: #dc3545; color: white; }
+        .expand-toggle.open  { background: #dc3545; color: white; transform: rotate(90deg); }
+
+        .copilot-row { display: none; }
+        .copilot-row.visible { display: table-row; }
+
+        .copilot-cell {
+            background: linear-gradient(90deg, #fff5f5 0%, #fffafa 100%);
+            border-left: 3px solid #dc3545;
+            padding: 10px 14px !important;
+        }
+
+        .copilot-inner {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .copilot-field { display: flex; flex-direction: column; gap: 1px; }
+
+        .copilot-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            color: #dc3545;
+            font-weight: 600;
+        }
+
+        .copilot-value {
+            font-size: 13px;
+            font-weight: 500;
+            color: #212529;
+        }
     </style>
 </head>
 <body>
@@ -481,6 +535,7 @@
             <table id="drivers-table">
                 <thead>
                     <tr>
+                        <th style="width:32px;"></th>
                         <th onclick="toggleSort('lastName')">Last Name <span id="sort-indicator-last">▲</span></th>
                         <th onclick="toggleSort('firstName')">First Name <span id="sort-indicator-first"></span></th>
                         <th>Phone Number</th>
@@ -728,8 +783,14 @@
                 emptyState.style.display = 'none';
 
                 filteredDrivers.forEach(driver => {
+                    const hasCopilot = driver.copilotFirstName || driver.copilotLastName;
+                    const copilotRowId = `cp-${driver.driverId}`;
+
                     const row = document.createElement('tr');
                     row.innerHTML = `
+                        <td style="text-align:center;">
+                            ${hasCopilot ? `<button class="expand-toggle" onclick="toggleCopilot(this,'${copilotRowId}')" title="Show copilot">▶</button>` : ''}
+                        </td>
                         <td>${driver.lastName || ''}</td>
                         <td>${driver.firstName || ''}</td>
                         <td>${driver.phoneNumber || 'N/A'}</td>
@@ -744,10 +805,39 @@
                         </td>
                     `;
                     tbody.appendChild(row);
+
+                    if (hasCopilot) {
+                        const cpRow = document.createElement('tr');
+                        cpRow.className = 'copilot-row';
+                        cpRow.id = copilotRowId;
+                        cpRow.innerHTML = `
+                            <td></td>
+                            <td class="copilot-cell" colspan="7">
+                                <div class="copilot-inner">
+                                    <div class="copilot-field">
+                                        <span class="copilot-label">👥 Copilot Name</span>
+                                        <span class="copilot-value">${driver.copilotFirstName || ''} ${driver.copilotLastName || ''}</span>
+                                    </div>
+                                    <div class="copilot-field">
+                                        <span class="copilot-label">📱 Copilot Phone</span>
+                                        <span class="copilot-value">${driver.copilotPhone || '—'}</span>
+                                    </div>
+                                </div>
+                            </td>
+                        `;
+                        tbody.appendChild(cpRow);
+                    }
                 });
             }
 
             updateStats();
+        }
+
+        function toggleCopilot(btn, rowId) {
+            const row = document.getElementById(rowId);
+            const isOpen = row.classList.toggle('visible');
+            btn.classList.toggle('open', isOpen);
+            btn.title = isOpen ? 'Hide copilot' : 'Show copilot';
         }
 
         function updateStats() {
