@@ -37,7 +37,7 @@ foreach ($coordObj in $coordsList) {
     $coordinates += ,@($lng, $lat)
 }
 
-Write-Host "✓ Extracted $($coordinates.Count) coordinates" -ForegroundColor Green
+Write-Host "Extracted $($coordinates.Count) coordinates" -ForegroundColor Green
 
 # Sample to max 25 waypoints if needed
 $total = $coordinates.Count
@@ -53,7 +53,7 @@ if ($total -gt 25) {
     
     $sampled += ,$coordinates[$total - 1]  # End
     $coordinates = $sampled
-    Write-Host "✓ Sampled down to $($coordinates.Count) waypoints" -ForegroundColor Green
+    Write-Host "Sampled down to $($coordinates.Count) waypoints" -ForegroundColor Green
 }
 
 # Create Lambda test event
@@ -68,7 +68,7 @@ $lambdaEvent = @{
 $lambdaEvent | Out-File -FilePath $OutputFile -Encoding UTF8
 
 Write-Host ""
-Write-Host "✓ Lambda test event saved to: $OutputFile" -ForegroundColor Green
+Write-Host "Lambda test event saved to: $OutputFile" -ForegroundColor Green
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Cyan
 Write-Host "1. Copy the contents of $OutputFile"

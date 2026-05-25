@@ -1,4 +1,4 @@
-param(
+﻿param(
     [Parameter(Mandatory=$true)]
     [string]$InputFile,
     
@@ -18,19 +18,49 @@ if (-not $OutputFile) {
 # Read the Lambda response
 $content = Get-Content -Path $InputFile -Raw -Encoding UTF8
 
-# The Lambda response might be wrapped in quotes or have "instructions": prefix
-# Try to extract just the instructions array
-if ($content -match '"instructions"\s*:\s*(\[.*\])') {
-    $instructionsJson = $matches[1]
-} elseif ($content -match '(\[.*\])') {
-    $instructionsJson = $matches[1]
-} else {
-    Write-Error "Could not find instructions array in input file"
-    exit 1
+# Try to parse as JSON first (in case it's the full Lambda response)
+try {
+    $lambdaResponse = $content | ConvertFrom-Json
+    
+    # Check if this is a full Lambda response with statusCode and body
+    if ($lambdaResponse.PSObject.Properties.Name -contains "body") {
+        Write-Host "✓ Detected full Lambda response format" -ForegroundColor Yellow
+        
+        # Extract and parse the body
+        $bodyJson = $lambdaResponse.body
+        $bodyParsed = $bodyJson | ConvertFrom-Json
+        
+        # Get the instructions
+        $instructions = $bodyParsed.instructions
+        Write-Host "✓ Extracted instructions from Lambda response body" -ForegroundColor Green
+    }
+    else {
+        # It's already parsed JSON, check if it has instructions
+        if ($lambdaResponse.PSObject.Properties.Name -contains "instructions") {
+            $instructions = $lambdaResponse.instructions
+        }
+        else {
+            throw "Could not find instructions in JSON"
+        }
+    }
 }
-
-# Parse the instructions
-$instructions = $instructionsJson | ConvertFrom-Json
+catch {
+    # If JSON parsing fails, try regex extraction
+    Write-Host "✓ Attempting regex extraction" -ForegroundColor Yellow
+    
+    if ($content -match '"instructions"\s*:\s*(\[.*\])') {
+        $instructionsJson = $matches[1]
+        $instructions = $instructionsJson | ConvertFrom-Json
+    }
+    elseif ($content -match '(\[.*\])') {
+        $instructionsJson = $matches[1]
+        $instructions = $instructionsJson | ConvertFrom-Json
+    }
+    else {
+        Write-Error "Could not find instructions array in input file"
+        exit 1
+    }
+}
 
 Write-Host "✓ Parsed $($instructions.Count) instructions" -ForegroundColor Green
 
