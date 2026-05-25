@@ -30,20 +30,27 @@ def get_geometry(item, route_key: str):
 def get_instructions(item, route_key: str):
     """
     Get turn-by-turn instructions for a route.
-    route_key examples: 'Route1', 'Route1Return'
-    Looks for 'routeInstructions' (for Route1) or 'returnRouteInstructions' (for Route1Return)
+    route_key examples: 'Route1', 'Route2', 'Route3', 'Route1Return', 'Route2Return', 'Route3Return'
     
-    Note: Currently we only support instructions for the base routes (Route1/Route1Return)
-    since we're storing them as 'routeInstructions' and 'returnRouteInstructions'
+    NEW BEHAVIOR:
+    - Looks for 'Route1Instructions', 'Route2Instructions', 'Route3Instructions'
+    - Looks for 'Route1ReturnInstructions', 'Route2ReturnInstructions', 'Route3ReturnInstructions'
+    
+    BACKWARD COMPATIBILITY:
+    - Falls back to old 'routeInstructions' for Route1 outbound
+    - Falls back to old 'returnRouteInstructions' for Route1Return
     """
-    # Map route keys to instruction attribute names
-    # For now, we assume Route1 uses the base attributes
-    if 'Return' in route_key:
-        instructions_attr = 'returnRouteInstructions'
-    else:
-        instructions_attr = 'routeInstructions'
+    # Build the attribute name following the same pattern as get_geometry
+    instructions_attr = f"{route_key}Instructions"
     
+    # Try the new naming pattern first
     instructions = item.get(instructions_attr)
+    
+    # Backward compatibility: fall back to old field names for Route1
+    if not instructions and route_key == 'Route1':
+        instructions = item.get('routeInstructions')
+    elif not instructions and route_key == 'Route1Return':
+        instructions = item.get('returnRouteInstructions')
     
     # Return the instructions array if it exists and is not empty
     if isinstance(instructions, list) and len(instructions) > 0:
@@ -178,7 +185,8 @@ def lambda_handler(event, context):
                 active_route_geometry = get_geometry(item, active_route)
                 active_return_geometry = get_geometry(item, active_return_route)
 
-                # NEW: Get turn-by-turn instructions for the current active route
+                # UPDATED: Get turn-by-turn instructions for the current active route
+                # Now supports Route1Instructions, Route2Instructions, Route3Instructions
                 active_route_instructions = get_instructions(item, active_route)
                 active_return_instructions = get_instructions(item, active_return_route)
 
@@ -213,8 +221,8 @@ def lambda_handler(event, context):
                     'locationId': f"{item['Zone']}-{item['Label'].replace(' ', '-')}",
                     'routeGeometry': active_route_geometry,
                     'returnRouteGeometry': active_return_geometry,
-                    'routeInstructions': active_route_instructions,  # NEW
-                    'returnRouteInstructions': active_return_instructions,  # NEW
+                    'routeInstructions': active_route_instructions,
+                    'returnRouteInstructions': active_return_instructions,
                     'availableRouteGeometries': available_route_geometries,
                     'availableReturnRouteGeometries': available_return_route_geometries
                 }

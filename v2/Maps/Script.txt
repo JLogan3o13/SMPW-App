@@ -1,4 +1,35 @@
-PS C:\Users\Jeremiah\Documents\GitHub\SMPW-App\v2\Maps> .\ConvertGeoJSON.ps1 -GeoJsonPath "C:\Users\Jeremiah\Documents\GitHub\SMPW-App\v2\Maps\Raiders Games\Hub to Zone E.geojson" -AttributeName "Route1Geometry" -FeatureIndex 0 > Route1Geometry.json
-
-PS C:\Users\Jeremiah\Documents\GitHub\SMPW-App\v2\Maps> .\ConvertKML2GeoJSon.ps1 -KmlPath "C:\users\jeremiah\downloads\Zone E to Hub.kml" -OutputPath ".\Raiders Games\out.geojson"
-GeoJSON written to .\Raiders Games\out.geojson
+Outbound:
+	1. .\ConvertKML2GeoJSon.ps1 -KmlPath <path to KML> -OutputPath ".\out.geojson"
+		Produces Out.getjson file
+	
+	2. .\ConvertGeoJSON.ps1 -GeoJsonPath ".\out.geojson" -AttributeName "Route1Geometry" -FeatureIndex 0 > Route1Geometry.json
+		Produces Route1Geometry json file
+	
+	3. .\ConvertCoordsToWaypoints.ps1 -InputFile <path to json>
+		Produces lamda_test_event.json file
+	
+	4. Paste lamda_test_event.json into generate-turn-instructions in AWS and test
+		Paste response into lambda_response.txt file
+		
+	5. .\ConvertWaypointsToDynamo.ps1 -InputFile ".\lambda_response.txt" -AttributeName "routeInstructions"
+		Produces RouteInstructions.json
+		
+	6. Copy Route1Geometry and RouteInstructions into Dynamo DB
+	
+Return:
+	1. .\ConvertKML2GeoJSon.ps1 -KmlPath <path to KML> -OutputPath ".\out.geojson"
+		Produces Out.getjson file
+	
+	2. .\ConvertGeoJSON.ps1 -GeoJsonPath ".\out.geojson" -AttributeName "Route1ReturnGeometry" -FeatureIndex 0 > Route1ReturnGeometry.json
+		Produces Route1ReturnGeometry json file
+	
+	3. .\ConvertCoordsToWaypoints.ps1 -InputFile <path to json>
+		Produces lamda_test_event.json file
+	
+	4. Paste lamda_test_event.json into generate-turn-instructions in AWS and test
+		Paste response into lambda_response.txt file
+		
+	5. .\ConvertWaypointsToDynamo.ps1 -InputFile ".\lambda_response.txt" -AttributeName "returnRouteInstructions"
+		Produces returnRouteInstructions.json
+		
+	6. Copy Route1ReturnGeometry and returnRouteInstructions into Dynamo DB
