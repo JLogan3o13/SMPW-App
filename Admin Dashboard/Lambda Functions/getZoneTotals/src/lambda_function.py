@@ -51,8 +51,16 @@ def lambda_handler(event, context):
             print(f"Error querying table: {str(e)}")
             zone_totals = []
         
-        # Create a result with all zones (A, A3, B, C, D, E, F, Z)
-        all_zones = ['A', 'A3', 'B', 'C', 'D', 'E', 'F', 'Z']
+        # Create a result with all sub-zones plus Z overflow
+        all_zones = [
+            'A1', 'A2', 'A3',
+            'B1', 'B2', 'B3', 'B4', 'B5',
+            'C1', 'C2', 'C3', 'C4',
+            'D1', 'D2', 'D3', 'D4', 'D5',
+            'E1', 'E2', 'E3', 'E4',
+            'F1', 'F2', 'F3', 'F4',
+            'Z'
+        ]
         zone_map = {zt['zone']: zt for zt in zone_totals}
         
         result = []

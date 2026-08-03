@@ -451,6 +451,70 @@
                 gap: 15px;
             }
         }
+
+        /* ── Option B grouped layout ── */
+        .zone-groups {
+            padding: 24px 30px 30px;
+        }
+
+        .group-section {
+            margin-bottom: 32px;
+        }
+
+        .group-header {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 14px;
+        }
+
+        .group-letter {
+            font-size: 26px;
+            font-weight: 700;
+            color: #667eea;
+            width: 36px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .group-rule {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, #e0e0e0 0%, transparent 100%);
+            border-radius: 1px;
+        }
+
+        .group-summary {
+            font-size: 12px;
+            color: #888;
+            white-space: nowrap;
+        }
+
+        .group-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 14px;
+            padding-left: 50px;
+        }
+
+        .zone-standalone {
+            padding: 0 30px 30px;
+        }
+
+        .zone-standalone-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .zone-groups { padding: 16px; }
+            .group-grid  { padding-left: 0; grid-template-columns: 1fr 1fr; }
+            .zone-standalone { padding: 0 16px 24px; }
+        }
     </style>
 </head>
 <body>
@@ -488,8 +552,13 @@
 
         <div id="alert-container"></div>
 
-        <div class="zone-grid" id="zone-grid">
-            <!-- Zone cards will be populated here -->
+        <div class="zone-groups" id="zone-groups">
+            <!-- Group sections will be populated here -->
+        </div>
+
+        <div class="zone-standalone" id="zone-standalone" style="display:none;">
+            <div class="zone-standalone-label">⚡ Overflow</div>
+            <div id="zone-z-card"></div>
         </div>
 
         <div class="last-updated">
@@ -511,8 +580,17 @@
         };
         const EVENT_DATE = getLocalDate(); // Today's date in local time (YYYY-MM-DD format)
 
-        // Master list of all zones
-        const masterZones = ['A', 'A3', 'B', 'C', 'D', 'E', 'F'];
+        // Zone structure — single source of truth for this page
+        const ZONE_GROUPS = [
+            { letter: 'A', subzones: ['A1', 'A2', 'A3'] },
+            { letter: 'B', subzones: ['B1', 'B2', 'B3', 'B4', 'B5'] },
+            { letter: 'C', subzones: ['C1', 'C2', 'C3', 'C4'] },
+            { letter: 'D', subzones: ['D1', 'D2', 'D3', 'D4', 'D5'] },
+            { letter: 'E', subzones: ['E1', 'E2', 'E3', 'E4'] },
+            { letter: 'F', subzones: ['F1', 'F2', 'F3', 'F4'] },
+        ];
+        const ALL_SUBZONES = ZONE_GROUPS.flatMap(g => g.subzones);
+        const ALL_ZONES = [...ALL_SUBZONES, 'Z'];
 
         let zoneTotals = [];
         let drivers = [];
@@ -539,60 +617,34 @@
 
         function calculateStagedByZone() {
             const stagedByZone = {};
-            
-            // Initialize all zones
-            const allZones = ['A', 'A3', 'B', 'C', 'D', 'E', 'F', 'Z'];
-            allZones.forEach(zone => {
-                stagedByZone[zone] = 0;
-            });
-
-            // Count staged drivers per zone (only Available status)
+            ALL_ZONES.forEach(zone => { stagedByZone[zone] = 0; });
             drivers.forEach(driver => {
                 if (driver.driverType === 'Staged' && driver.status === 'Available' && driver.zone) {
-                    if (!stagedByZone[driver.zone]) {
-                        stagedByZone[driver.zone] = 0;
+                    if (stagedByZone[driver.zone] !== undefined) {
+                        stagedByZone[driver.zone]++;
+                    } else {
+                        stagedByZone[driver.zone] = 1;
                     }
-                    stagedByZone[driver.zone]++;
                 }
             });
-
             return stagedByZone;
         }
 
-        function renderZoneSummary() {
-            const stagedByZone = calculateStagedByZone();
-            const zoneGrid = document.getElementById('zone-grid');
-            zoneGrid.innerHTML = '';
+        function buildZoneCard(zone, zoneData, staged) {
+            const netPassengers = zoneData ? (zoneData.netPassengers || 0) : 0;
+            const delivered     = zoneData ? (zoneData.totalDelivered || 0) : 0;
+            const pickedUp      = zoneData ? (zoneData.totalPickedUp  || 0) : 0;
+            const isEmpty       = netPassengers === 0 && delivered === 0;
+            const cardClass     = isEmpty ? 'zone-card empty' : 'zone-card under-capacity';
+            const badgeHtml     = isEmpty
+                ? '<span class="zone-status-badge" style="background:#6c757d;color:white;">Empty</span>'
+                : '<span class="zone-status-badge" style="background:#28a745;color:white;">Active</span>';
 
-            let totalPassengers = 0;
-            let totalDelivered = 0;
-            let totalPickedUp = 0;
-            let activeZones = 0;
-            let overbookedZones = [];
-
-            zoneTotals.forEach(zoneData => {
-                const zone = zoneData.zone;
-                const netPassengers = zoneData.netPassengers || 0;
-                const delivered = zoneData.totalDelivered || 0;
-                const pickedUp = zoneData.totalPickedUp || 0;
-                const staged = stagedByZone[zone] || 0;
-                
-                if (netPassengers > 0) {
-                    activeZones++;
-                }
-
-                totalPassengers += netPassengers;
-                totalDelivered += delivered;
-                totalPickedUp += pickedUp;
-
-                const status = netPassengers === 0 ? 'empty' : 'under-capacity';
-
-                const card = document.createElement('div');
-                card.className = `zone-card ${status}`;
-                card.innerHTML = `
+            return `
+                <div class="${cardClass}">
                     <div class="zone-header">
                         <div class="zone-name">${zone}</div>
-                        ${netPassengers === 0 ? '<span class="zone-status-badge status-empty">Empty</span>' : '<span class="zone-status-badge status-ok">Active</span>'}
+                        ${badgeHtml}
                     </div>
                     <div class="zone-metrics">
                         <div class="metric">
@@ -614,21 +666,88 @@
                             <span class="metric-value">${staged}</span>
                         </div>
                     </div>
-                `;
-                zoneGrid.appendChild(card);
+                </div>`;
+        }
+
+        function renderZoneSummary() {
+            const stagedByZone = calculateStagedByZone();
+
+            // Build a lookup map from fetched zone totals
+            const zoneTotalsMap = {};
+            zoneTotals.forEach(z => { zoneTotalsMap[z.zone] = z; });
+
+            const zoneGroupsEl  = document.getElementById('zone-groups');
+            const zoneStandalone = document.getElementById('zone-standalone');
+            const zoneZCard     = document.getElementById('zone-z-card');
+            zoneGroupsEl.innerHTML = '';
+
+            let totalPassengers = 0;
+            let totalDelivered  = 0;
+            let totalPickedUp   = 0;
+            let activeZones     = 0;
+
+            // Accumulate overall stats across all zones including Z
+            ALL_ZONES.forEach(zone => {
+                const zd = zoneTotalsMap[zone];
+                if (zd) {
+                    totalPassengers += zd.netPassengers  || 0;
+                    totalDelivered  += zd.totalDelivered || 0;
+                    totalPickedUp   += zd.totalPickedUp  || 0;
+                    if ((zd.netPassengers || 0) > 0) activeZones++;
+                }
             });
 
-            // Update overall stats
+            // Render each parent zone group
+            ZONE_GROUPS.forEach(group => {
+                let groupNet       = 0;
+                let groupDelivered = 0;
+                let groupPickedUp  = 0;
+                let cardsHtml      = '';
+
+                group.subzones.forEach(zone => {
+                    const zd = zoneTotalsMap[zone];
+                    groupNet       += zd ? (zd.netPassengers  || 0) : 0;
+                    groupDelivered += zd ? (zd.totalDelivered || 0) : 0;
+                    groupPickedUp  += zd ? (zd.totalPickedUp  || 0) : 0;
+                    cardsHtml += buildZoneCard(zone, zd, stagedByZone[zone] || 0);
+                });
+
+                const summaryParts = [];
+                if (groupNet > 0)       summaryParts.push(`${groupNet} current`);
+                if (groupDelivered > 0) summaryParts.push(`${groupDelivered} delivered`);
+                if (groupPickedUp > 0)  summaryParts.push(`${groupPickedUp} picked up`);
+                const summaryText = summaryParts.length ? summaryParts.join(' · ') : 'No activity yet';
+
+                const section = document.createElement('div');
+                section.className = 'group-section';
+                section.innerHTML = `
+                    <div class="group-header">
+                        <div class="group-letter">Zone ${group.letter}</div>
+                        <div class="group-rule"></div>
+                        <div class="group-summary">${summaryText}</div>
+                    </div>
+                    <div class="group-grid">${cardsHtml}</div>
+                `;
+                zoneGroupsEl.appendChild(section);
+            });
+
+            // Render Z (overflow) as standalone card at bottom
+            const zData = zoneTotalsMap['Z'];
+            if (zData || stagedByZone['Z'] > 0) {
+                zoneZCard.innerHTML = buildZoneCard('Z (Overflow)', zData, stagedByZone['Z'] || 0);
+                zoneStandalone.style.display = 'block';
+            } else {
+                zoneStandalone.style.display = 'none';
+            }
+
+            // Update summary stats
             document.getElementById('total-passengers').textContent = totalPassengers;
-            document.getElementById('total-seats').textContent = totalDelivered;
-            document.getElementById('total-vehicles').textContent = totalPickedUp;
+            document.getElementById('total-seats').textContent      = totalDelivered;
+            document.getElementById('total-vehicles').textContent   = totalPickedUp;
             document.getElementById('available-capacity').textContent = totalPassengers;
-            document.getElementById('active-zones').textContent = activeZones;
+            document.getElementById('active-zones').textContent     = activeZones;
 
-            // Clear any alerts
-            const alertContainer = document.getElementById('alert-container');
-            alertContainer.innerHTML = '';
-
+            document.getElementById('alert-container').innerHTML = '';
             updateLastUpdatedTime();
         }
 

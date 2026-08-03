@@ -1226,12 +1226,23 @@
                     </select>
                 `;
             } else if (field === 'zone') {
-                // Zone dropdown with master zones
-                const zones = ['A', 'B', 'C', 'D', 'E', 'F', 'Z'];
+                const zoneGroups = [
+                    { letter: 'A', subzones: ['A1', 'A2', 'A3'] },
+                    { letter: 'B', subzones: ['B1', 'B2', 'B3', 'B4', 'B5'] },
+                    { letter: 'C', subzones: ['C1', 'C2', 'C3', 'C4'] },
+                    { letter: 'D', subzones: ['D1', 'D2', 'D3', 'D4', 'D5'] },
+                    { letter: 'E', subzones: ['E1', 'E2', 'E3', 'E4'] },
+                    { letter: 'F', subzones: ['F1', 'F2', 'F3', 'F4'] },
+                ];
                 let options = '<option value="">Not assigned</option>';
-                zones.forEach(zone => {
-                    options += `<option value="${zone}" ${currentValue === zone ? 'selected' : ''}>${zone}</option>`;
+                zoneGroups.forEach(group => {
+                    options += `<optgroup label="Zone ${group.letter}">`;
+                    group.subzones.forEach(zone => {
+                        options += `<option value="${zone}" ${currentValue === zone ? 'selected' : ''}>${zone}</option>`;
+                    });
+                    options += '</optgroup>';
                 });
+                options += `<option value="Z" ${currentValue === 'Z' ? 'selected' : ''}>Z (Overflow)</option>`;
                 cell.innerHTML = `<select onchange="updateValue(this, '${driverId}', '${field}')">${options}</select>`;
             } else {
                 const inputType = (field === 'passengers' || field === 'carNumber') ? 'number' : 'text';
