@@ -294,14 +294,6 @@
 
     const HUB_ORIGIN = { lat: 36.07744, lng: -115.23981 };
 
-    // ---- LOCAL TEST ROUTE (personal, non-event testing) ----
-    // Flip to false before an event to fully disable this feature regardless of URL.
-    const ALLOW_TEST_ROUTE = true;
-    const TEST_ROUTE_URL_FLAG = 'JLoTestRoute';
-    // 4309 S Via Vinci Ct, Pahrump, NV -> 3101 Thousandaire Blvd, Pahrump, NV
-    const TEST_ROUTE_HOME = [-115.9147184, 36.1566434];
-    const TEST_ROUTE_DEST = [-115.9560045, 36.1315468];
-
     // Off-route tuning
     const OFF_ROUTE_THRESHOLD_M = 75;
     const OFF_ROUTE_HYSTERESIS_M = 20;
@@ -1014,75 +1006,6 @@
     }
 
     /***************
-     * LOCAL TEST ROUTE (personal testing only)
-     ***************/
-    function isTestRouteRequested(){
-      if(!ALLOW_TEST_ROUTE) return false;
-      const p = new URLSearchParams(window.location.search);
-      return p.get(TEST_ROUTE_URL_FLAG) === '1';
-    }
-
-    async function fetchMapboxRoute(coordsArray){
-      const coordString = coordsArray.map(c => `${c[0]},${c[1]}`).join(';');
-      const url = `https://api.mapbox.com/directions/v5/mapbox/driving/${coordString}` +
-        `?geometries=geojson&steps=true&overview=full&access_token=${MAPBOX_TOKEN}`;
-
-      const resp = await fetch(url);
-      if(!resp.ok) throw new Error(`Mapbox Directions API error: ${resp.status}`);
-      const data = await resp.json();
-
-      if(!data.routes || !data.routes.length) throw new Error('No route returned from Mapbox for test route');
-
-      const route = data.routes[0];
-      const geometry = { type: 'Feature', properties: {}, geometry: route.geometry };
-
-      const instructions = [];
-      for(const leg of (route.legs || [])){
-        for(const step of (leg.steps || [])){
-          instructions.push({
-            distance: step.distance,
-            duration: step.duration,
-            instruction: step.maneuver?.instruction || 'Continue',
-            maneuver: {
-              type: step.maneuver?.type,
-              modifier: step.maneuver?.modifier,
-              location: step.maneuver?.location,
-              bearing_before: step.maneuver?.bearing_before,
-              bearing_after: step.maneuver?.bearing_after
-            },
-            name: step.name || ''
-          });
-        }
-      }
-
-      return { geometry, instructions };
-    }
-
-    async function loadTestRoute(){
-      const { dir } = getParams();
-      currentDir = (dir === 'return') ? 'return' : 'outbound';
-
-      showRouteStatus(`Loading ${currentDir} route (TEST)…`, false);
-
-      const [outbound, ret] = await Promise.all([
-        fetchMapboxRoute([TEST_ROUTE_HOME, TEST_ROUTE_DEST]),
-        fetchMapboxRoute([TEST_ROUTE_DEST, TEST_ROUTE_HOME])
-      ]);
-
-      currentLocation = {
-        label: 'Local Test Route',
-        routeGeometry: outbound.geometry,
-        returnRouteGeometry: ret.geometry,
-        routeInstructions: outbound.instructions,
-        returnRouteInstructions: ret.instructions,
-        directions: '',
-        directionsReturn: ''
-      };
-
-      console.log(`TEST ROUTE active — outbound: ${outbound.instructions.length} steps, return: ${ret.instructions.length} steps`);
-    }
-
-    /***************
      * API LOAD
      ***************/
     async function loadLocationFromApi(){
@@ -1140,11 +1063,7 @@
           .addTo(map);
 
         try{
-          if(isTestRouteRequested()){
-            await loadTestRoute();
-          } else {
-            await loadLocationFromApi();
-          }
+          await loadLocationFromApi();
           syncButtons();
 
           btnToggleDir.disabled = false;
