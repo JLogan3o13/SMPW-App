@@ -108,6 +108,10 @@
     #turnBox.off-route{
       background: linear-gradient(135deg, rgba(239, 68, 68, 0.95) 0%, rgba(220, 38, 38, 0.95) 100%);
     }
+    #turnBox.cruising{
+      background: rgba(30, 41, 59, 0.92);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
     .turn-distance{
       font-size: 13px;
       font-weight: 600;
@@ -306,6 +310,12 @@
     // Turn-by-turn tuning
     const TURN_APPROACH_THRESHOLD_M = 800; // start showing instruction at ~0.5 mi out
     const TURN_PASSED_THRESHOLD_M = 30;    // consider a turn "passed" once this close
+    const TURN_SKIP_MARGIN_M = 50;         // how much closer the *next* step must be to skip ahead past an imprecise/phantom waypoint
+
+    // Master on/off switch for the green "upcoming turn" display. When false, the
+    // red "Return to the highlighted route" off-route warning still works fully
+    // independently — this only disables the turn-by-turn instruction banner.
+    const SHOW_TURN_BY_TURN = true;
 
     // Route line visuals (Option B)
     const ROUTE_STYLE_ON = {
@@ -362,6 +372,7 @@
     let followMode = false;
     let lastHeading = null;
     let lastUserLngLat = null;
+    let lastRawUserLngLat = null; // unfiltered GPS, used only for turn-by-turn (needs to react instantly, not smoothed)
     let lastSpeedMps = null;
 
     // Off-route state
@@ -511,12 +522,31 @@
     /***************
      * TURN-BY-TURN HELPERS
      ***************/
+    function filterPhantomWaypointSteps(steps){
+      if (!Array.isArray(steps) || !steps.length) return steps;
+
+      // Routes built from chained waypoints (to force local streets instead of a
+      // highway) produce a fake "arrive"/"depart" pair at EVERY waypoint boundary,
+      // even though nothing actually happens there. Keep only the first "depart",
+      // the final "arrive" (the real destination), and any genuine maneuver
+      // (turn, merge, fork, roundabout, continue/U-turn, etc).
+      return steps.filter((step, i) => {
+        const type = step.maneuver?.type;
+        const isFirst = i === 0;
+        const isLast = i === steps.length - 1;
+        if (type === 'arrive' && !isLast) return false;
+        if (type === 'depart' && !isFirst) return false;
+        return true;
+      });
+    }
+
     function getInstructionsForDir(){
       if(!currentLocation) return null;
       const list = (currentDir === 'return')
         ? currentLocation.returnRouteInstructions
         : currentLocation.routeInstructions;
-      return Array.isArray(list) && list.length ? list : null;
+      if(!Array.isArray(list) || !list.length) return null;
+      return filterPhantomWaypointSteps(list);
     }
 
     function getManeuverIcon(type, modifier){
@@ -558,9 +588,9 @@
     }
 
     function calculateDistanceToStep(step){
-      if (!lastUserLngLat || !step?.maneuver?.location) return null;
+      if (!lastRawUserLngLat || !step?.maneuver?.location) return null;
 
-      const [lng, lat] = lastUserLngLat;
+      const [lng, lat] = lastRawUserLngLat;
       const [stepLng, stepLat] = step.maneuver.location;
 
       // Haversine distance
@@ -579,71 +609,102 @@
     }
 
     function updateTurnDisplay(){
+      // Off-route warning always shows when off-route, regardless of the
+      // turn-by-turn toggle below.
+      if (isOffRoute) {
+        turnBox.style.display = 'block';
+        turnBox.classList.add('off-route');
+        turnBox.classList.remove('cruising');
+        turnDistanceEl.textContent = 'OFF ROUTE';
+        turnIconEl.textContent = '⚠️';
+        turnTextEl.textContent = 'Return to the highlighted route';
+        turnProgressEl.textContent = '';
+        return;
+      }
+
+      if (!SHOW_TURN_BY_TURN) {
+        turnBox.style.display = 'none';
+        return;
+      }
+
       if (!currentInstructions || currentInstructions.length === 0) {
         turnBox.style.display = 'none';
         return;
       }
 
-      const step = currentInstructions[currentStepIndex];
-      if (!step) {
+      const currentStep = currentInstructions[currentStepIndex];
+      if (!currentStep) {
         turnBox.style.display = 'none';
         return;
       }
 
-      const distanceToStep = calculateDistanceToStep(step);
+      const nextStep = currentInstructions[currentStepIndex + 1];
 
-      // Only show once within approach threshold, or if off-route (to redirect attention)
-      if (distanceToStep === null || (distanceToStep > TURN_APPROACH_THRESHOLD_M && !isOffRoute)) {
-        turnBox.style.display = 'none';
-        return;
+      // Mode 1: approaching the next real maneuver — show it with a countdown,
+      // same as before, once within the approach threshold.
+      if (nextStep) {
+        const distToNext = calculateDistanceToStep(nextStep);
+        if (distToNext !== null && distToNext <= TURN_APPROACH_THRESHOLD_M) {
+          turnBox.style.display = 'block';
+          turnBox.classList.remove('off-route');
+          turnBox.classList.remove('cruising');
+          turnDistanceEl.textContent = formatDistance(distToNext);
+          turnIconEl.textContent = getManeuverIcon(nextStep.maneuver?.type, nextStep.maneuver?.modifier);
+          turnTextEl.textContent = nextStep.maneuver?.instruction || nextStep.instruction || 'Continue';
+          turnProgressEl.textContent = `Step ${currentStepIndex + 2} of ${currentInstructions.length}`;
+          return;
+        }
       }
 
+      // Mode 2: cruising — not yet near the next maneuver, so keep showing the
+      // CURRENT step's instruction persistently (no countdown), optionally
+      // extended with "to <next street name>" so the driver knows what's coming.
       turnBox.style.display = 'block';
-      turnBox.classList.toggle('off-route', isOffRoute);
+      turnBox.classList.remove('off-route');
+      turnBox.classList.add('cruising');
 
-      if (isOffRoute) {
-        turnDistanceEl.textContent = 'OFF ROUTE';
-        turnIconEl.textContent = '⚠️';
-        turnTextEl.textContent = 'Return to the highlighted route';
-        turnProgressEl.textContent = '';
-      } else {
-        turnDistanceEl.textContent = formatDistance(distanceToStep);
-        turnIconEl.textContent = getManeuverIcon(step.maneuver?.type, step.maneuver?.modifier);
-        turnTextEl.textContent = step.maneuver?.instruction || step.instruction || 'Continue';
-        turnProgressEl.textContent = `Step ${currentStepIndex + 1} of ${currentInstructions.length}`;
+      let cruiseText = currentStep.maneuver?.instruction || currentStep.instruction || 'Continue';
+      if (nextStep?.name) {
+        cruiseText = cruiseText.replace(/\.\s*$/, '') + ` to ${nextStep.name}.`;
       }
+
+      turnDistanceEl.textContent = 'Continue';
+      turnIconEl.textContent = getManeuverIcon(currentStep.maneuver?.type, currentStep.maneuver?.modifier);
+      turnTextEl.textContent = cruiseText;
+      turnProgressEl.textContent = `Step ${currentStepIndex + 1} of ${currentInstructions.length}`;
     }
 
     function updateCurrentStep(){
       if (!currentInstructions || currentInstructions.length === 0) return;
+      if (!lastRawUserLngLat) return;
 
-      let bestIndex = currentStepIndex;
-      let bestDistance = Infinity;
+      // Forward-only progression: we NEVER re-consider a step once we've moved past it,
+      // no matter how geometrically close it becomes again later (e.g. driving away from
+      // a turn you just made). This avoids flip-flopping between a just-passed turn and
+      // a nearby phantom waypoint step.
+      while (currentStepIndex < currentInstructions.length - 1) {
+        const dist = calculateDistanceToStep(currentInstructions[currentStepIndex]);
+        if (dist === null) break;
 
-      for (let i = 0; i < currentInstructions.length; i++) {
-        const step = currentInstructions[i];
-        const dist = calculateDistanceToStep(step);
-        if (dist === null) continue;
-
-        // Skip steps we've clearly already passed (except the very last one)
-        if (dist < TURN_PASSED_THRESHOLD_M && i < currentInstructions.length - 1) {
+        // Close enough to the current step's maneuver point — treat it as reached and
+        // move to the next instruction. Chains through zero-distance "phantom" waypoint
+        // steps (duplicate arrive/depart pairs) in one go.
+        if (dist < TURN_PASSED_THRESHOLD_M) {
+          currentStepIndex++;
           continue;
         }
 
-        if (dist < bestDistance) {
-          bestDistance = dist;
-          bestIndex = i;
+        // Not close per the strict threshold, but if the road curves wide or the
+        // maneuver coordinate is slightly imprecise, we may never dip under that
+        // threshold. If the NEXT step is meaningfully closer than the current one,
+        // it's safe to assume we've moved past the current step.
+        const nextDist = calculateDistanceToStep(currentInstructions[currentStepIndex + 1]);
+        if (nextDist !== null && nextDist < dist - TURN_SKIP_MARGIN_M) {
+          currentStepIndex++;
+          continue;
         }
-      }
 
-      if (bestIndex !== currentStepIndex) {
-        const currentDist = calculateDistanceToStep(currentInstructions[currentStepIndex]);
-        if (currentDist !== null && currentDist < TURN_PASSED_THRESHOLD_M) {
-          // advance one step at a time so we don't skip turns
-          currentStepIndex = Math.min(bestIndex, currentStepIndex + 1);
-        } else {
-          currentStepIndex = bestIndex;
-        }
+        break;
       }
 
       updateTurnDisplay();
@@ -1126,6 +1187,8 @@
 
     function handlePositionUpdate(pos){
       const { latitude, longitude, heading, speed } = pos.coords;
+
+      lastRawUserLngLat = [longitude, latitude];
 
       const smoothLat = kalmanLat.filter(latitude);
       const smoothLng = kalmanLng.filter(longitude);
