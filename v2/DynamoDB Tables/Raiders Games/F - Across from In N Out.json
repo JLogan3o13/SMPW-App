@@ -25,394 +25,34 @@
       {
         "M": {
           "distance": {
-            "N": "64.024"
+            "N": "370"
           },
           "duration": {
-            "N": "43.483"
-          },
-          "instruction": {
-            "S": "Drive southeast."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "149"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185853"
-                  },
-                  {
-                    "N": "36.085953"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "195"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185826"
-                  },
-                  {
-                    "N": "36.08542"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive east."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185826"
-                  },
-                  {
-                    "N": "36.08542"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "15.474"
-          },
-          "duration": {
-            "N": "22.295"
-          },
-          "instruction": {
-            "S": "Turn right."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185826"
-                  },
-                  {
-                    "N": "36.08542"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "13.045"
-          },
-          "duration": {
-            "N": "30.565"
-          },
-          "instruction": {
-            "S": "Turn left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "180"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185825"
-                  },
-                  {
-                    "N": "36.085281"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18568"
-                  },
-                  {
-                    "N": "36.085281"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "8.817"
-          },
-          "duration": {
-            "N": "30.565"
-          },
-          "instruction": {
-            "S": "Drive southeast."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "138"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18568"
-                  },
-                  {
-                    "N": "36.085281"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "235.227"
-          },
-          "duration": {
-            "N": "22.644"
-          },
-          "instruction": {
-            "S": "Turn right onto Polaris Avenue."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "91"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185582"
-                  },
-                  {
-                    "N": "36.08528"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "end of road"
-              }
-            }
-          },
-          "name": {
-            "S": "Polaris Avenue"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "180"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185603"
-                  },
-                  {
-                    "N": "36.083167"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "Polaris Avenue"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "67.36"
-          },
-          "duration": {
-            "N": "17.253"
+            "N": "45"
           },
           "instruction": {
             "S": "Drive south on Polaris Avenue."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "0"
+              "type": {
+                "S": "depart"
               },
               "location": {
                 "L": [
                   {
-                    "N": "-115.185603"
+                    "N": "-115.18582"
                   },
                   {
-                    "N": "36.083167"
+                    "N": "36.0859"
                   }
                 ]
               },
-              "type": {
-                "S": "depart"
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "180"
               }
             }
           },
@@ -424,21 +64,21 @@
       {
         "M": {
           "distance": {
-            "N": "102.975"
+            "N": "20"
           },
           "duration": {
-            "N": "16.488"
+            "N": "5"
           },
           "instruction": {
             "S": "Turn right onto West Oquendo Road."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "272"
+              "type": {
+                "S": "turn"
               },
-              "bearing_before": {
-                "N": "178"
+              "modifier": {
+                "S": "right"
               },
               "location": {
                 "L": [
@@ -450,50 +90,11 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
               "bearing_before": {
-                "N": "272"
+                "N": "180"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.186752"
-                  },
-                  {
-                    "N": "36.082592"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
+              "bearing_after": {
+                "N": "270"
               }
             }
           },
@@ -505,154 +106,34 @@
       {
         "M": {
           "distance": {
-            "N": "198.746"
+            "N": "400"
           },
           "duration": {
-            "N": "39.675"
+            "N": "40"
           },
           "instruction": {
             "S": "Drive west on West Oquendo Road."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "271"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.186752"
-                  },
-                  {
-                    "N": "36.082592"
-                  }
-                ]
-              },
               "type": {
                 "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "272"
               },
               "location": {
                 "L": [
                   {
-                    "N": "-115.18896"
+                    "N": "-115.185608"
                   },
                   {
-                    "N": "36.082649"
+                    "N": "36.082562"
                   }
                 ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive south on West Oquendo Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
               },
               "bearing_before": {
                 "N": "0"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18896"
-                  },
-                  {
-                    "N": "36.082649"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "85.955"
-          },
-          "duration": {
-            "N": "37.345"
-          },
-          "instruction": {
-            "S": "Turn right to stay on West Oquendo Road."
-          },
-          "maneuver": {
-            "M": {
               "bearing_after": {
-                "N": "272"
-              },
-              "bearing_before": {
-                "N": "180"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18896"
-                  },
-                  {
-                    "N": "36.082649"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "continue"
+                "N": "270"
               }
             }
           },
@@ -664,21 +145,21 @@
       {
         "M": {
           "distance": {
-            "N": "128.578"
+            "N": "20"
           },
           "duration": {
-            "N": "14.014"
+            "N": "5"
           },
           "instruction": {
             "S": "Turn right onto South Valley View Boulevard."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "0"
+              "type": {
+                "S": "turn"
               },
-              "bearing_before": {
-                "N": "271"
+              "modifier": {
+                "S": "right"
               },
               "location": {
                 "L": [
@@ -690,50 +171,11 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "right"
+              "bearing_before": {
+                "N": "270"
               },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "South Valley View Boulevard"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
               "bearing_after": {
                 "N": "0"
-              },
-              "bearing_before": {
-                "N": "1"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189904"
-                  },
-                  {
-                    "N": "36.083827"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
               }
             }
           },
@@ -745,154 +187,34 @@
       {
         "M": {
           "distance": {
-            "N": "164.314"
+            "N": "148"
           },
           "duration": {
-            "N": "31.27"
+            "N": "20"
           },
           "instruction": {
             "S": "Drive north on South Valley View Boulevard."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189904"
-                  },
-                  {
-                    "N": "36.083827"
-                  }
-                ]
-              },
               "type": {
                 "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "South Valley View Boulevard"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "0"
               },
               "location": {
                 "L": [
                   {
-                    "N": "-115.18989"
+                    "N": "-115.189915"
                   },
                   {
-                    "N": "36.085303"
+                    "N": "36.082672"
                   }
                 ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "South Valley View Boulevard"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive east on South Valley View Boulevard."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "105"
               },
               "bearing_before": {
                 "N": "0"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18989"
-                  },
-                  {
-                    "N": "36.085303"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "South Valley View Boulevard"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "122.62"
-          },
-          "duration": {
-            "N": "40.902"
-          },
-          "instruction": {
-            "S": "Turn left to stay on South Valley View Boulevard."
-          },
-          "maneuver": {
-            "M": {
               "bearing_after": {
-                "N": "17"
-              },
-              "bearing_before": {
-                "N": "105"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18989"
-                  },
-                  {
-                    "N": "36.085303"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "continue"
+                "N": "0"
               }
             }
           },
@@ -904,361 +226,37 @@
       {
         "M": {
           "distance": {
-            "N": "107.776"
+            "N": "20"
           },
           "duration": {
-            "N": "14.585"
+            "N": "5"
           },
           "instruction": {
             "S": "Turn left onto West Russell Road."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "270"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189784"
-                  },
-                  {
-                    "N": "36.086392"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
               "type": {
                 "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "115.603"
-          },
-          "duration": {
-            "N": "8.334"
-          },
-          "instruction": {
-            "S": "Make a left U-turn to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.190982"
-                  },
-                  {
-                    "N": "36.086399"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "91"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189967"
-                  },
-                  {
-                    "N": "36.086246"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive south on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189967"
-                  },
-                  {
-                    "N": "36.086246"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "16.373"
-          },
-          "duration": {
-            "N": "26.271"
-          },
-          "instruction": {
-            "S": "Turn left to stay on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "180"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189967"
-                  },
-                  {
-                    "N": "36.086246"
-                  }
-                ]
               },
               "modifier": {
                 "S": "left"
               },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "282.057"
-          },
-          "duration": {
-            "N": "38.515"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at South Valley View Boulevard to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "270"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
               "location": {
                 "L": [
                   {
-                    "N": "-115.189785"
+                    "N": "-115.18989"
                   },
                   {
-                    "N": "36.086247"
+                    "N": "36.085303"
                   }
                 ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.192704"
-                  },
-                  {
-                    "N": "36.086325"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive southeast on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "119"
               },
               "bearing_before": {
                 "N": "0"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.192704"
-                  },
-                  {
-                    "N": "36.086325"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "379.876"
-          },
-          "duration": {
-            "N": "70.106"
-          },
-          "instruction": {
-            "S": "Make a sharp right to stay on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
               "bearing_after": {
                 "N": "270"
-              },
-              "bearing_before": {
-                "N": "119"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.192704"
-                  },
-                  {
-                    "N": "36.086325"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "sharp right"
-              },
-              "type": {
-                "S": "continue"
               }
             }
           },
@@ -1270,76 +268,34 @@
       {
         "M": {
           "distance": {
-            "N": "0"
+            "N": "3900"
           },
           "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.196899"
-                  },
-                  {
-                    "N": "36.086395"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "308.568"
-          },
-          "duration": {
-            "N": "85.385"
+            "N": "320"
           },
           "instruction": {
             "S": "Drive west on West Russell Road."
           },
           "maneuver": {
             "M": {
+              "type": {
+                "S": "depart"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.18989"
+                  },
+                  {
+                    "N": "36.085303"
+                  }
+                ]
+              },
+              "bearing_before": {
+                "N": "0"
+              },
               "bearing_after": {
                 "N": "270"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.196899"
-                  },
-                  {
-                    "N": "36.086395"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
               }
             }
           },
@@ -1351,1356 +307,21 @@
       {
         "M": {
           "distance": {
-            "N": "0"
+            "N": "20"
           },
           "duration": {
-            "N": "0"
+            "N": "5"
           },
           "instruction": {
-            "S": "Your destination is on the left."
+            "S": "Turn left onto South Torrey Pines Drive."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.200329"
-                  },
-                  {
-                    "N": "36.086401"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "223.588"
-          },
-          "duration": {
-            "N": "44.233"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "251"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.200329"
-                  },
-                  {
-                    "N": "36.086401"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.202802"
-                  },
-                  {
-                    "N": "36.086351"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.202802"
-                  },
-                  {
-                    "N": "36.086351"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "318.27"
-          },
-          "duration": {
-            "N": "56.694"
-          },
-          "instruction": {
-            "S": "Make a left U-turn to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "270"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.202802"
-                  },
-                  {
-                    "N": "36.086351"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "271"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.20632"
-                  },
-                  {
-                    "N": "36.086406"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "153.253"
-          },
-          "duration": {
-            "N": "25.931"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "271"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.20632"
-                  },
-                  {
-                    "N": "36.086406"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "34.698"
-          },
-          "duration": {
-            "N": "25.482"
-          },
-          "instruction": {
-            "S": "Make a left U-turn to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "88"
-              },
-              "bearing_before": {
-                "N": "269"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.208023"
-                  },
-                  {
-                    "N": "36.086412"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "88"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.207802"
-                  },
-                  {
-                    "N": "36.086285"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "448.296"
-          },
-          "duration": {
-            "N": "56.444"
-          },
-          "instruction": {
-            "S": "Drive south on South Decatur Boulevard."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.207802"
-                  },
-                  {
-                    "N": "36.086285"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "South Decatur Boulevard"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "377.363"
-          },
-          "duration": {
-            "N": "38.984"
-          },
-          "instruction": {
-            "S": "Turn right onto West Oquendo Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "266"
-              },
-              "bearing_before": {
-                "N": "180"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.208011"
-                  },
-                  {
-                    "N": "36.082687"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
               "type": {
                 "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "406.167"
-          },
-          "duration": {
-            "N": "51.28"
-          },
-          "instruction": {
-            "S": "Turn right onto Edmond Street."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "359"
-              },
-              "bearing_before": {
-                "N": "266"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.212196"
-                  },
-                  {
-                    "N": "36.082463"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "Edmond Street"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "264.08"
-          },
-          "duration": {
-            "N": "19.728"
-          },
-          "instruction": {
-            "S": "Turn right onto West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "86"
-              },
-              "bearing_before": {
-                "N": "359"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.212274"
-                  },
-                  {
-                    "N": "36.086111"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "113"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.209355"
-                  },
-                  {
-                    "N": "36.086233"
-                  }
-                ]
               },
               "modifier": {
                 "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "140.581"
-          },
-          "duration": {
-            "N": "45.386"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "101"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.209355"
-                  },
-                  {
-                    "N": "36.086233"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "477.409"
-          },
-          "duration": {
-            "N": "64.272"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at South Decatur Boulevard to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "269"
-              },
-              "bearing_before": {
-                "N": "88"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.207802"
-                  },
-                  {
-                    "N": "36.086285"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the right."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "266"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.212908"
-                  },
-                  {
-                    "N": "36.086077"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "402.341"
-          },
-          "duration": {
-            "N": "46.726"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "266"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.212908"
-                  },
-                  {
-                    "N": "36.086077"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "266"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.21737"
-                  },
-                  {
-                    "N": "36.085832"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "520.225"
-          },
-          "duration": {
-            "N": "44.786"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "266"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.21737"
-                  },
-                  {
-                    "N": "36.085832"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "266"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.22314"
-                  },
-                  {
-                    "N": "36.085517"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "206.191"
-          },
-          "duration": {
-            "N": "27.906"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "266"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.22314"
-                  },
-                  {
-                    "N": "36.085517"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "21.785"
-          },
-          "duration": {
-            "N": "44.823"
-          },
-          "instruction": {
-            "S": "Make a left U-turn to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "87"
-              },
-              "bearing_before": {
-                "N": "268"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.225426"
-                  },
-                  {
-                    "N": "36.085448"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "87"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.225339"
-                  },
-                  {
-                    "N": "36.085329"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "8.853"
-          },
-          "duration": {
-            "N": "22.87"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "87"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.225339"
-                  },
-                  {
-                    "N": "36.085329"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "361.856"
-          },
-          "duration": {
-            "N": "52.882"
-          },
-          "instruction": {
-            "S": "Make a left U-turn to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "269"
-              },
-              "bearing_before": {
-                "N": "87"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.225241"
-                  },
-                  {
-                    "N": "36.085334"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "269"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.229098"
-                  },
-                  {
-                    "N": "36.085335"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "248.25"
-          },
-          "duration": {
-            "N": "43.69"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "269"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.229098"
-                  },
-                  {
-                    "N": "36.085335"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "201.915"
-          },
-          "duration": {
-            "N": "44.381"
-          },
-          "instruction": {
-            "S": "Turn left onto Mann Street."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "178"
-              },
-              "bearing_before": {
-                "N": "269"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.231857"
-                  },
-                  {
-                    "N": "36.085293"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "Mann Street"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "197.748"
-          },
-          "duration": {
-            "N": "35.786"
-          },
-          "instruction": {
-            "S": "Turn right onto West Quail Avenue."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "268"
-              },
-              "bearing_before": {
-                "N": "178"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.23179"
-                  },
-                  {
-                    "N": "36.08348"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Quail Avenue"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "175.409"
-          },
-          "duration": {
-            "N": "16.815"
-          },
-          "instruction": {
-            "S": "Turn right onto South Torrey Pines Drive."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "358"
-              },
-              "bearing_before": {
-                "N": "269"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.233987"
-                  },
-                  {
-                    "N": "36.083426"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "end of road"
-              }
-            }
-          },
-          "name": {
-            "S": "South Torrey Pines Drive"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "360"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.234009"
-                  },
-                  {
-                    "N": "36.085"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "South Torrey Pines Drive"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "36.287"
-          },
-          "duration": {
-            "N": "17.293"
-          },
-          "instruction": {
-            "S": "Drive north on South Torrey Pines Drive."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "360"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.234009"
-                  },
-                  {
-                    "N": "36.085"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "South Torrey Pines Drive"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "423.664"
-          },
-          "duration": {
-            "N": "54.173"
-          },
-          "instruction": {
-            "S": "Make a left U-turn to stay on South Torrey Pines Drive, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "179"
-              },
-              "bearing_before": {
-                "N": "0"
               },
               "location": {
                 "L": [
@@ -2708,54 +329,15 @@
                     "N": "-115.23401"
                   },
                   {
-                    "N": "36.085326"
+                    "N": "36.085203"
                   }
                 ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "South Torrey Pines Drive"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
               },
               "bearing_before": {
-                "N": "170"
+                "N": "270"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.233882"
-                  },
-                  {
-                    "N": "36.081622"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
+              "bearing_after": {
+                "N": "180"
               }
             }
           },
@@ -2767,34 +349,34 @@
       {
         "M": {
           "distance": {
-            "N": "403.584"
+            "N": "300"
           },
           "duration": {
-            "N": "57.699"
+            "N": "30"
           },
           "instruction": {
             "S": "Drive south on South Torrey Pines Drive."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "178"
-              },
-              "bearing_before": {
-                "N": "0"
+              "type": {
+                "S": "depart"
               },
               "location": {
                 "L": [
                   {
-                    "N": "-115.233882"
+                    "N": "-115.23401"
                   },
                   {
-                    "N": "36.081622"
+                    "N": "36.085203"
                   }
                 ]
               },
-              "type": {
-                "S": "depart"
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "180"
               }
             }
           },
@@ -2806,21 +388,21 @@
       {
         "M": {
           "distance": {
-            "N": "131.104"
+            "N": "20"
           },
           "duration": {
-            "N": "6.329"
+            "N": "5"
           },
           "instruction": {
             "S": "Turn right onto West Patrick Lane."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "269"
+              "type": {
+                "S": "turn"
               },
-              "bearing_before": {
-                "N": "179"
+              "modifier": {
+                "S": "right"
               },
               "location": {
                 "L": [
@@ -2832,11 +414,50 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "right"
+              "bearing_before": {
+                "N": "180"
               },
+              "bearing_after": {
+                "N": "270"
+              }
+            }
+          },
+          "name": {
+            "S": "West Patrick Lane"
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "318.744"
+          },
+          "duration": {
+            "N": "35.119"
+          },
+          "instruction": {
+            "S": "Drive west on West Patrick Lane."
+          },
+          "maneuver": {
+            "M": {
               "type": {
-                "S": "turn"
+                "S": "depart"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233723"
+                  },
+                  {
+                    "N": "36.077999"
+                  }
+                ]
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "270"
               }
             }
           },
@@ -2858,89 +479,8 @@
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "269"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.23518"
-                  },
-                  {
-                    "N": "36.077976"
-                  }
-                ]
-              },
               "type": {
                 "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Patrick Lane"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "429.601"
-          },
-          "duration": {
-            "N": "65.876"
-          },
-          "instruction": {
-            "S": "Drive west on West Patrick Lane."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "269"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.23518"
-                  },
-                  {
-                    "N": "36.077976"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Patrick Lane"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "5.045"
-          },
-          "duration": {
-            "N": "2.292"
-          },
-          "instruction": {
-            "S": "Turn left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "178"
-              },
-              "bearing_before": {
-                "N": "269"
               },
               "location": {
                 "L": [
@@ -2952,53 +492,11 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "left"
+              "bearing_before": {
+                "N": "270"
               },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
               "bearing_after": {
                 "N": "0"
-              },
-              "bearing_before": {
-                "N": "178"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.239952"
-                  },
-                  {
-                    "N": "36.07786"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
               }
             }
           },
@@ -7054,60 +4552,18 @@
       {
         "M": {
           "distance": {
-            "N": "5.045"
+            "N": "318.744"
           },
           "duration": {
-            "N": "2.292"
+            "N": "35.119"
           },
           "instruction": {
-            "S": "Drive north."
+            "S": "Drive east on West Patrick Lane."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "358"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.239952"
-                  },
-                  {
-                    "N": "36.07786"
-                  }
-                ]
-              },
               "type": {
                 "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "429.6"
-          },
-          "duration": {
-            "N": "69.912"
-          },
-          "instruction": {
-            "S": "Turn right onto West Patrick Lane."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "89"
-              },
-              "bearing_before": {
-                "N": "358"
               },
               "location": {
                 "L": [
@@ -7119,89 +4575,11 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Patrick Lane"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "89"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.23518"
-                  },
-                  {
-                    "N": "36.077976"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Patrick Lane"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "131.104"
-          },
-          "duration": {
-            "N": "18.387"
-          },
-          "instruction": {
-            "S": "Drive east on West Patrick Lane."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "89"
-              },
               "bearing_before": {
                 "N": "0"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.23518"
-                  },
-                  {
-                    "N": "36.077976"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
+              "bearing_after": {
+                "N": "89"
               }
             }
           },
@@ -7213,21 +4591,21 @@
       {
         "M": {
           "distance": {
-            "N": "403.584"
+            "N": "484.477"
           },
           "duration": {
-            "N": "28.96"
+            "N": "51.455"
           },
           "instruction": {
             "S": "Turn left onto South Torrey Pines Drive."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "359"
+              "type": {
+                "S": "turn"
               },
-              "bearing_before": {
-                "N": "89"
+              "modifier": {
+                "S": "left"
               },
               "location": {
                 "L": [
@@ -7239,11 +4617,11 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "left"
+              "bearing_before": {
+                "N": "89"
               },
-              "type": {
-                "S": "turn"
+              "bearing_after": {
+                "N": "359"
               }
             }
           },
@@ -7255,34 +4633,34 @@
       {
         "M": {
           "distance": {
-            "N": "0"
+            "N": "300"
           },
           "duration": {
-            "N": "0"
+            "N": "30"
           },
           "instruction": {
-            "S": "You have arrived at your destination."
+            "S": "Drive north on South Torrey Pines Drive."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "0"
+              "type": {
+                "S": "depart"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233882"
+                  },
+                  {
+                    "N": "36.081622"
+                  }
+                ]
               },
               "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
                 "N": "358"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.233882"
-                  },
-                  {
-                    "N": "36.081622"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
               }
             }
           },
@@ -7294,138 +4672,21 @@
       {
         "M": {
           "distance": {
-            "N": "377.043"
+            "N": "133.217"
           },
           "duration": {
-            "N": "65.281"
-          },
-          "instruction": {
-            "S": "Drive north on South Torrey Pines Drive."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "350"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.233882"
-                  },
-                  {
-                    "N": "36.081622"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "South Torrey Pines Drive"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "360"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.234009"
-                  },
-                  {
-                    "N": "36.085"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "South Torrey Pines Drive"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "22.594"
-          },
-          "duration": {
-            "N": "7.134"
-          },
-          "instruction": {
-            "S": "Drive north on South Torrey Pines Drive."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "360"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.234009"
-                  },
-                  {
-                    "N": "36.085"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "South Torrey Pines Drive"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "443.827"
-          },
-          "duration": {
-            "N": "48.589"
+            "N": "11.126"
           },
           "instruction": {
             "S": "Turn right onto West Russell Road."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "88"
+              "type": {
+                "S": "turn"
               },
-              "bearing_before": {
-                "N": "360"
+              "modifier": {
+                "S": "right"
               },
               "location": {
                 "L": [
@@ -7437,1454 +4698,92 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "right"
+              "bearing_before": {
+                "N": "360"
               },
+              "bearing_after": {
+                "N": "88"
+              }
+            }
+          },
+          "name": {
+            "S": "West Russell Road"
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "3900"
+          },
+          "duration": {
+            "N": "320"
+          },
+          "instruction": {
+            "S": "Drive east on West Russell Road."
+          },
+          "maneuver": {
+            "M": {
+              "type": {
+                "S": "depart"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.229098"
+                  },
+                  {
+                    "N": "36.085335"
+                  }
+                ]
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "89"
+              }
+            }
+          },
+          "name": {
+            "S": "West Russell Road"
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "20"
+          },
+          "duration": {
+            "N": "5"
+          },
+          "instruction": {
+            "S": "Turn right onto South Valley View Boulevard."
+          },
+          "maneuver": {
+            "M": {
               "type": {
                 "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "89"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.229098"
-                  },
-                  {
-                    "N": "36.085335"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "339.696"
-          },
-          "duration": {
-            "N": "71.323"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "89"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.229098"
-                  },
-                  {
-                    "N": "36.085335"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "87"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.225339"
-                  },
-                  {
-                    "N": "36.085329"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "199.55"
-          },
-          "duration": {
-            "N": "49.845"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "87"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.225339"
-                  },
-                  {
-                    "N": "36.085329"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "86"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.22314"
-                  },
-                  {
-                    "N": "36.085517"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "520.225"
-          },
-          "duration": {
-            "N": "50.868"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "86"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.22314"
-                  },
-                  {
-                    "N": "36.085517"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "86"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.21737"
-                  },
-                  {
-                    "N": "36.085832"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "402.341"
-          },
-          "duration": {
-            "N": "36.271"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "86"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.21737"
-                  },
-                  {
-                    "N": "36.085832"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "86"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.212908"
-                  },
-                  {
-                    "N": "36.086077"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "321.249"
-          },
-          "duration": {
-            "N": "57.237"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "86"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.212908"
-                  },
-                  {
-                    "N": "36.086077"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "113"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.209355"
-                  },
-                  {
-                    "N": "36.086233"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "140.581"
-          },
-          "duration": {
-            "N": "53.338"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "101"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.209355"
-                  },
-                  {
-                    "N": "36.086233"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "88"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.207802"
-                  },
-                  {
-                    "N": "36.086285"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "147.001"
-          },
-          "duration": {
-            "N": "11.57"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.207802"
-                  },
-                  {
-                    "N": "36.086285"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "25.916"
-          },
-          "duration": {
-            "N": "9.249"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at South Ullom Drive to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "271"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.206168"
-                  },
-                  {
-                    "N": "36.086276"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "271"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.20632"
-                  },
-                  {
-                    "N": "36.086406"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "153.253"
-          },
-          "duration": {
-            "N": "47.3"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "271"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.20632"
-                  },
-                  {
-                    "N": "36.086406"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "442.034"
-          },
-          "duration": {
-            "N": "56.888"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at South Decatur Boulevard to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "269"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.208023"
-                  },
-                  {
-                    "N": "36.086412"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.2033"
-                  },
-                  {
-                    "N": "36.08635"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "370.132"
-          },
-          "duration": {
-            "N": "30.234"
-          },
-          "instruction": {
-            "S": "Drive east on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.2033"
-                  },
-                  {
-                    "N": "36.08635"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "115.279"
-          },
-          "duration": {
-            "N": "9.77"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at Arville Street to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "270"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.1992"
-                  },
-                  {
-                    "N": "36.086272"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.200329"
-                  },
-                  {
-                    "N": "36.086401"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "530.478"
-          },
-          "duration": {
-            "N": "52.101"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "251"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.200329"
-                  },
-                  {
-                    "N": "36.086401"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "1497.305"
-          },
-          "duration": {
-            "N": "159.771"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at South Ullom Drive to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.206193"
-                  },
-                  {
-                    "N": "36.086405"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "661.932"
-          },
-          "duration": {
-            "N": "54.634"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at South Valley View Boulevard to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "270"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189785"
-                  },
-                  {
-                    "N": "36.086247"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Your destination is on the left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.196899"
-                  },
-                  {
-                    "N": "36.086395"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "206.869"
-          },
-          "duration": {
-            "N": "51.886"
-          },
-          "instruction": {
-            "S": "Drive west on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "270"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.196899"
-                  },
-                  {
-                    "N": "36.086395"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "600.032"
-          },
-          "duration": {
-            "N": "48.986"
-          },
-          "instruction": {
-            "S": "Make a left U-turn at Arville Street to stay on West Russell Road, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.199199"
-                  },
-                  {
-                    "N": "36.086394"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "90"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.192704"
-                  },
-                  {
-                    "N": "36.086325"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "249.478"
-          },
-          "duration": {
-            "N": "48.763"
-          },
-          "instruction": {
-            "S": "Drive southeast on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "119"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.192704"
-                  },
-                  {
-                    "N": "36.086325"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "91"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189967"
-                  },
-                  {
-                    "N": "36.086246"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "105.853"
-          },
-          "duration": {
-            "N": "7.666"
-          },
-          "instruction": {
-            "S": "Drive south on West Russell Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.189967"
-                  },
-                  {
-                    "N": "36.086246"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "166"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18989"
-                  },
-                  {
-                    "N": "36.085303"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Russell Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive east on South Valley View Boulevard."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "105"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18989"
-                  },
-                  {
-                    "N": "36.085303"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "South Valley View Boulevard"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "164.314"
-          },
-          "duration": {
-            "N": "9.038"
-          },
-          "instruction": {
-            "S": "Turn right to stay on South Valley View Boulevard."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "105"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18989"
-                  },
-                  {
-                    "N": "36.085303"
-                  }
-                ]
               },
               "modifier": {
                 "S": "right"
               },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "South Valley View Boulevard"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "180"
-              },
               "location": {
                 "L": [
                   {
-                    "N": "-115.189904"
+                    "N": "-115.18989"
                   },
                   {
-                    "N": "36.083827"
+                    "N": "36.085303"
                   }
                 ]
               },
-              "type": {
-                "S": "arrive"
+              "bearing_before": {
+                "N": "89"
+              },
+              "bearing_after": {
+                "N": "180"
               }
             }
           },
@@ -8896,21 +4795,18 @@
       {
         "M": {
           "distance": {
-            "N": "128.578"
+            "N": "148"
           },
           "duration": {
-            "N": "39.246"
+            "N": "20"
           },
           "instruction": {
             "S": "Drive south on South Valley View Boulevard."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "181"
-              },
-              "bearing_before": {
-                "N": "0"
+              "type": {
+                "S": "depart"
               },
               "location": {
                 "L": [
@@ -8922,8 +4818,11 @@
                   }
                 ]
               },
-              "type": {
-                "S": "depart"
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "180"
               }
             }
           },
@@ -8935,21 +4834,21 @@
       {
         "M": {
           "distance": {
-            "N": "85.955"
+            "N": "20"
           },
           "duration": {
-            "N": "8.299"
+            "N": "5"
           },
           "instruction": {
             "S": "Turn left onto West Oquendo Road."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "91"
+              "type": {
+                "S": "turn"
               },
-              "bearing_before": {
-                "N": "180"
+              "modifier": {
+                "S": "left"
               },
               "location": {
                 "L": [
@@ -8961,170 +4860,11 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "92"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18896"
-                  },
-                  {
-                    "N": "36.082649"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive south on West Oquendo Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18896"
-                  },
-                  {
-                    "N": "36.082649"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "198.746"
-          },
-          "duration": {
-            "N": "41.461"
-          },
-          "instruction": {
-            "S": "Turn left to stay on West Oquendo Road."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "92"
-              },
               "bearing_before": {
                 "N": "180"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18896"
-                  },
-                  {
-                    "N": "36.082649"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "West Oquendo Road"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
               "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "91"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.186752"
-                  },
-                  {
-                    "N": "36.082592"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
+                "N": "90"
               }
             }
           },
@@ -9136,21 +4876,18 @@
       {
         "M": {
           "distance": {
-            "N": "102.975"
+            "N": "400"
           },
           "duration": {
-            "N": "26.061"
+            "N": "40"
           },
           "instruction": {
             "S": "Drive east on West Oquendo Road."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "92"
-              },
-              "bearing_before": {
-                "N": "0"
+              "type": {
+                "S": "depart"
               },
               "location": {
                 "L": [
@@ -9162,8 +4899,11 @@
                   }
                 ]
               },
-              "type": {
-                "S": "depart"
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "90"
               }
             }
           },
@@ -9175,21 +4915,21 @@
       {
         "M": {
           "distance": {
-            "N": "67.36"
+            "N": "20"
           },
           "duration": {
-            "N": "0"
+            "N": "5"
           },
           "instruction": {
             "S": "Turn left onto Polaris Avenue."
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "358"
+              "type": {
+                "S": "turn"
               },
-              "bearing_before": {
-                "N": "92"
+              "modifier": {
+                "S": "left"
               },
               "location": {
                 "L": [
@@ -9201,460 +4941,55 @@
                   }
                 ]
               },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": "Polaris Avenue"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "1"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185603"
-                  },
-                  {
-                    "N": "36.083167"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": "Polaris Avenue"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive south on Polaris Avenue."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "180"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185603"
-                  },
-                  {
-                    "N": "36.083167"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": "Polaris Avenue"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "235.227"
-          },
-          "duration": {
-            "N": "48.793"
-          },
-          "instruction": {
-            "S": "Make a left U-turn to stay on Polaris Avenue, if permitted."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "180"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185603"
-                  },
-                  {
-                    "N": "36.083167"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "uturn"
-              },
-              "type": {
-                "S": "continue"
-              }
-            }
-          },
-          "name": {
-            "S": "Polaris Avenue"
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "8.817"
-          },
-          "duration": {
-            "N": "25.287"
-          },
-          "instruction": {
-            "S": "Turn left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "271"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185582"
-                  },
-                  {
-                    "N": "36.08528"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "271"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18568"
-                  },
-                  {
-                    "N": "36.085281"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive southeast."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "138"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18568"
-                  },
-                  {
-                    "N": "36.085281"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "13.045"
-          },
-          "duration": {
-            "N": "37.412"
-          },
-          "instruction": {
-            "S": "Turn right."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "270"
-              },
-              "bearing_before": {
-                "N": "138"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.18568"
-                  },
-                  {
-                    "N": "36.085281"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "15.474"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Turn right."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "360"
-              },
-              "bearing_before": {
-                "N": "270"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185825"
-                  },
-                  {
-                    "N": "36.085281"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "right"
-              },
-              "type": {
-                "S": "turn"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "You have arrived at your destination."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "360"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185826"
-                  },
-                  {
-                    "N": "36.08542"
-                  }
-                ]
-              },
-              "type": {
-                "S": "arrive"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "0"
-          },
-          "duration": {
-            "N": "0"
-          },
-          "instruction": {
-            "S": "Drive east."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "90"
-              },
-              "bearing_before": {
-                "N": "0"
-              },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185826"
-                  },
-                  {
-                    "N": "36.08542"
-                  }
-                ]
-              },
-              "type": {
-                "S": "depart"
-              }
-            }
-          },
-          "name": {
-            "S": ""
-          }
-        }
-      },
-      {
-        "M": {
-          "distance": {
-            "N": "64.024"
-          },
-          "duration": {
-            "N": "22.991"
-          },
-          "instruction": {
-            "S": "Turn left."
-          },
-          "maneuver": {
-            "M": {
-              "bearing_after": {
-                "N": "15"
-              },
               "bearing_before": {
                 "N": "90"
               },
-              "location": {
-                "L": [
-                  {
-                    "N": "-115.185826"
-                  },
-                  {
-                    "N": "36.08542"
-                  }
-                ]
-              },
-              "modifier": {
-                "S": "left"
-              },
-              "type": {
-                "S": "turn"
+              "bearing_after": {
+                "N": "0"
               }
             }
           },
           "name": {
-            "S": ""
+            "S": "Polaris Avenue"
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "370"
+          },
+          "duration": {
+            "N": "45"
+          },
+          "instruction": {
+            "S": "Drive north on Polaris Avenue."
+          },
+          "maneuver": {
+            "M": {
+              "type": {
+                "S": "depart"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.185608"
+                  },
+                  {
+                    "N": "36.082562"
+                  }
+                ]
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "0"
+              }
+            }
+          },
+          "name": {
+            "S": "Polaris Avenue"
           }
         }
       },
@@ -9671,24 +5006,24 @@
           },
           "maneuver": {
             "M": {
-              "bearing_after": {
-                "N": "0"
-              },
-              "bearing_before": {
-                "N": "329"
+              "type": {
+                "S": "arrive"
               },
               "location": {
                 "L": [
                   {
-                    "N": "-115.185853"
+                    "N": "-115.18582"
                   },
                   {
-                    "N": "36.085953"
+                    "N": "36.0859"
                   }
                 ]
               },
-              "type": {
-                "S": "arrive"
+              "bearing_before": {
+                "N": "0"
+              },
+              "bearing_after": {
+                "N": "0"
               }
             }
           },
