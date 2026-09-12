@@ -301,7 +301,7 @@
 
     // Turn-by-turn tuning
     const TURN_APPROACH_THRESHOLD_M = 800; // start showing instruction at ~0.5 mi out
-    const TURN_PASSED_THRESHOLD_M = 30;    // consider a turn "passed" once this close
+    const TURN_PASSED_THRESHOLD_M = 12;    // consider a turn "passed" once this close
     const TURN_SKIP_MARGIN_M = 50;         // how much closer the *next* step must be to skip ahead past an imprecise/phantom waypoint
 
     // Master on/off switch for the green "upcoming turn" display. When false, the
@@ -632,9 +632,15 @@
 
       const nextStep = currentInstructions[currentStepIndex + 1];
 
-      // Mode 1: approaching the next real maneuver — show it with a countdown,
-      // same as before, once within the approach threshold.
-      if (nextStep) {
+      // Mode 1: approaching the next real maneuver — show it with a countdown.
+      // IMPORTANT: only look ahead at all while the CURRENT step is a "depart"
+      // (cruising) leg — i.e. we've already completed whatever turn got us onto
+      // this road. If currentStep is itself a pending turn/merge/fork/etc, we
+      // must always show THAT instruction, no matter how geometrically close a
+      // later turn happens to be (this was the bug: a nearby-but-not-yet-reached
+      // later turn could get announced before the current one was ever shown).
+      const currentIsCruising = currentStep.maneuver?.type === 'depart';
+      if (nextStep && currentIsCruising) {
         const distToNext = calculateDistanceToStep(nextStep);
         if (distToNext !== null && distToNext <= TURN_APPROACH_THRESHOLD_M) {
           turnBox.style.display = 'block';
@@ -644,6 +650,20 @@
           turnIconEl.textContent = getManeuverIcon(nextStep.maneuver?.type, nextStep.maneuver?.modifier);
           turnTextEl.textContent = nextStep.maneuver?.instruction || nextStep.instruction || 'Continue';
           turnProgressEl.textContent = `Step ${currentStepIndex + 2} of ${currentInstructions.length}`;
+          return;
+        }
+      }
+
+      // Safety guard: if currentStep is the final "arrive" step (or any pending
+      // turn that isn't a cruising "depart"), never announce it unconditionally.
+      // Forward-tracking can occasionally land on a step early if two steps sit
+      // very close together in the data — this prevents a false "arrived" (or
+      // any other premature announcement) from showing while still genuinely
+      // far away, by falling back to hiding the box instead.
+      if (!currentIsCruising) {
+        const distToCurrent = calculateDistanceToStep(currentStep);
+        if (distToCurrent !== null && distToCurrent > TURN_APPROACH_THRESHOLD_M) {
+          turnBox.style.display = 'none';
           return;
         }
       }
