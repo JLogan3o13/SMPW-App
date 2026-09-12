@@ -25,10 +25,10 @@
       {
         "M": {
           "distance": {
-            "N": "370"
+            "N": "370.0"
           },
           "duration": {
-            "N": "45"
+            "N": "45.0"
           },
           "instruction": {
             "S": "Drive south on Polaris Avenue."
@@ -49,10 +49,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -64,10 +64,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn right onto West Oquendo Road."
@@ -91,10 +91,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "180"
+                "N": "180.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -106,10 +106,10 @@
       {
         "M": {
           "distance": {
-            "N": "400"
+            "N": "400.0"
           },
           "duration": {
-            "N": "40"
+            "N": "40.0"
           },
           "instruction": {
             "S": "Drive west on West Oquendo Road."
@@ -122,18 +122,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.185608"
+                    "N": "-115.18646940000001"
                   },
                   {
-                    "N": "36.082562"
+                    "N": "36.082584000000004"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -145,10 +145,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn right onto South Valley View Boulevard."
@@ -172,10 +172,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "270"
+                "N": "270.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },
@@ -187,10 +187,10 @@
       {
         "M": {
           "distance": {
-            "N": "148"
+            "N": "148.0"
           },
           "duration": {
-            "N": "20"
+            "N": "20.0"
           },
           "instruction": {
             "S": "Drive north on South Valley View Boulevard."
@@ -203,18 +203,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.189915"
+                    "N": "-115.18991"
                   },
                   {
-                    "N": "36.082672"
+                    "N": "36.083198200000005"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },
@@ -226,10 +226,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn left onto West Russell Road."
@@ -253,10 +253,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -268,10 +268,10 @@
       {
         "M": {
           "distance": {
-            "N": "3900"
+            "N": "3900.0"
           },
           "duration": {
-            "N": "320"
+            "N": "320.0"
           },
           "instruction": {
             "S": "Drive west on West Russell Road."
@@ -284,18 +284,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.18989"
+                    "N": "-115.19871400000001"
                   },
                   {
-                    "N": "36.085303"
+                    "N": "36.085283000000004"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -307,10 +307,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn left onto South Torrey Pines Drive."
@@ -334,10 +334,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "270"
+                "N": "270.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -349,10 +349,10 @@
       {
         "M": {
           "distance": {
-            "N": "300"
+            "N": "300.0"
           },
           "duration": {
-            "N": "30"
+            "N": "30.0"
           },
           "instruction": {
             "S": "Drive south on South Torrey Pines Drive."
@@ -365,18 +365,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.23401"
+                    "N": "-115.2339526"
                   },
                   {
-                    "N": "36.085203"
+                    "N": "36.0837622"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -388,10 +388,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn right onto West Patrick Lane."
@@ -415,10 +415,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "180"
+                "N": "180.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -446,18 +446,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.233723"
+                    "N": "-115.2349692"
                   },
                   {
-                    "N": "36.077999"
+                    "N": "36.0779802"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -469,10 +469,10 @@
       {
         "M": {
           "distance": {
-            "N": "0"
+            "N": "0.0"
           },
           "duration": {
-            "N": "0"
+            "N": "0.0"
           },
           "instruction": {
             "S": "You have arrived at your destination."
@@ -493,10 +493,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "270"
+                "N": "270.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },
@@ -4576,10 +4576,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "89"
+                "N": "89.0"
               }
             }
           },
@@ -4618,10 +4618,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "89"
+                "N": "89.0"
               },
               "bearing_after": {
-                "N": "359"
+                "N": "359.0"
               }
             }
           },
@@ -4633,10 +4633,10 @@
       {
         "M": {
           "distance": {
-            "N": "300"
+            "N": "300.0"
           },
           "duration": {
-            "N": "30"
+            "N": "30.0"
           },
           "instruction": {
             "S": "Drive north on South Torrey Pines Drive."
@@ -4657,10 +4657,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "358"
+                "N": "358.0"
               }
             }
           },
@@ -4699,10 +4699,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "360"
+                "N": "360.0"
               },
               "bearing_after": {
-                "N": "88"
+                "N": "88.0"
               }
             }
           },
@@ -4714,10 +4714,10 @@
       {
         "M": {
           "distance": {
-            "N": "3900"
+            "N": "3900.0"
           },
           "duration": {
-            "N": "320"
+            "N": "320.0"
           },
           "instruction": {
             "S": "Drive east on West Russell Road."
@@ -4738,10 +4738,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "89"
+                "N": "89.0"
               }
             }
           },
@@ -4753,10 +4753,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn right onto South Valley View Boulevard."
@@ -4780,10 +4780,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "89"
+                "N": "89.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -4795,10 +4795,10 @@
       {
         "M": {
           "distance": {
-            "N": "148"
+            "N": "148.0"
           },
           "duration": {
-            "N": "20"
+            "N": "20.0"
           },
           "instruction": {
             "S": "Drive south on South Valley View Boulevard."
@@ -4819,10 +4819,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -4834,10 +4834,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn left onto West Oquendo Road."
@@ -4861,10 +4861,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "180"
+                "N": "180.0"
               },
               "bearing_after": {
-                "N": "90"
+                "N": "90.0"
               }
             }
           },
@@ -4876,10 +4876,10 @@
       {
         "M": {
           "distance": {
-            "N": "400"
+            "N": "400.0"
           },
           "duration": {
-            "N": "40"
+            "N": "40.0"
           },
           "instruction": {
             "S": "Drive east on West Oquendo Road."
@@ -4900,10 +4900,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "90"
+                "N": "90.0"
               }
             }
           },
@@ -4915,10 +4915,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn left onto Polaris Avenue."
@@ -4942,10 +4942,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "90"
+                "N": "90.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },
@@ -4957,10 +4957,10 @@
       {
         "M": {
           "distance": {
-            "N": "370"
+            "N": "370.0"
           },
           "duration": {
-            "N": "45"
+            "N": "45.0"
           },
           "instruction": {
             "S": "Drive north on Polaris Avenue."
@@ -4973,18 +4973,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.185608"
+                    "N": "-115.1856504"
                   },
                   {
-                    "N": "36.082562"
+                    "N": "36.0832296"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },
@@ -4996,10 +4996,10 @@
       {
         "M": {
           "distance": {
-            "N": "0"
+            "N": "0.0"
           },
           "duration": {
-            "N": "0"
+            "N": "0.0"
           },
           "instruction": {
             "S": "You have arrived at your destination."
@@ -5020,10 +5020,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },

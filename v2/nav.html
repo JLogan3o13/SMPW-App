@@ -654,15 +654,14 @@
         }
       }
 
-      // Safety guard: if currentStep is the final "arrive" step (or any pending
-      // turn that isn't a cruising "depart"), never announce it unconditionally.
-      // Forward-tracking can occasionally land on a step early if two steps sit
-      // very close together in the data — this prevents a false "arrived" (or
-      // any other premature announcement) from showing while still genuinely
-      // far away, by falling back to hiding the box instead.
-      if (!currentIsCruising) {
-        const distToCurrent = calculateDistanceToStep(currentStep);
-        if (distToCurrent !== null && distToCurrent > TURN_APPROACH_THRESHOLD_M) {
+      // Safety guard: only the final "arrive" step needs this protection — a
+      // false "arrived" message while still genuinely far away is actively
+      // misleading. A regular pending turn that tracking landed on a bit early
+      // should still show SOMETHING (its own name) rather than a blank screen;
+      // a blank navigation box is worse than an imperfectly-timed instruction.
+      if (currentStep.maneuver?.type === 'arrive') {
+        const distToArrive = calculateDistanceToStep(currentStep);
+        if (distToArrive !== null && distToArrive > TURN_APPROACH_THRESHOLD_M) {
           turnBox.style.display = 'none';
           return;
         }

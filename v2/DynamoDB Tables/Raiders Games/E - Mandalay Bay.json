@@ -19,10 +19,10 @@
       {
         "M": {
           "distance": {
-            "N": "160"
+            "N": "160.0"
           },
           "duration": {
-            "N": "20"
+            "N": "20.0"
           },
           "instruction": {
             "S": "Drive west on Jenny Way."
@@ -43,10 +43,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -58,10 +58,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn left onto Frank Sinatra Drive."
@@ -85,10 +85,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "270"
+                "N": "270.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -100,10 +100,10 @@
       {
         "M": {
           "distance": {
-            "N": "1450"
+            "N": "1450.0"
           },
           "duration": {
-            "N": "150"
+            "N": "150.0"
           },
           "instruction": {
             "S": "Drive south on Frank Sinatra Drive."
@@ -116,18 +116,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.1799224"
+                    "N": "-115.17909252"
                   },
                   {
-                    "N": "36.0927477"
+                    "N": "36.09134156"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -139,10 +139,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn right onto West Russell Road."
@@ -166,10 +166,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "180"
+                "N": "180.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -181,10 +181,10 @@
       {
         "M": {
           "distance": {
-            "N": "5350"
+            "N": "5350.0"
           },
           "duration": {
-            "N": "420"
+            "N": "420.0"
           },
           "instruction": {
             "S": "Drive west on West Russell Road."
@@ -197,18 +197,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.175773"
+                    "N": "-115.18742040000001"
                   },
                   {
-                    "N": "36.085717"
+                    "N": "36.0856142"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -220,10 +220,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn left onto South Torrey Pines Drive."
@@ -247,10 +247,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "270"
+                "N": "270.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -278,18 +278,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.23401"
+                    "N": "-115.2339526"
                   },
                   {
-                    "N": "36.085203"
+                    "N": "36.0837622"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "180"
+                "N": "180.0"
               }
             }
           },
@@ -301,10 +301,10 @@
       {
         "M": {
           "distance": {
-            "N": "20"
+            "N": "20.0"
           },
           "duration": {
-            "N": "5"
+            "N": "5.0"
           },
           "instruction": {
             "S": "Turn right onto West Patrick Lane."
@@ -328,10 +328,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "180"
+                "N": "180.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -359,18 +359,18 @@
               "location": {
                 "L": [
                   {
-                    "N": "-115.233723"
+                    "N": "-115.2349692"
                   },
                   {
-                    "N": "36.077999"
+                    "N": "36.0779802"
                   }
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "270"
+                "N": "270.0"
               }
             }
           },
@@ -382,10 +382,10 @@
       {
         "M": {
           "distance": {
-            "N": "0"
+            "N": "0.0"
           },
           "duration": {
-            "N": "0"
+            "N": "0.0"
           },
           "instruction": {
             "S": "You have arrived at your destination."
@@ -406,10 +406,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "270"
+                "N": "270.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },
@@ -6870,10 +6870,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "89"
+                "N": "89.0"
               }
             }
           },
@@ -6912,10 +6912,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "89"
+                "N": "89.0"
               },
               "bearing_after": {
-                "N": "359"
+                "N": "359.0"
               }
             }
           },
@@ -6951,10 +6951,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "358"
+                "N": "358.0"
               }
             }
           },
@@ -6993,10 +6993,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "360"
+                "N": "360.0"
               },
               "bearing_after": {
-                "N": "88"
+                "N": "88.0"
               }
             }
           },
@@ -7008,10 +7008,10 @@
       {
         "M": {
           "distance": {
-            "N": "5350"
+            "N": "5350.0"
           },
           "duration": {
-            "N": "420"
+            "N": "420.0"
           },
           "instruction": {
             "S": "Drive east on West Russell Road."
@@ -7032,10 +7032,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "89"
+                "N": "89.0"
               }
             }
           },
@@ -7074,10 +7074,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "150"
+                "N": "150.0"
               },
               "bearing_after": {
-                "N": "182"
+                "N": "182.0"
               }
             }
           },
@@ -7089,10 +7089,10 @@
       {
         "M": {
           "distance": {
-            "N": "1450"
+            "N": "1450.0"
           },
           "duration": {
-            "N": "150"
+            "N": "150.0"
           },
           "instruction": {
             "S": "Drive north on Frank Sinatra Drive."
@@ -7113,10 +7113,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "5"
+                "N": "5.0"
               }
             }
           },
@@ -7128,10 +7128,10 @@
       {
         "M": {
           "distance": {
-            "N": "160"
+            "N": "160.0"
           },
           "duration": {
-            "N": "20"
+            "N": "20.0"
           },
           "instruction": {
             "S": "Turn right onto Jenny Way."
@@ -7155,10 +7155,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "0"
+                "N": "0.0"
               },
               "bearing_after": {
-                "N": "90"
+                "N": "90.0"
               }
             }
           },
@@ -7170,10 +7170,10 @@
       {
         "M": {
           "distance": {
-            "N": "0"
+            "N": "0.0"
           },
           "duration": {
-            "N": "0"
+            "N": "0.0"
           },
           "instruction": {
             "S": "You have arrived at your destination."
@@ -7194,10 +7194,10 @@
                 ]
               },
               "bearing_before": {
-                "N": "90"
+                "N": "90.0"
               },
               "bearing_after": {
-                "N": "0"
+                "N": "0.0"
               }
             }
           },
