@@ -743,9 +743,9 @@
                 // on today's board.
                 let message;
                 if (lookup.reason === 'not_found') {
-                    message = `Car ${carNumber} is no longer active. Please select your current car below.`;
+                    message = `Car ${carNumber} is no longer active. Please select your current car above.`;
                 } else {
-                    message = `Car ${carNumber} is listed more than once on today's board. Please let Key Team know, then select your car again.`;
+                    message = `Car ${carNumber} is listed more than once on today's board. Please let Key Team know, then select your car again above.`;
                 }
                 resetToCarPicker(message);
                 return { blocked: true };
