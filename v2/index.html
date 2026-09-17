@@ -290,6 +290,12 @@
                     </div>
                 </div>
 
+                <!-- Sits right at the car-number field on purpose: if the
+                     remembered car turns out to be stale, this is where the
+                     driver's attention already is, not a message at the
+                     bottom of the page they can navigate past unnoticed. -->
+                <div class="warning" id="carLookupWarning"></div>
+
                 <div class="form-group">
                     <label for="passengers"># of Passengers:</label>
                     <select id="passengers" name="passengers" required>
@@ -297,8 +303,6 @@
                     </select>
                     <span class="hint">How many people are in the vehicle for this run.</span>
                 </div>
-
-                <div class="warning" id="carLookupWarning"></div>
             </div>
             <!-- ===== END NEW section ===== -->
             
@@ -718,21 +722,7 @@
         }
 
         // ===== NEW: write passengers onto the driver's DailyOperations row =====
-        // First attempt used fetch's `keepalive: true` to let the write survive
-        // the immediate navigation to nav.html. That turned out to be unreliable
-        // on Safari/iOS specifically: WebKit has known issues sending keepalive
-        // requests that use a non-GET method with a JSON body — in some
-        // versions the request is silently dropped rather than queued, which
-        // is almost certainly why this went from ~50% to 0% on a phone.
-        //
-        // Instead: give the write a bounded head start (WRITE_TIMEOUT_MS)
-        // before navigating. Most of the time this lets it actually finish;
-        // if it's still pending after the timeout, we stop waiting and
-        // navigate anyway (per the "don't block on a slow write" decision) —
-        // the driver isn't stuck staring at a spinner, but the request has a
-        // real window to succeed instead of racing an instant page unload.
         const WRITE_TIMEOUT_MS = 1200;
-        const LOOKUP_FAILURE_NAV_DELAY_MS = 1500;
 
         // IMPORTANT: the write intentionally sends ONLY driverId, eventDate, and
         // passengers. It does NOT send `zone` or `status` — the driver's zone on
@@ -743,20 +733,22 @@
             const lookup = resolveDriverIdForCarNumber(carNumber);
 
             if (!lookup.ok) {
+                // A stale/invalid car number isn't a one-off — it'll fail the
+                // exact same way on every future submission from this device
+                // until corrected, since it's remembered in localStorage. A
+                // timed banner is too easy to miss (confirmed in testing), and
+                // even if seen, doesn't fix anything. So instead: clear the
+                // bad selection, force the driver back to the picker, and
+                // refuse to navigate until they choose a car that's actually
+                // on today's board.
+                let message;
                 if (lookup.reason === 'not_found') {
-                    showCarLookupWarning(
-                        `Car ${carNumber} isn't on today's board right now. ` +
-                        `Passenger count wasn't recorded — let Key Team know.`
-                    );
-                } else if (lookup.reason === 'duplicate') {
-                    showCarLookupWarning(
-                        `Car ${carNumber} is listed more than once on today's board. ` +
-                        `Passenger count wasn't recorded — let Key Team know so it can be fixed.`
-                    );
+                    message = `Car ${carNumber} is no longer active. Please select your current car below.`;
+                } else {
+                    message = `Car ${carNumber} is listed more than once on today's board. Please let Key Team know, then select your car again.`;
                 }
-                // Lookup failed synchronously — nothing to write. Tell the
-                // caller to pause briefly before navigating so this is readable.
-                return { delayNavigation: true };
+                resetToCarPicker(message);
+                return { blocked: true };
             }
 
             // Race the write against a short timeout instead of awaiting it
@@ -768,7 +760,20 @@
                 new Promise(resolve => setTimeout(resolve, WRITE_TIMEOUT_MS))
             ]);
 
-            return { delayNavigation: false };
+            return { blocked: false };
+        }
+
+        // Clears the stale car number, drops the UI back to the picker (even
+        // if a confirmed car was showing), and surfaces the reason right at
+        // the field the driver needs to fix — rather than a bottom-of-page
+        // banner that's easy to navigate past before reading.
+        function resetToCarPicker(message) {
+            localStorage.removeItem(CAR_NUMBER_STORAGE_KEY);
+            carNumberSelect.value = '';
+            carNumberConfirmedGroup.style.display = 'none';
+            carNumberPickerGroup.style.display = 'block';
+            showCarLookupWarning(message);
+            updateButtonState();
         }
 
         async function writePassengerCount(driverId, carNumber, passengers) {
@@ -816,6 +821,14 @@
 
             hideCarLookupWarning();
             const submission = await beginPassengerSubmission(carNumber, passengers);
+
+            // Stale/invalid car number: resetToCarPicker() has already put
+            // the driver back at the picker with an explanation. Don't
+            // navigate — they need to pick their actual current car and
+            // press this button again.
+            if (submission.blocked) {
+                return;
+            }
             
 			const loc = currentLocations[locationIndex];
 			
@@ -827,15 +840,7 @@
 				`&dir=outbound`;
 			
 			console.log("NAV URL: ", navUrl);
-
-			// A lookup failure gets an extra readable pause; a successful
-			// lookup has already waited up to WRITE_TIMEOUT_MS inside
-			// beginPassengerSubmission, so it navigates right away here.
-			if (submission.delayNavigation) {
-				setTimeout(() => { window.location.href = navUrl; }, LOOKUP_FAILURE_NAV_DELAY_MS);
-			} else {
-				window.location.href = navUrl;
-			}
+			window.location.href = navUrl;
         });
 
         // Handle "Return to Hub" button click
@@ -851,6 +856,10 @@
 
             hideCarLookupWarning();
             const submission = await beginPassengerSubmission(carNumber, passengers);
+
+            if (submission.blocked) {
+                return;
+            }
             
 			const loc = currentLocations[locationIndex];
 			
@@ -861,12 +870,7 @@
 				`&dir=return`;
 			
 			console.log("NAV URL: ", navUrl);
-
-			if (submission.delayNavigation) {
-				setTimeout(() => { window.location.href = navUrl; }, LOOKUP_FAILURE_NAV_DELAY_MS);
-			} else {
-				window.location.href = navUrl;
-			}
+			window.location.href = navUrl;
         });
 
         function showLoading(message) {
