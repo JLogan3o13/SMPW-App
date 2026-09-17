@@ -536,18 +536,38 @@
       if (!Array.isArray(steps) || !steps.length) return steps;
 
       // Routes built from chained waypoints (to force local streets instead of a
-      // highway) produce a fake "arrive"/"depart" pair at EVERY waypoint boundary,
-      // even though nothing actually happens there. Keep only the first "depart",
-      // the final "arrive" (the real destination), and any genuine maneuver
-      // (turn, merge, fork, roundabout, continue/U-turn, etc).
-      return steps.filter((step, i) => {
-        const type = step.maneuver?.type;
-        const isFirst = i === 0;
-        const isLast = i === steps.length - 1;
-        if (type === 'arrive' && !isLast) return false;
-        if (type === 'depart' && !isFirst) return false;
-        return true;
-      });
+      // highway) produce a fake "arrive"/"depart" pair AT THE SAME COORDINATE
+      // at every waypoint boundary, even though nothing actually happens there.
+      // That's the ONLY pattern we want to remove.
+      //
+      // IMPORTANT: a "depart" step that is NOT part of such a pair is a real,
+      // intentional cruise instruction ("Drive southeast on East Mountain Falls
+      // Parkway") — the whole turn-by-turn system depends on these to know when
+      // to show a persistent "driving on X" message vs. an approaching-turn
+      // countdown. The old version of this filter removed every non-first
+      // "depart" unconditionally, which silently deleted every real cruise
+      // step too — that's what caused both the missing countdowns and the
+      // "jumps straight to the next turn" bug.
+      const PHANTOM_PAIR_MAX_M = 5; // arrive+depart this close together = same physical point = fake
+
+      const toRemove = new Set();
+      for (let i = 0; i < steps.length - 1; i++) {
+        const cur = steps[i];
+        const next = steps[i + 1];
+        if (cur.maneuver?.type !== 'arrive' || next.maneuver?.type !== 'depart') continue;
+
+        const curLoc = cur.maneuver?.location;
+        const nextLoc = next.maneuver?.location;
+        if (!Array.isArray(curLoc) || !Array.isArray(nextLoc)) continue;
+
+        const d = haversineMeters(curLoc[0], curLoc[1], nextLoc[0], nextLoc[1]);
+        if (d <= PHANTOM_PAIR_MAX_M) {
+          toRemove.add(i);
+          toRemove.add(i + 1);
+        }
+      }
+
+      return steps.filter((step, i) => !toRemove.has(i));
     }
 
     function getInstructionsForDir(){
