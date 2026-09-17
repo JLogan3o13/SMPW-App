@@ -226,27 +226,9 @@
             color: #666;
             font-size: 14px;
         }
-
-        /* Mockup-only banner so this is never mistaken for the live page */
-        .mockup-banner {
-            max-width: 600px;
-            margin: 0 auto 12px;
-            padding: 10px 16px;
-            background-color: #fff3cd;
-            border: 1px solid #ffe69c;
-            border-radius: 6px;
-            color: #664d03;
-            font-size: 13px;
-            text-align: center;
-            font-family: Arial, sans-serif;
-        }
     </style>
 </head>
 <body>
-    <div class="mockup-banner" id="mockupBanner">
-        MOCKUP — checking MOCK_MODE status...
-    </div>
-
     <div class="form-container">
         <h1>LV Transportation</h1>
         <div id="eventInfo" style="text-align: center; margin-bottom: 20px; color: #666; font-size: 14px;"></div>
@@ -413,15 +395,6 @@
 
         // Load zones, the live car-number board, and the passenger-count list
         window.addEventListener('load', function() {
-            const banner = document.getElementById('mockupBanner');
-            if (MOCK_MODE) {
-                banner.textContent = 'MOCKUP — MOCK_MODE is ON. Passenger writes are only logged to the console, never sent to updateDailyOperation.';
-            } else {
-                banner.textContent = 'MOCKUP — MOCK_MODE is OFF. Passenger writes are LIVE and will call the real updateDailyOperation endpoint.';
-                banner.style.backgroundColor = '#f8d7da';
-                banner.style.borderColor = '#f5c6cb';
-                banner.style.color = '#721c24';
-            }
             loadZones();
             populatePassengerOptions();
             refreshDailyOperations();
