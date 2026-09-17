@@ -711,11 +711,20 @@
         }
 
         // ===== NEW: write passengers onto the driver's DailyOperations row =====
-        // Split into a synchronous lookup + an async write on purpose: the
-        // lookup result decides whether navigation should pause briefly so the
-        // driver can actually read a warning (per the customer's decision, a
-        // 1-2 second pause is fine here). The write itself stays fire-and-forget
-        // so a slow or failed network call never delays navigation further.
+        // First attempt used fetch's `keepalive: true` to let the write survive
+        // the immediate navigation to nav.html. That turned out to be unreliable
+        // on Safari/iOS specifically: WebKit has known issues sending keepalive
+        // requests that use a non-GET method with a JSON body — in some
+        // versions the request is silently dropped rather than queued, which
+        // is almost certainly why this went from ~50% to 0% on a phone.
+        //
+        // Instead: give the write a bounded head start (WRITE_TIMEOUT_MS)
+        // before navigating. Most of the time this lets it actually finish;
+        // if it's still pending after the timeout, we stop waiting and
+        // navigate anyway (per the "don't block on a slow write" decision) —
+        // the driver isn't stuck staring at a spinner, but the request has a
+        // real window to succeed instead of racing an instant page unload.
+        const WRITE_TIMEOUT_MS = 1200;
         const LOOKUP_FAILURE_NAV_DELAY_MS = 1500;
 
         // IMPORTANT: the write intentionally sends ONLY driverId, eventDate, and
@@ -723,7 +732,7 @@
         // Driver Tracking stays the source of truth (per the customer's decision),
         // and status changes stay a manual Key Team action that separately
         // triggers the zone add/subtract logic already in updateDailyOperation.
-        function beginPassengerSubmission(carNumber, passengers) {
+        async function beginPassengerSubmission(carNumber, passengers) {
             const lookup = resolveDriverIdForCarNumber(carNumber);
 
             if (!lookup.ok) {
@@ -743,7 +752,15 @@
                 return { delayNavigation: true };
             }
 
-            writePassengerCount(lookup.driverId, carNumber, passengers);
+            // Race the write against a short timeout instead of awaiting it
+            // unconditionally — this is what keeps a driver from being stuck
+            // waiting on a bad connection while still giving good connections
+            // a real chance to complete before the page navigates away.
+            await Promise.race([
+                writePassengerCount(lookup.driverId, carNumber, passengers),
+                new Promise(resolve => setTimeout(resolve, WRITE_TIMEOUT_MS))
+            ]);
+
             return { delayNavigation: false };
         }
 
@@ -763,14 +780,8 @@
                 const response = await fetch(`${OPERATIONS_API_URL}/operations`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload),
-                    // Without this, the browser can abort this request the
-                    // instant window.location.href navigates away below —
-                    // which is exactly why this was intermittently failing
-                    // with nothing in CloudWatch: the request never made it
-                    // out before the page unloaded. keepalive tells the
-                    // browser to let it finish in the background instead.
-                    keepalive: true
+                    body: JSON.stringify(payload)
+                    // Deliberately no `keepalive` here — see note above.
                 });
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
@@ -778,15 +789,15 @@
                 console.log(`Recorded ${passengers} passengers for car ${carNumber} (driver ${driverId})`);
             } catch (error) {
                 console.error('Error recording passenger count:', error);
-                // Per decision: don't block or delay navigation on a failed
-                // write — the driver is likely already on their way by the
-                // time this fails or succeeds. Key Team can ask if it's missing.
+                // Per decision: don't block or delay navigation further on a
+                // failed write — this just means it didn't make it out in
+                // time; Key Team can ask if it's missing.
             }
         }
         // ===== END passenger write =====
 
         // Handle "Navigate to Destination" button click
-        goButton.addEventListener('click', function() {
+        goButton.addEventListener('click', async function() {
             const locationIndex = locationSelect.value;
             const carNumber = localStorage.getItem(CAR_NUMBER_STORAGE_KEY);
             const passengers = passengersSelect.value;
@@ -797,7 +808,7 @@
             }
 
             hideCarLookupWarning();
-            const submission = beginPassengerSubmission(carNumber, passengers);
+            const submission = await beginPassengerSubmission(carNumber, passengers);
             
 			const loc = currentLocations[locationIndex];
 			
@@ -810,9 +821,9 @@
 			
 			console.log("NAV URL: ", navUrl);
 
-			// Only pause when the car lookup itself failed, so the warning is
-			// readable before we leave the page. A successful lookup (or a
-			// write that fails later, in the background) navigates immediately.
+			// A lookup failure gets an extra readable pause; a successful
+			// lookup has already waited up to WRITE_TIMEOUT_MS inside
+			// beginPassengerSubmission, so it navigates right away here.
 			if (submission.delayNavigation) {
 				setTimeout(() => { window.location.href = navUrl; }, LOOKUP_FAILURE_NAV_DELAY_MS);
 			} else {
@@ -821,7 +832,7 @@
         });
 
         // Handle "Return to Hub" button click
-        returnButton.addEventListener('click', function() {
+        returnButton.addEventListener('click', async function() {
             const locationIndex = locationSelect.value;
             const carNumber = localStorage.getItem(CAR_NUMBER_STORAGE_KEY);
             const passengers = passengersSelect.value;
@@ -832,7 +843,7 @@
             }
 
             hideCarLookupWarning();
-            const submission = beginPassengerSubmission(carNumber, passengers);
+            const submission = await beginPassengerSubmission(carNumber, passengers);
             
 			const loc = currentLocations[locationIndex];
 			
