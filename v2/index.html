@@ -37,6 +37,14 @@
             font-weight: bold;
             color: #555;
         }
+
+        .hint {
+            display: block;
+            font-weight: normal;
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
         
         select {
             width: 100%;
@@ -55,6 +63,56 @@
         select:disabled {
             background-color: #f9f9f9;
             color: #999;
+        }
+
+        /* Driver/vehicle section gets a subtle divider so it reads as a
+           distinct group from the destination fields above it */
+        .driver-section {
+            border-top: 2px dashed #e0e0e0;
+            margin-top: 24px;
+            padding-top: 20px;
+        }
+
+        .driver-section-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 14px;
+        }
+
+        .change-car-link {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 13px;
+            color: #2196F3;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .car-confirmed {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px;
+            background-color: #f0f7f0;
+            border: 2px solid #c8e6c9;
+            border-radius: 4px;
+            font-size: 16px;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .warning {
+            background-color: #fff3cd;
+            color: #664d03;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border: 1px solid #ffe69c;
+            font-size: 13px;
+            display: none;
         }
         
         /* Button Container for Two Buttons */
@@ -168,9 +226,29 @@
             color: #666;
             font-size: 14px;
         }
+
+        /* Mockup-only banner so this is never mistaken for the live page */
+        .mockup-banner {
+            max-width: 600px;
+            margin: 0 auto 12px;
+            padding: 10px 16px;
+            background-color: #fff3cd;
+            border: 1px solid #ffe69c;
+            border-radius: 6px;
+            color: #664d03;
+            font-size: 13px;
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
     </style>
 </head>
 <body>
+    <div class="mockup-banner">
+        MOCKUP — car list is read live from getDailyOperations, but the passenger write is
+        safely logged to the console instead of actually calling updateDailyOperation.
+        Search "MOCK_MODE" in the script to flip that once this is ready to test for real.
+    </div>
+
     <div class="form-container">
         <h1>LV Transportation</h1>
         <div id="eventInfo" style="text-align: center; margin-bottom: 20px; color: #666; font-size: 14px;"></div>
@@ -188,6 +266,43 @@
                     <option value="">-- Select a Zone First --</option>
                 </select>
             </div>
+
+            <!-- ===== NEW: driver / vehicle section ===== -->
+            <div class="driver-section">
+                <div class="driver-section-title">Your Vehicle</div>
+
+                <!-- Once a car number is picked and remembered on this device, we
+                     skip straight to a confirmation row instead of re-showing the
+                     dropdown every time the driver loads the page. The underlying
+                     driverId is still re-resolved fresh from the live board every
+                     time, in case the car was handed to someone else. -->
+                <div class="form-group" id="carNumberPickerGroup">
+                    <label for="carNumber">Select Car Number:</label>
+                    <select id="carNumber" name="carNumber" required>
+                        <option value="">Loading active cars...</option>
+                    </select>
+                    <span class="hint">Pulled from today's Driver Tracking board. Remembered on this device so you won't need to pick it again.</span>
+                </div>
+
+                <div class="form-group" id="carNumberConfirmedGroup" style="display: none;">
+                    <label>Car Number:</label>
+                    <div class="car-confirmed">
+                        <span id="confirmedCarLabel">Car 18</span>
+                        <span class="change-car-link" id="changeCarLink">Not you? Change car</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="passengers"># of Passengers:</label>
+                    <select id="passengers" name="passengers" required>
+                        <option value="">-- Select Passenger Count --</option>
+                    </select>
+                    <span class="hint">How many people are in the vehicle for this run.</span>
+                </div>
+
+                <div class="warning" id="carLookupWarning"></div>
+            </div>
+            <!-- ===== END NEW section ===== -->
             
             <!-- Two Button Layout -->
             <div class="button-container">
@@ -218,11 +333,35 @@
     </div>
 
     <script>
-        // Your us-west-1 API Gateway URL
+        // Existing Destinations API (zones/locations) — unchanged
         const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
+
+        // Same operations API driver-tracking.html and master-driver-list.html already use.
+        // GET  {OPERATIONS_API_URL}/operations?eventDate=YYYY-MM-DD  -> getDailyOperations (read-only, safe)
+        // PUT  {OPERATIONS_API_URL}/operations                       -> updateDailyOperation (writes real data)
+        const OPERATIONS_API_URL = 'https://x6wxqzeqw9.execute-api.us-west-1.amazonaws.com/prod';
+
+        // MOCKUP SAFETY SWITCH: while true, the PUT to updateDailyOperation is
+        // only logged to the console, never actually sent. The GET (read-only)
+        // stays live so the car-number dropdown reflects today's real board.
+        // Flip to false only once this is ready to test against real events.
+        const MOCK_MODE = true;
+
+        const MAX_PASSENGERS = 8; // swap for real vehicle max seat capacity if it varies by car
+
+        // Confirmed: every status except "Checked Out" counts as an active car
+        // for the driver-facing dropdown.
+        const INACTIVE_STATUS_FOR_CAR_LIST = 'Checked Out';
         
         const zoneSelect = document.getElementById('zone');
         const locationSelect = document.getElementById('location');
+        const carNumberSelect = document.getElementById('carNumber');
+        const passengersSelect = document.getElementById('passengers');
+        const carNumberPickerGroup = document.getElementById('carNumberPickerGroup');
+        const carNumberConfirmedGroup = document.getElementById('carNumberConfirmedGroup');
+        const confirmedCarLabel = document.getElementById('confirmedCarLabel');
+        const changeCarLink = document.getElementById('changeCarLink');
+        const carLookupWarning = document.getElementById('carLookupWarning');
         const goButton = document.getElementById('goButton');
         const returnButton = document.getElementById('returnButton');
         const loadingMessage = document.getElementById('loadingMessage');
@@ -237,6 +376,21 @@
         
         let currentLocations = {};
         let currentEvent = '';
+        let dailyOperations = []; // latest snapshot from getDailyOperations
+        const CAR_NUMBER_STORAGE_KEY = 'lvt_carNumber';
+        const OPERATIONS_REFRESH_MS = 15000;
+
+        // Matches the local-date logic driver-tracking.html already uses as
+        // the DailyOperations sort/partition key. Confirmed with the customer
+        // that events don't run past ~9pm, so a midnight rollover mid-shift
+        // isn't a real-world concern here.
+        function getLocalDate() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
 
         // Extract event parameter from URL
         function getEventFromURL() {
@@ -255,8 +409,15 @@
             }
         });
 
-        // Load zones when page loads
-        window.addEventListener('load', loadZones);
+        // Load zones, the live car-number board, and the passenger-count list
+        window.addEventListener('load', function() {
+            loadZones();
+            populatePassengerOptions();
+            refreshDailyOperations();
+            setInterval(refreshDailyOperations, OPERATIONS_REFRESH_MS);
+            restoreRememberedCarNumber();
+            updateButtonState();
+        });
 
         async function loadZones() {
             try {
@@ -292,6 +453,131 @@
             }
         }
 
+        // ===== NEW: live car-number board =====
+        // Pulls the same DailyOperations rows driver-tracking.html shows, so the
+        // dropdown always matches what Key Team currently sees. We re-fetch on
+        // an interval (not just once) so a car handoff mid-shift is picked up
+        // without the driver needing to reload the page.
+        async function refreshDailyOperations() {
+            try {
+                const eventDate = getLocalDate();
+                const response = await fetch(`${OPERATIONS_API_URL}/operations?eventDate=${eventDate}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                dailyOperations = await response.json();
+                renderCarNumberOptions();
+            } catch (error) {
+                console.error('Error loading daily operations board:', error);
+                // Non-fatal: leave whatever car list we already have in place
+                // rather than clearing a working dropdown out from under the driver.
+            }
+        }
+
+        function activeRowsWithCarNumbers() {
+            return dailyOperations.filter(row =>
+                row.carNumber &&
+                String(row.carNumber).trim().length > 0 &&
+                row.status !== INACTIVE_STATUS_FOR_CAR_LIST
+            );
+        }
+
+        function renderCarNumberOptions() {
+            const previousValue = carNumberSelect.value;
+            const activeRows = activeRowsWithCarNumbers();
+
+            // Unique, sorted car numbers for the dropdown
+            const uniqueCarNumbers = [...new Set(activeRows.map(row => String(row.carNumber)))]
+                .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+
+            carNumberSelect.innerHTML = '<option value="">-- Select Your Car Number --</option>';
+
+            if (uniqueCarNumbers.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'No active cars found for today';
+                carNumberSelect.appendChild(option);
+                return;
+            }
+
+            uniqueCarNumbers.forEach(car => {
+                const option = document.createElement('option');
+                option.value = car;
+                option.textContent = `Car ${car}`;
+                carNumberSelect.appendChild(option);
+            });
+
+            // Preserve the driver's in-progress selection across a background refresh
+            if (previousValue && uniqueCarNumbers.includes(previousValue)) {
+                carNumberSelect.value = previousValue;
+            }
+        }
+
+        // Resolves a car number to exactly one driverId against the freshest
+        // board we have. Returns a result object rather than throwing, so the
+        // caller can decide how to degrade (per the "still let them navigate"
+        // decision) instead of blocking the driver.
+        function resolveDriverIdForCarNumber(carNumber) {
+            const matches = activeRowsWithCarNumbers().filter(row => String(row.carNumber) === String(carNumber));
+
+            if (matches.length === 0) {
+                return { ok: false, reason: 'not_found' };
+            }
+            if (matches.length > 1) {
+                // Two active rows sharing a car number is a data problem on the
+                // board itself (e.g. Key Team hasn't checked one out yet).
+                // Don't guess which one is correct — surface it instead.
+                return { ok: false, reason: 'duplicate', count: matches.length };
+            }
+            return { ok: true, driverId: matches[0].driverId };
+        }
+
+        function restoreRememberedCarNumber() {
+            const remembered = localStorage.getItem(CAR_NUMBER_STORAGE_KEY);
+            if (remembered) {
+                showConfirmedCar(remembered);
+            }
+        }
+
+        function showConfirmedCar(carNumber) {
+            confirmedCarLabel.textContent = `Car ${carNumber}`;
+            carNumberPickerGroup.style.display = 'none';
+            carNumberConfirmedGroup.style.display = 'block';
+        }
+
+        carNumberSelect.addEventListener('change', function() {
+            const carNumber = this.value;
+            if (carNumber) {
+                localStorage.setItem(CAR_NUMBER_STORAGE_KEY, carNumber);
+                showConfirmedCar(carNumber);
+            }
+            updateButtonState();
+        });
+
+        changeCarLink.addEventListener('click', function() {
+            localStorage.removeItem(CAR_NUMBER_STORAGE_KEY);
+            carNumberSelect.value = '';
+            carNumberConfirmedGroup.style.display = 'none';
+            carNumberPickerGroup.style.display = 'block';
+            hideCarLookupWarning();
+            updateButtonState();
+        });
+        // ===== END live car-number board =====
+
+        // ===== Passengers dropdown =====
+        function populatePassengerOptions() {
+            passengersSelect.innerHTML = '<option value="">-- Select Passenger Count --</option>';
+            for (let i = 0; i <= MAX_PASSENGERS; i++) {
+                const option = document.createElement('option');
+                option.value = i;
+                option.textContent = i === 1 ? '1 passenger' : `${i} passengers`;
+                passengersSelect.appendChild(option);
+            }
+        }
+
+        passengersSelect.addEventListener('change', updateButtonState);
+        // ===== END passengers dropdown =====
+
         // Handle zone selection
         zoneSelect.addEventListener('change', async function() {
             const selectedZone = this.value;
@@ -299,9 +585,8 @@
             // Reset location dropdown and buttons
             locationSelect.innerHTML = '<option value="">-- Choose a Location --</option>';
             locationSelect.disabled = true;
-            goButton.disabled = true;
-            returnButton.disabled = true;
             currentLocations = {};
+            updateButtonState();
             
             if (selectedZone) {
                 try {
@@ -348,14 +633,25 @@
         // Handle location selection
         locationSelect.addEventListener('change', function() {
             const locationIndex = this.value;
-            goButton.disabled = !locationIndex;
-            returnButton.disabled = !locationIndex;
+            updateButtonState();
             
             // Show parking photo only if location is selected AND has a valid photo
             if (locationIndex && currentLocations[locationIndex] && hasValidParkingPhoto(locationIndex)) {
                 showParkingPhoto(locationIndex);
             }
         });
+
+        // Buttons require a location, a remembered car number, and a passenger
+        // count before a driver can navigate or mark a return.
+        function updateButtonState() {
+            const hasLocation = !!locationSelect.value;
+            const hasCarNumber = !!localStorage.getItem(CAR_NUMBER_STORAGE_KEY);
+            const hasPassengerCount = passengersSelect.value !== '';
+            const ready = hasLocation && hasCarNumber && hasPassengerCount;
+
+            goButton.disabled = !ready;
+            returnButton.disabled = !ready;
+        }
 
         // Check if location has a valid parking photo
         function hasValidParkingPhoto(locationIndex) {
@@ -374,18 +670,12 @@
             const location = currentLocations[locationIndex];
             const photoUrl = location.parkingPhoto.trim();
             
-            // DEBUG: Log the values
-            console.log('Location:', location);
-            console.log('Photo URL from DB:', photoUrl);
-            
             // Double-check photo exists before showing modal
             if (photoUrl && photoUrl.length > 0) {
                 // Construct full URL for the photo (served via CloudFront or S3)
                 const fullPhotoUrl = photoUrl.startsWith('http') 
                     ? photoUrl 
                     : `https://d3czxqxcb96n5u.cloudfront.net/${photoUrl}`;
-                
-                console.log('Full Photo URL:', fullPhotoUrl);
                 
                 modalTitle.textContent = `Parking: ${location.label}`;
                 modalImage.src = fullPhotoUrl;
@@ -404,25 +694,110 @@
                 
                 // Add error handling for broken images
                 modalImage.onerror = function() {
-                    console.log(`Failed to load parking photo: ${fullPhotoUrl}`);
                     photoModal.style.display = 'none';
                 };
                 
-                console.log('Showing modal');
                 photoModal.style.display = 'block';
-            } else {
-                console.log('No photo URL found');
             }
         }
+
+        function showCarLookupWarning(message) {
+            carLookupWarning.textContent = message;
+            carLookupWarning.style.display = 'block';
+        }
+
+        function hideCarLookupWarning() {
+            carLookupWarning.style.display = 'none';
+        }
+
+        // ===== NEW: write passengers onto the driver's DailyOperations row =====
+        // Split into a synchronous lookup + an async write on purpose: the
+        // lookup result decides whether navigation should pause briefly so the
+        // driver can actually read a warning (per the customer's decision, a
+        // 1-2 second pause is fine here). The write itself stays fire-and-forget
+        // so a slow or failed network call never delays navigation further.
+        const LOOKUP_FAILURE_NAV_DELAY_MS = 1500;
+
+        // IMPORTANT: the write intentionally sends ONLY driverId, eventDate, and
+        // passengers. It does NOT send `zone` or `status` — the driver's zone on
+        // Driver Tracking stays the source of truth (per the customer's decision),
+        // and status changes stay a manual Key Team action that separately
+        // triggers the zone add/subtract logic already in updateDailyOperation.
+        function beginPassengerSubmission(carNumber, passengers) {
+            const lookup = resolveDriverIdForCarNumber(carNumber);
+
+            if (!lookup.ok) {
+                if (lookup.reason === 'not_found') {
+                    showCarLookupWarning(
+                        `Car ${carNumber} isn't on today's board right now. ` +
+                        `Passenger count wasn't recorded — let Key Team know.`
+                    );
+                } else if (lookup.reason === 'duplicate') {
+                    showCarLookupWarning(
+                        `Car ${carNumber} is listed more than once on today's board. ` +
+                        `Passenger count wasn't recorded — let Key Team know so it can be fixed.`
+                    );
+                }
+                // Lookup failed synchronously — nothing to write. Tell the
+                // caller to pause briefly before navigating so this is readable.
+                return { delayNavigation: true };
+            }
+
+            writePassengerCount(lookup.driverId, carNumber, passengers);
+            return { delayNavigation: false };
+        }
+
+        async function writePassengerCount(driverId, carNumber, passengers) {
+            const payload = {
+                driverId: driverId,
+                eventDate: getLocalDate(),
+                passengers: Number(passengers)
+            };
+
+            if (MOCK_MODE) {
+                console.log('[MOCK_MODE] Would PUT to updateDailyOperation:', payload);
+                return;
+            }
+
+            try {
+                const response = await fetch(`${OPERATIONS_API_URL}/operations`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                    // Without this, the browser can abort this request the
+                    // instant window.location.href navigates away below —
+                    // which is exactly why this was intermittently failing
+                    // with nothing in CloudWatch: the request never made it
+                    // out before the page unloaded. keepalive tells the
+                    // browser to let it finish in the background instead.
+                    keepalive: true
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                console.log(`Recorded ${passengers} passengers for car ${carNumber} (driver ${driverId})`);
+            } catch (error) {
+                console.error('Error recording passenger count:', error);
+                // Per decision: don't block or delay navigation on a failed
+                // write — the driver is likely already on their way by the
+                // time this fails or succeeds. Key Team can ask if it's missing.
+            }
+        }
+        // ===== END passenger write =====
 
         // Handle "Navigate to Destination" button click
         goButton.addEventListener('click', function() {
             const locationIndex = locationSelect.value;
+            const carNumber = localStorage.getItem(CAR_NUMBER_STORAGE_KEY);
+            const passengers = passengersSelect.value;
             
-            if (!locationIndex || !currentLocations[locationIndex]) {
-                showError('Please select both zone and location.');
+            if (!locationIndex || !currentLocations[locationIndex] || !carNumber || passengers === '') {
+                showError('Please select a location, your car number, and passenger count.');
                 return;
             }
+
+            hideCarLookupWarning();
+            const submission = beginPassengerSubmission(carNumber, passengers);
             
 			const loc = currentLocations[locationIndex];
 			
@@ -434,17 +809,30 @@
 				`&dir=outbound`;
 			
 			console.log("NAV URL: ", navUrl);
-			window.location.href = navUrl;
+
+			// Only pause when the car lookup itself failed, so the warning is
+			// readable before we leave the page. A successful lookup (or a
+			// write that fails later, in the background) navigates immediately.
+			if (submission.delayNavigation) {
+				setTimeout(() => { window.location.href = navUrl; }, LOOKUP_FAILURE_NAV_DELAY_MS);
+			} else {
+				window.location.href = navUrl;
+			}
         });
 
         // Handle "Return to Hub" button click
         returnButton.addEventListener('click', function() {
             const locationIndex = locationSelect.value;
+            const carNumber = localStorage.getItem(CAR_NUMBER_STORAGE_KEY);
+            const passengers = passengersSelect.value;
             
-            if (!locationIndex || !currentLocations[locationIndex]) {
-                showError('Please select both zone and location.');
+            if (!locationIndex || !currentLocations[locationIndex] || !carNumber || passengers === '') {
+                showError('Please select a location, your car number, and passenger count.');
                 return;
             }
+
+            hideCarLookupWarning();
+            const submission = beginPassengerSubmission(carNumber, passengers);
             
 			const loc = currentLocations[locationIndex];
 			
@@ -455,7 +843,12 @@
 				`&dir=return`;
 			
 			console.log("NAV URL: ", navUrl);
-			window.location.href = navUrl;
+
+			if (submission.delayNavigation) {
+				setTimeout(() => { window.location.href = navUrl; }, LOOKUP_FAILURE_NAV_DELAY_MS);
+			} else {
+				window.location.href = navUrl;
+			}
         });
 
         function showLoading(message) {
