@@ -243,10 +243,8 @@
     </style>
 </head>
 <body>
-    <div class="mockup-banner">
-        MOCKUP — car list is read live from getDailyOperations, but the passenger write is
-        safely logged to the console instead of actually calling updateDailyOperation.
-        Search "MOCK_MODE" in the script to flip that once this is ready to test for real.
+    <div class="mockup-banner" id="mockupBanner">
+        MOCKUP — checking MOCK_MODE status...
     </div>
 
     <div class="form-container">
@@ -344,8 +342,8 @@
         // MOCKUP SAFETY SWITCH: while true, the PUT to updateDailyOperation is
         // only logged to the console, never actually sent. The GET (read-only)
         // stays live so the car-number dropdown reflects today's real board.
-        // Flip to false only once this is ready to test against real events.
-        const MOCK_MODE = true;
+        // Set to false now that this is being tested against real events.
+        const MOCK_MODE = false;
 
         const MAX_PASSENGERS = 8; // swap for real vehicle max seat capacity if it varies by car
 
@@ -411,6 +409,15 @@
 
         // Load zones, the live car-number board, and the passenger-count list
         window.addEventListener('load', function() {
+            const banner = document.getElementById('mockupBanner');
+            if (MOCK_MODE) {
+                banner.textContent = 'MOCKUP — MOCK_MODE is ON. Passenger writes are only logged to the console, never sent to updateDailyOperation.';
+            } else {
+                banner.textContent = 'MOCKUP — MOCK_MODE is OFF. Passenger writes are LIVE and will call the real updateDailyOperation endpoint.';
+                banner.style.backgroundColor = '#f8d7da';
+                banner.style.borderColor = '#f5c6cb';
+                banner.style.color = '#721c24';
+            }
             loadZones();
             populatePassengerOptions();
             refreshDailyOperations();
