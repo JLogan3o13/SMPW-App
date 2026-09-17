@@ -301,8 +301,21 @@
 
     // Turn-by-turn tuning
     const TURN_APPROACH_THRESHOLD_M = 800; // start showing instruction at ~0.5 mi out
-    const TURN_PASSED_THRESHOLD_M = 12;    // consider a turn "passed" once this close
-    const TURN_SKIP_MARGIN_M = 50;         // how much closer the *next* step must be to skip ahead past an imprecise/phantom waypoint
+
+    // ARC-LENGTH TRACKING (Option 3): instead of straight-line distance from the
+    // GPS point to each step's raw maneuver coordinate, we project the GPS point
+    // onto the route's real polyline and track cumulative distance traveled
+    // ALONG that polyline ("arc length"). Each step's own maneuver coordinate is
+    // also projected onto the polyline once, up front, to get its arc-length
+    // position. "Have I passed this step?" then becomes a plain number
+    // comparison (my arc length vs. the step's arc length) instead of a
+    // straight-line-distance threshold guess. This structurally eliminates the
+    // whole "off-path cruise coordinate fools the skip-ahead heuristic" bug
+    // class: even a badly-placed raw coordinate still projects onto the real
+    // road at roughly the right point along it. TURN_PASSED_THRESHOLD_M and
+    // TURN_SKIP_MARGIN_M (and the skip-ahead heuristic they powered) are no
+    // longer needed under this model.
+    const ARC_PASS_TOLERANCE_M = 12; // small buffer so we don't flicker right at a step's exact point
 
     // Master on/off switch for the green "upcoming turn" display. When false, the
     // red "Return to the highlighted route" off-route warning still works fully
@@ -370,6 +383,11 @@
     // Off-route state
     let lastRouteFeature = null;
     let isOffRoute = false;
+
+    // Arc-length tracking state (Option 3)
+    let lastRouteCoords = null;      // [[lng,lat], ...] for the currently displayed direction
+    let lastRouteCumDist = null;     // parallel array: cumulative meters along the route up to coords[i]
+    let currentArcLength = 0;        // driver's current position, in meters along the route
 
     // Turn-by-turn state
     let currentInstructions = null;
@@ -579,27 +597,6 @@
       }
     }
 
-    function calculateDistanceToStep(step){
-      if (!lastRawUserLngLat || !step?.maneuver?.location) return null;
-
-      const [lng, lat] = lastRawUserLngLat;
-      const [stepLng, stepLat] = step.maneuver.location;
-
-      // Haversine distance
-      const R = 6371000;
-      const phi1 = lat * Math.PI / 180;
-      const phi2 = stepLat * Math.PI / 180;
-      const dPhi = (stepLat - lat) * Math.PI / 180;
-      const dLambda = (stepLng - lng) * Math.PI / 180;
-
-      const a = Math.sin(dPhi/2) * Math.sin(dPhi/2) +
-                Math.cos(phi1) * Math.cos(phi2) *
-                Math.sin(dLambda/2) * Math.sin(dLambda/2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-
-      return R * c;
-    }
-
     function updateTurnDisplay(){
       // Off-route warning always shows when off-route, regardless of the
       // turn-by-turn toggle below.
@@ -639,10 +636,15 @@
       // must always show THAT instruction, no matter how geometrically close a
       // later turn happens to be (this was the bug: a nearby-but-not-yet-reached
       // later turn could get announced before the current one was ever shown).
+      //
+      // Distance here is measured ALONG THE ROUTE (arc length), not
+      // straight-line to the raw coordinate — this is what makes the
+      // countdown accurate even when a step's raw coordinate sits slightly
+      // off the real road.
       const currentIsCruising = currentStep.maneuver?.type === 'depart';
-      if (nextStep && currentIsCruising) {
-        const distToNext = calculateDistanceToStep(nextStep);
-        if (distToNext !== null && distToNext <= TURN_APPROACH_THRESHOLD_M) {
+      if (nextStep && currentIsCruising && typeof nextStep._arcLength === 'number') {
+        const distToNext = nextStep._arcLength - currentArcLength;
+        if (distToNext >= 0 && distToNext <= TURN_APPROACH_THRESHOLD_M) {
           turnBox.style.display = 'block';
           turnBox.classList.remove('off-route');
           turnBox.classList.remove('cruising');
@@ -659,9 +661,9 @@
       // misleading. A regular pending turn that tracking landed on a bit early
       // should still show SOMETHING (its own name) rather than a blank screen;
       // a blank navigation box is worse than an imperfectly-timed instruction.
-      if (currentStep.maneuver?.type === 'arrive') {
-        const distToArrive = calculateDistanceToStep(currentStep);
-        if (distToArrive !== null && distToArrive > TURN_APPROACH_THRESHOLD_M) {
+      if (currentStep.maneuver?.type === 'arrive' && typeof currentStep._arcLength === 'number') {
+        const distToArrive = currentStep._arcLength - currentArcLength;
+        if (distToArrive > TURN_APPROACH_THRESHOLD_M) {
           turnBox.style.display = 'none';
           return;
         }
@@ -688,29 +690,30 @@
     function updateCurrentStep(){
       if (!currentInstructions || currentInstructions.length === 0) return;
       if (!lastRawUserLngLat) return;
+      if (!lastRouteCoords || !lastRouteCumDist) return;
 
-      // Forward-only progression: we NEVER re-consider a step once we've moved past it,
-      // no matter how geometrically close it becomes again later (e.g. driving away from
-      // a turn you just made). This avoids flip-flopping between a just-passed turn and
-      // a nearby phantom waypoint step.
+      // Project the raw (unsmoothed) GPS point onto the real route polyline to
+      // get how far along the route the driver currently is.
+      const proj = projectPointOntoPolyline(lastRawUserLngLat, lastRouteCoords, lastRouteCumDist);
+      if (!proj) return;
+      currentArcLength = proj.arcLength;
+
+      // Forward-only progression: we NEVER re-consider a step once we've moved
+      // past it, no matter how geometrically close it becomes again later (e.g.
+      // driving away from a turn you just made). "Passed" is now a plain
+      // comparison of position-along-the-route, not a straight-line-distance
+      // threshold — so there's no separate "skip ahead" heuristic needed at
+      // all. A step with no valid precomputed arc length (shouldn't normally
+      // happen) is skipped over rather than getting stuck on.
       while (currentStepIndex < currentInstructions.length - 1) {
-        const dist = calculateDistanceToStep(currentInstructions[currentStepIndex]);
-        if (dist === null) break;
+        const stepArc = currentInstructions[currentStepIndex]._arcLength;
 
-        // Close enough to the current step's maneuver point — treat it as reached and
-        // move to the next instruction. Chains through zero-distance "phantom" waypoint
-        // steps (duplicate arrive/depart pairs) in one go.
-        if (dist < TURN_PASSED_THRESHOLD_M) {
+        if (typeof stepArc !== 'number') {
           currentStepIndex++;
           continue;
         }
 
-        // Not close per the strict threshold, but if the road curves wide or the
-        // maneuver coordinate is slightly imprecise, we may never dip under that
-        // threshold. If the NEXT step is meaningfully closer than the current one,
-        // it's safe to assume we've moved past the current step.
-        const nextDist = calculateDistanceToStep(currentInstructions[currentStepIndex + 1]);
-        if (nextDist !== null && nextDist < dist - TURN_SKIP_MARGIN_M) {
+        if (currentArcLength >= stepArc - ARC_PASS_TOLERANCE_M) {
           currentStepIndex++;
           continue;
         }
@@ -773,8 +776,35 @@
       return Math.sqrt(dx*dx + dy*dy);
     }
 
-    function distancePointToLineStringMeters(userLngLat, coords){
-      if(!coords || coords.length < 2) return null;
+    function haversineMeters(lng1, lat1, lng2, lat2){
+      const R = 6371000;
+      const phi1 = degToRad(lat1), phi2 = degToRad(lat2);
+      const dPhi = degToRad(lat2 - lat1);
+      const dLambda = degToRad(lng2 - lng1);
+      const a = Math.sin(dPhi/2)**2 + Math.cos(phi1)*Math.cos(phi2)*Math.sin(dLambda/2)**2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    }
+
+    // Walk a route's coordinates once and tag each point with its cumulative
+    // distance (meters) from the start of the route. Uses real haversine
+    // distance (not the local equirectangular approximation) so the numbers
+    // stay consistent no matter how long the route is or how far north/south
+    // it runs.
+    function buildCumulativeDistances(coords){
+      const cum = [0];
+      for(let i=1; i<coords.length; i++){
+        cum.push(cum[i-1] + haversineMeters(coords[i-1][0], coords[i-1][1], coords[i][0], coords[i][1]));
+      }
+      return cum;
+    }
+
+    // Project a point onto a polyline, returning BOTH how far off the line it
+    // is (used for off-route detection, same as the old
+    // distancePointToLineStringMeters) AND how far along the line the closest
+    // point is (its "arc length" position, used for turn-by-turn tracking).
+    // cumDist must be buildCumulativeDistances(coords) for the same coords.
+    function projectPointOntoPolyline(userLngLat, coords, cumDist){
+      if(!coords || coords.length < 2 || !cumDist) return null;
 
       const userLng = userLngLat[0];
       const userLat = userLngLat[1];
@@ -782,27 +812,67 @@
 
       const p = projectMeters(userLng, userLat, refLat);
 
-      let min = Infinity;
+      let minDist = Infinity;
+      let bestArc = 0;
+
       for(let i=0; i<coords.length-1; i++){
         const a = projectMeters(coords[i][0], coords[i][1], refLat);
         const b = projectMeters(coords[i+1][0], coords[i+1][1], refLat);
-        const d = distPointToSegmentMeters(p, a, b);
-        if(d < min) min = d;
+
+        const abx = b.x - a.x, aby = b.y - a.y;
+        const ab2 = abx*abx + aby*aby;
+
+        let t = 0;
+        if(ab2 > 0){
+          const apx = p.x - a.x, apy = p.y - a.y;
+          t = (apx*abx + apy*aby) / ab2;
+          t = Math.max(0, Math.min(1, t));
+        }
+
+        const cx = a.x + t*abx, cy = a.y + t*aby;
+        const dx = p.x - cx, dy = p.y - cy;
+        const d = Math.sqrt(dx*dx + dy*dy);
+
+        if(d < minDist){
+          minDist = d;
+          const segLenMeters = cumDist[i+1] - cumDist[i];
+          bestArc = cumDist[i] + t*segLenMeters;
+        }
       }
-      return min;
+
+      return { distance: minDist, arcLength: bestArc };
+    }
+
+    // Project every step's raw maneuver coordinate onto the route's real
+    // polyline, once, right after instructions load. This is the core of the
+    // fix: even a badly-guessed cruise coordinate (like the old off-path
+    // "Drive north on Frank Sinatra Drive" point) lands at roughly the right
+    // position ALONG the road once projected, instead of contaminating the
+    // live tracking logic with its own off-path straight-line distance.
+    function precomputeStepArcLengths(steps, coords, cumDist){
+      if(!steps) return;
+      for(const step of steps){
+        const loc = step.maneuver?.location;
+        if(Array.isArray(loc) && loc.length >= 2 && coords && cumDist){
+          const proj = projectPointOntoPolyline(loc, coords, cumDist);
+          step._arcLength = proj ? proj.arcLength : null;
+        } else {
+          step._arcLength = null;
+        }
+      }
     }
 
     function evaluateOffRoute(){
       if(!lastUserLngLat) return;
-      if(!lastRouteFeature?.geometry?.coordinates?.length) return;
+      if(!lastRouteCoords || !lastRouteCumDist) return;
 
       if(typeof lastSpeedMps === 'number' && lastSpeedMps < OFF_ROUTE_MIN_SPEED_MPS){
         return;
       }
 
-      const coords = lastRouteFeature.geometry.coordinates;
-      const d = distancePointToLineStringMeters(lastUserLngLat, coords);
-      if(d === null) return;
+      const proj = projectPointOntoPolyline(lastUserLngLat, lastRouteCoords, lastRouteCumDist);
+      if(proj === null) return;
+      const d = proj.distance;
 
       const onThreshold = OFF_ROUTE_THRESHOLD_M;
       const backOnThreshold = Math.max(0, OFF_ROUTE_THRESHOLD_M - OFF_ROUTE_HYSTERESIS_M);
@@ -966,6 +1036,9 @@
 
       if(!feature){
         lastRouteFeature = null;
+        lastRouteCoords = null;
+        lastRouteCumDist = null;
+        currentArcLength = 0;
         setRouteStatus(null, 'Route: none');
         showRouteStatus(`No ${currentDir} in-app route line available.`, false);
         currentInstructions = null;
@@ -995,15 +1068,21 @@
       }
 
       lastRouteFeature = feature;
+      lastRouteCoords = feature.geometry.coordinates;
+      lastRouteCumDist = buildCumulativeDistances(lastRouteCoords);
+      currentArcLength = 0;
       isOffRoute = false;
       setRouteStatus(true, 'Route: On route');
       applyRouteVisualStyle(false);
 
-      // Load turn-by-turn instructions for this direction, if the API provided them
+      // Load turn-by-turn instructions for this direction, if the API provided them,
+      // and project each one's raw maneuver coordinate onto the real route polyline
+      // to get its arc-length position (Option 3 — see precomputeStepArcLengths).
       currentInstructions = getInstructionsForDir();
       currentStepIndex = 0;
       turnBox.style.display = 'none';
       if (currentInstructions) {
+        precomputeStepArcLengths(currentInstructions, lastRouteCoords, lastRouteCumDist);
         console.log(`Loaded ${currentInstructions.length} turn instructions for ${currentDir} route`);
       } else {
         console.log(`No turn instructions available for ${currentDir} route`);
