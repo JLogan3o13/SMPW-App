@@ -6,7 +6,10 @@
     [string]$AttributeName = "Route1Geometry",
 
     # Which feature index to use (if there are multiple). Default: 0.
-    [int]$FeatureIndex = 0
+    [int]$FeatureIndex = 0,
+
+    [Parameter(Mandatory = $true)]
+    [string]$OutputPath
 )
 
 if (-not (Test-Path $GeoJsonPath)) {
@@ -87,4 +90,5 @@ $coordsJoined
 }
 "@
 
-$snippet
+$snippet | Out-File -FilePath $OutputPath -Encoding utf8
+Write-Output "Written to $($OutputPath)"
