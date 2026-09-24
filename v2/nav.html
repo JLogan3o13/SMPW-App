@@ -538,7 +538,7 @@
       // Routes built from chained waypoints (to force local streets instead of a
       // highway) produce a fake "arrive"/"depart" pair AT THE SAME COORDINATE
       // at every waypoint boundary, even though nothing actually happens there.
-      // That's the ONLY pattern we want to remove.
+      // That's the pattern we want to remove.
       //
       // IMPORTANT: a "depart" step that is NOT part of such a pair is a real,
       // intentional cruise instruction ("Drive southeast on East Mountain Falls
@@ -548,7 +548,25 @@
       // "depart" unconditionally, which silently deleted every real cruise
       // step too — that's what caused both the missing countdowns and the
       // "jumps straight to the next turn" bug.
-      const PHANTOM_PAIR_MAX_M = 5; // arrive+depart this close together = same physical point = fake
+      //
+      // A SECOND, subtler case: sometimes Google's Directions API reports a
+      // REAL turn as an arrive+depart pair AT THE SAME COORDINATE too — the
+      // route "arrives" at a forced waypoint and immediately "departs" in a
+      // meaningfully different direction, rather than emitting an explicit
+      // turn maneuver. Same-coordinate is necessary but NOT sufficient to
+      // call a pair phantom: a same-point pair with a genuine bearing change
+      // is a real turn that happens to be labeled this way, and deleting it
+      // silently drops the turn from the driver's instructions entirely.
+      // So a pair is only treated as phantom when it's both close together
+      // AND the bearing barely changes across it.
+      const PHANTOM_PAIR_MAX_M = 5;        // arrive+depart this close together = same physical point
+      const PHANTOM_PAIR_MAX_BEARING_DEG = 20; // ...and bearing changes less than this = nothing real happened
+
+      function bearingDiffDeg(a, b){
+        if (typeof a !== 'number' || typeof b !== 'number') return null;
+        const d = Math.abs(a - b) % 360;
+        return Math.min(d, 360 - d);
+      }
 
       const toRemove = new Set();
       for (let i = 0; i < steps.length - 1; i++) {
@@ -561,10 +579,22 @@
         if (!Array.isArray(curLoc) || !Array.isArray(nextLoc)) continue;
 
         const d = haversineMeters(curLoc[0], curLoc[1], nextLoc[0], nextLoc[1]);
-        if (d <= PHANTOM_PAIR_MAX_M) {
+        if (d > PHANTOM_PAIR_MAX_M) continue;
+
+        const incomingBearing = cur.maneuver?.bearing_before;
+        const outgoingBearing = next.maneuver?.bearing_after;
+        const bDiff = bearingDiffDeg(incomingBearing, outgoingBearing);
+
+        // If we can't read bearings at all, fall back to the old distance-only
+        // rule rather than silently keeping a possibly-fake pair forever.
+        if (bDiff === null || bDiff <= PHANTOM_PAIR_MAX_BEARING_DEG) {
           toRemove.add(i);
           toRemove.add(i + 1);
         }
+        // else: real direction change disguised as a same-point arrive+depart
+        // pair — keep both steps so the driver still sees the turn happen,
+        // even though the label ("arrive" / "depart") isn't as clean as a
+        // proper "turn" maneuver would be.
       }
 
       return steps.filter((step, i) => !toRemove.has(i));
@@ -720,20 +750,32 @@
 
       // Forward-only progression: we NEVER re-consider a step once we've moved
       // past it, no matter how geometrically close it becomes again later (e.g.
-      // driving away from a turn you just made). "Passed" is now a plain
-      // comparison of position-along-the-route, not a straight-line-distance
-      // threshold — so there's no separate "skip ahead" heuristic needed at
-      // all. A step with no valid precomputed arc length (shouldn't normally
-      // happen) is skipped over rather than getting stuck on.
+      // driving away from a turn you just made).
+      //
+      // IMPORTANT: what counts as "passed" differs by step type.
+      //   - A real turn/merge/etc's own coordinate IS the meaningful point —
+      //     reaching it means you've passed it.
+      //   - A cruise/"depart" step's own coordinate is just a guessed midpoint
+      //     along a long straight stretch — it is NOT the real upcoming turn.
+      //     Treating "reached the midpoint" as "passed" would flip the display
+      //     to the next turn's persistent (no-countdown) message hundreds of
+      //     meters before the driver actually gets there. So while cruising,
+      //     "passed" means "reached the NEXT step's location" — the actual
+      //     turn — not the cruise step's own arc position.
       while (currentStepIndex < currentInstructions.length - 1) {
-        const stepArc = currentInstructions[currentStepIndex]._arcLength;
+        const stepNow = currentInstructions[currentStepIndex];
+        const nextStep = currentInstructions[currentStepIndex + 1];
+        const isCruising = stepNow.maneuver?.type === 'depart';
 
-        if (typeof stepArc !== 'number') {
+        const targetStep = isCruising ? nextStep : stepNow;
+        const targetArc = targetStep?._arcLength;
+
+        if (typeof targetArc !== 'number') {
           currentStepIndex++;
           continue;
         }
 
-        if (currentArcLength >= stepArc - ARC_PASS_TOLERANCE_M) {
+        if (currentArcLength >= targetArc - ARC_PASS_TOLERANCE_M) {
           currentStepIndex++;
           continue;
         }
