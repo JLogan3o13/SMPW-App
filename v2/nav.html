@@ -686,6 +686,76 @@
       }
     }
 
+    // ---- Heading-mismatch safety net ----
+    // Hard-coded turn text ("Turn left onto X") assumes the driver reaches
+    // that point traveling the same direction the route was drawn in. If a
+    // driver misses a turn, U-turns, and rejoins the route heading the
+    // opposite way, the SAME turn can now genuinely be in the other
+    // direction — "left" becomes "right". Since we can't know in advance
+    // every way a driver might approach a turn, we detect this case live:
+    // compare the vehicle's actual GPS heading to the route's own direction
+    // of travel at the driver's current position. A large mismatch means the
+    // specific left/right wording can't be trusted, so we swap in
+    // direction-neutral wording instead of risking a backwards instruction.
+    const HEADING_MISMATCH_DEG = 100;
+    const HEADING_MISMATCH_MIN_SPEED_MPS = OFF_ROUTE_MIN_SPEED_MPS; // don't judge heading while essentially stopped — GPS heading is unreliable at low speed
+
+    function bearingDegrees(lng1, lat1, lng2, lat2){
+      const toRad = (d) => d * Math.PI / 180;
+      const y = Math.sin(toRad(lng2 - lng1)) * Math.cos(toRad(lat2));
+      const x = Math.cos(toRad(lat1)) * Math.sin(toRad(lat2)) - Math.sin(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.cos(toRad(lng2 - lng1));
+      return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    // The route's own direction of travel just BEHIND a given arc-length
+    // position — the leg the driver is currently on, not the turn ahead
+    // (using the turn's new direction here would always look like a
+    // "mismatch" right as you approach it normally).
+    function getRouteBearingAtArc(arc){
+      if (!lastRouteCoords || !lastRouteCumDist) return null;
+      const WINDOW_M = 25;
+      let j = 0;
+      for (let i = 0; i < lastRouteCumDist.length; i++) {
+        if (lastRouteCumDist[i] <= arc) j = i; else break;
+      }
+      let startIdx = j;
+      while (startIdx > 0 && lastRouteCumDist[j] - lastRouteCumDist[startIdx] < WINDOW_M) startIdx--;
+      if (startIdx === j) return null;
+      const a = lastRouteCoords[startIdx], b = lastRouteCoords[j];
+      return bearingDegrees(a[0], a[1], b[0], b[1]);
+    }
+
+    function headingDiffDeg(a, b){
+      const d = Math.abs(a - b) % 360;
+      return Math.min(d, 360 - d);
+    }
+
+    function isApproachingAgainstRouteDirection(){
+      if (typeof lastHeading !== 'number') return false;
+      if (typeof lastSpeedMps === 'number' && lastSpeedMps < HEADING_MISMATCH_MIN_SPEED_MPS) return false;
+      const routeBearing = getRouteBearingAtArc(currentArcLength);
+      if (routeBearing === null) return false;
+      return headingDiffDeg(lastHeading, routeBearing) > HEADING_MISMATCH_DEG;
+    }
+
+    // Returns {icon, text} for a maneuver step, swapping in direction-neutral
+    // wording when the driver appears to be approaching it against the
+    // route's expected direction. Only "turn"-type maneuvers are affected —
+    // "depart" steps ("Drive east on...") are already direction-neutral.
+    function getSafeStepDisplay(step){
+      const rawText = step.maneuver?.instruction || step.instruction || 'Continue';
+      const type = step.maneuver?.type;
+      const isDirectional = type && type !== 'depart' && type !== 'arrive';
+      if (!isDirectional || !isApproachingAgainstRouteDirection()) {
+        return { icon: getManeuverIcon(type, step.maneuver?.modifier), text: rawText };
+      }
+      const name = step.name;
+      return {
+        icon: '↻',
+        text: name ? `Follow the highlighted route toward ${name}.` : 'Follow the highlighted route to your next turn.'
+      };
+    }
+
     function updateTurnDisplay(){
       // Off-route warning always shows when off-route, regardless of the
       // turn-by-turn toggle below.
@@ -738,8 +808,9 @@
           turnBox.classList.remove('off-route');
           turnBox.classList.remove('cruising');
           turnDistanceEl.textContent = formatDistance(distToNext);
-          turnIconEl.textContent = getManeuverIcon(nextStep.maneuver?.type, nextStep.maneuver?.modifier);
-          turnTextEl.textContent = nextStep.maneuver?.instruction || nextStep.instruction || 'Continue';
+          const safeNext = getSafeStepDisplay(nextStep);
+          turnIconEl.textContent = safeNext.icon;
+          turnTextEl.textContent = safeNext.text;
           turnProgressEl.textContent = `Step ${currentStepIndex + 2} of ${currentInstructions.length}`;
           return;
         }
@@ -765,13 +836,14 @@
       turnBox.classList.remove('off-route');
       turnBox.classList.add('cruising');
 
-      let cruiseText = currentStep.maneuver?.instruction || currentStep.instruction || 'Continue';
+      const safeCurrent = getSafeStepDisplay(currentStep);
+      let cruiseText = safeCurrent.text;
       if (nextStep?.name) {
         cruiseText = cruiseText.replace(/\.\s*$/, '') + ` to ${nextStep.name}.`;
       }
 
       turnDistanceEl.textContent = 'Continue';
-      turnIconEl.textContent = getManeuverIcon(currentStep.maneuver?.type, currentStep.maneuver?.modifier);
+      turnIconEl.textContent = safeCurrent.icon;
       turnTextEl.textContent = cruiseText;
       turnProgressEl.textContent = `Step ${currentStepIndex + 1} of ${currentInstructions.length}`;
     }
