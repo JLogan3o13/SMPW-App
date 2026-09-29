@@ -1,0 +1,976 @@
+﻿    "returnRouteInstructions": {
+        "L": [
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive out of Macy's turnabout."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.172803"
+                                    },
+                                    {
+                                        "N": "36.126274"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "134"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "11.3"
+                    },
+                    "duration": {
+                        "N": "0.9"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left out of Macy's turnabout onto the service road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.172868"
+                                    },
+                                    {
+                                        "N": "36.126187"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "211"
+                            },
+                            "bearing_after": {
+                                "N": "115"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "11.8"
+                    },
+                    "duration": {
+                        "N": "1.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Follow the service road as it curves south toward Spring Mountain Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.172753"
+                                    },
+                                    {
+                                        "N": "36.126136"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "164"
+                            },
+                            "bearing_after": {
+                                "N": "103"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "105.1"
+                    },
+                    "duration": {
+                        "N": "8.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Spring Mountain Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.172057"
+                                    },
+                                    {
+                                        "N": "36.125698"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "183"
+                            },
+                            "bearing_after": {
+                                "N": "271"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Spring Mountain Road"
+                    },
+                    "distance": {
+                        "N": "27.0"
+                    },
+                    "duration": {
+                        "N": "2.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on Spring Mountain Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.172358"
+                                    },
+                                    {
+                                        "N": "36.125701"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "271"
+                            },
+                            "bearing_after": {
+                                "N": "271"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Spring Mountain Road"
+                    },
+                    "distance": {
+                        "N": "68.6"
+                    },
+                    "duration": {
+                        "N": "5.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn slight right onto Mel Torme Way."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173119"
+                                    },
+                                    {
+                                        "N": "36.125729"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "273"
+                            },
+                            "bearing_after": {
+                                "N": "330"
+                            },
+                            "modifier": {
+                                "S": "slight right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Mel Torme Way"
+                    },
+                    "distance": {
+                        "N": "48.4"
+                    },
+                    "duration": {
+                        "N": "4.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on Mel Torme Way."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173368"
+                                    },
+                                    {
+                                        "N": "36.126112"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "330"
+                            },
+                            "bearing_after": {
+                                "N": "308"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Mel Torme Way"
+                    },
+                    "distance": {
+                        "N": "290.8"
+                    },
+                    "duration": {
+                        "N": "24.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Sammy Davis Jr. Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.176406"
+                                    },
+                                    {
+                                        "N": "36.126636"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "298"
+                            },
+                            "bearing_after": {
+                                "N": "215"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Sammy Davis Jr. Drive"
+                    },
+                    "distance": {
+                        "N": "41.4"
+                    },
+                    "duration": {
+                        "N": "3.4"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on South Sammy Davis Jr. Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.176666"
+                                    },
+                                    {
+                                        "N": "36.126334"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "215"
+                            },
+                            "bearing_after": {
+                                "N": "208"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Sammy Davis Jr. Drive"
+                    },
+                    "distance": {
+                        "N": "2172.1"
+                    },
+                    "duration": {
+                        "N": "181.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Jerry Lewis Way."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.181309"
+                                    },
+                                    {
+                                        "N": "36.10896"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "181"
+                            },
+                            "bearing_after": {
+                                "N": "262"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Jerry Lewis Way"
+                    },
+                    "distance": {
+                        "N": "36.3"
+                    },
+                    "duration": {
+                        "N": "3.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on Jerry Lewis Way."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.181703"
+                                    },
+                                    {
+                                        "N": "36.108918"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "269"
+                            },
+                            "bearing_after": {
+                                "N": "277"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Jerry Lewis Way"
+                    },
+                    "distance": {
+                        "N": "129.2"
+                    },
+                    "duration": {
+                        "N": "10.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto Aldebaran Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.183125"
+                                    },
+                                    {
+                                        "N": "36.108899"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "263"
+                            },
+                            "bearing_after": {
+                                "N": "217"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Aldebaran Avenue"
+                    },
+                    "distance": {
+                        "N": "38.4"
+                    },
+                    "duration": {
+                        "N": "3.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on Aldebaran Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.183373"
+                                    },
+                                    {
+                                        "N": "36.108632"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "209"
+                            },
+                            "bearing_after": {
+                                "N": "194"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Aldebaran Avenue"
+                    },
+                    "distance": {
+                        "N": "46.2"
+                    },
+                    "duration": {
+                        "N": "3.9"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Harmon Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.183503"
+                                    },
+                                    {
+                                        "N": "36.108231"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "193"
+                            },
+                            "bearing_after": {
+                                "N": "271"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Harmon Avenue"
+                    },
+                    "distance": {
+                        "N": "73.1"
+                    },
+                    "duration": {
+                        "N": "6.1"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Bear right on West Harmon Avenue toward South Valley View Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.184317"
+                                    },
+                                    {
+                                        "N": "36.108243"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "271"
+                            },
+                            "bearing_after": {
+                                "N": "272"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Harmon Avenue"
+                    },
+                    "distance": {
+                        "N": "232.0"
+                    },
+                    "duration": {
+                        "N": "19.3"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Follow the curve onto South Valley View Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.186843"
+                                    },
+                                    {
+                                        "N": "36.108558"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "297"
+                            },
+                            "bearing_after": {
+                                "N": "349"
+                            },
+                            "modifier": {
+                                "S": "slight right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Valley View Boulevard"
+                    },
+                    "distance": {
+                        "N": "66.8"
+                    },
+                    "duration": {
+                        "N": "5.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on South Valley View Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.186937"
+                                    },
+                                    {
+                                        "N": "36.109146"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "357"
+                            },
+                            "bearing_after": {
+                                "N": "330"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Valley View Boulevard"
+                    },
+                    "distance": {
+                        "N": "2714.0"
+                    },
+                    "duration": {
+                        "N": "226.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.190018"
+                                    },
+                                    {
+                                        "N": "36.086432"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "184"
+                            },
+                            "bearing_after": {
+                                "N": "269"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "60.5"
+                    },
+                    "duration": {
+                        "N": "5.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.19069"
+                                    },
+                                    {
+                                        "N": "36.086425"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "270"
+                            },
+                            "bearing_after": {
+                                "N": "266"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "3903.9"
+                    },
+                    "duration": {
+                        "N": "325.3"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234067"
+                                    },
+                                    {
+                                        "N": "36.085258"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "268"
+                            },
+                            "bearing_after": {
+                                "N": "185"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "43.7"
+                    },
+                    "duration": {
+                        "N": "3.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234108"
+                                    },
+                                    {
+                                        "N": "36.084873"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "177"
+                            },
+                            "bearing_after": {
+                                "N": "176"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "763.7"
+                    },
+                    "duration": {
+                        "N": "63.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233771"
+                                    },
+                                    {
+                                        "N": "36.078021"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "183"
+                            },
+                            "bearing_after": {
+                                "N": "269"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "31.6"
+                    },
+                    "duration": {
+                        "N": "2.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234123"
+                                    },
+                                    {
+                                        "N": "36.078015"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "269"
+                            },
+                            "bearing_after": {
+                                "N": "269"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "533.6"
+                    },
+                    "duration": {
+                        "N": "44.5"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Your destination is on the left."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "arrive"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.239944"
+                                    },
+                                    {
+                                        "N": "36.077792"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "244"
+                            },
+                            "bearing_after": {
+                                "N": "0"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "0.0"
+                    },
+                    "duration": {
+                        "N": "0.0"
+                    }
+                }
+            }
+        ]
+    }
