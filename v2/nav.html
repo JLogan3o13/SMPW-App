@@ -332,6 +332,15 @@
       dasharray: [1.5, 1.5]      // dashed
     };
 
+    // Pushes the car marker down toward the lower third of the screen instead
+    // of dead-center, so it isn't hidden behind the Outbound/Return Route
+    // button — especially noticeable when zoomed in, which most drivers do.
+    // [x, y] in screen pixels; positive y moves the car DOWN on screen (and
+    // reveals more of the road ahead above it). Only applied while actively
+    // following (live tracking or Follow just turned on) — a plain re-center
+    // with Follow off still centers normally.
+    const FOLLOW_CAMERA_OFFSET = [0, 120];
+
     /***************
      * DOM
      ***************/
@@ -588,8 +597,20 @@
         // If we can't read bearings at all, fall back to the old distance-only
         // rule rather than silently keeping a possibly-fake pair forever.
         if (bDiff === null || bDiff <= PHANTOM_PAIR_MAX_BEARING_DEG) {
+          // Only the "arrive" half of this pair is fake bookkeeping — nothing
+          // really happened here. The "depart" half is real: it's the vehicle
+          // continuing to drive, and on a route built from many forced
+          // waypoints along one straight road, there can be a long CHAIN of
+          // these phantom pairs in a row (one per waypoint). Removing only
+          // the "arrive" each time — never the "depart" — means a long chain
+          // collapses down to a run of consecutive "depart" steps instead of
+          // disappearing into nothing. (An earlier version of this filter
+          // removed both halves of every pair, which cascaded through chains
+          // like this and deleted every cruise step along the way — leaving
+          // no "depart" step anywhere to drive the countdown, so the display
+          // got stuck on whatever turn came before the chain for the entire
+          // stretch, with no countdown at all.)
           toRemove.add(i);
-          toRemove.add(i + 1);
         }
         // else: real direction change disguised as a same-point arrive+depart
         // pair — keep both steps so the driver still sees the turn happen,
@@ -597,7 +618,25 @@
         // proper "turn" maneuver would be.
       }
 
-      return steps.filter((step, i) => !toRemove.has(i));
+      const afterArriveRemoval = steps.filter((step, i) => !toRemove.has(i));
+
+      // Collapse any run of consecutive "depart" steps (left behind by
+      // removing the "arrive" in between each one) down to just the LAST
+      // depart in the run — the one closest to whatever real turn comes
+      // next. Multiple back-to-back "depart" steps with near-identical text
+      // would otherwise make the countdown reset every few hundred meters
+      // instead of counting down smoothly to the real upcoming turn.
+      const collapsed = [];
+      for (let i = 0; i < afterArriveRemoval.length; i++) {
+        const cur = afterArriveRemoval[i];
+        const next = afterArriveRemoval[i + 1];
+        if (cur.maneuver?.type === 'depart' && next && next.maneuver?.type === 'depart') {
+          continue;
+        }
+        collapsed.push(cur);
+      }
+
+      return collapsed;
     }
 
     function getInstructionsForDir(){
@@ -1299,6 +1338,7 @@
           center: [smoothLng, smoothLat],
           bearing: (typeof lastHeading === 'number') ? lastHeading : map.getBearing(),
           pitch: is3DView ? 60 : 0,
+          offset: FOLLOW_CAMERA_OFFSET,
           duration: 900
         });
         ensureArrowLayersExist();
@@ -1333,7 +1373,12 @@
      ***************/
     recenterBtn.addEventListener('click', () => {
       if(lastUserLngLat){
-        map.easeTo({ center: lastUserLngLat, zoom: Math.max(map.getZoom(), 14), duration: 600 });
+        map.easeTo({
+          center: lastUserLngLat,
+          zoom: Math.max(map.getZoom(), 14),
+          offset: followMode ? FOLLOW_CAMERA_OFFSET : [0, 0],
+          duration: 600
+        });
         return;
       }
       const feature = normalizeToFeature(getGeometryForDir());
@@ -1355,7 +1400,7 @@
       followMode = !followMode;
       followBtn.textContent = followMode ? '🧭 Follow: On' : '🧭 Follow: Off';
       if(followMode && lastUserLngLat){
-        map.easeTo({ center: lastUserLngLat, pitch: is3DView ? 60 : 0, duration: 500 });
+        map.easeTo({ center: lastUserLngLat, pitch: is3DView ? 60 : 0, offset: FOLLOW_CAMERA_OFFSET, duration: 500 });
         ensureArrowLayersExist();
         setArrowVisibility(isOffRoute);
       }
