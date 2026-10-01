@@ -1,0 +1,529 @@
+﻿    "routeInstructions": {
+        "L": [
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.239938"
+                                    },
+                                    {
+                                        "N": "36.077801"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "77"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "561.2"
+                    },
+                    "duration": {
+                        "N": "46.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.23371"
+                                    },
+                                    {
+                                        "N": "36.077984"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "89"
+                            },
+                            "bearing_after": {
+                                "N": "359"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "30.4"
+                    },
+                    "duration": {
+                        "N": "2.5"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233713"
+                                    },
+                                    {
+                                        "N": "36.078256"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "359"
+                            },
+                            "bearing_after": {
+                                "N": "357"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "771.4"
+                    },
+                    "duration": {
+                        "N": "64.3"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233959"
+                                    },
+                                    {
+                                        "N": "36.085184"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "4"
+                            },
+                            "bearing_after": {
+                                "N": "88"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "51.7"
+                    },
+                    "duration": {
+                        "N": "4.3"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233384"
+                                    },
+                                    {
+                                        "N": "36.085202"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "88"
+                            },
+                            "bearing_after": {
+                                "N": "89"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "3905.1"
+                    },
+                    "duration": {
+                        "N": "325.4"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Valley View Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.189995"
+                                    },
+                                    {
+                                        "N": "36.08631"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "90"
+                            },
+                            "bearing_after": {
+                                "N": "61"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Valley View Boulevard"
+                    },
+                    "distance": {
+                        "N": "45.5"
+                    },
+                    "duration": {
+                        "N": "3.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on South Valley View Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.189766"
+                                    },
+                                    {
+                                        "N": "36.086571"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "3"
+                            },
+                            "bearing_after": {
+                                "N": "360"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Valley View Boulevard"
+                    },
+                    "distance": {
+                        "N": "2462.6"
+                    },
+                    "duration": {
+                        "N": "205.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Bear right onto West Harmon Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.188201"
+                                    },
+                                    {
+                                        "N": "36.108347"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "50"
+                            },
+                            "bearing_after": {
+                                "N": "73"
+                            },
+                            "modifier": {
+                                "S": "slight right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Harmon Avenue"
+                    },
+                    "distance": {
+                        "N": "32.6"
+                    },
+                    "duration": {
+                        "N": "2.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on West Harmon Avenue toward the Aria hotel."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.18785"
+                                    },
+                                    {
+                                        "N": "36.108412"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "81"
+                            },
+                            "bearing_after": {
+                                "N": "94"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Harmon Avenue"
+                    },
+                    "distance": {
+                        "N": "888.4"
+                    },
+                    "duration": {
+                        "N": "74.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Bear right into the Aria hotel ramp."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.178034"
+                                    },
+                                    {
+                                        "N": "36.108134"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "71"
+                            },
+                            "bearing_after": {
+                                "N": "96"
+                            },
+                            "modifier": {
+                                "S": "slight right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "16.0"
+                    },
+                    "duration": {
+                        "N": "1.3"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Follow the ramp toward Aria Valet Parking."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.17786"
+                                    },
+                                    {
+                                        "N": "36.108104"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "92"
+                            },
+                            "bearing_after": {
+                                "N": "98"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "46.7"
+                    },
+                    "duration": {
+                        "N": "3.9"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Follow the ramp as it curves left toward Aria Valet Parking."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.17735"
+                                    },
+                                    {
+                                        "N": "36.10809"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "92"
+                            },
+                            "bearing_after": {
+                                "N": "52"
+                            },
+                            "modifier": {
+                                "S": "slight left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "102.5"
+                    },
+                    "duration": {
+                        "N": "8.5"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "You have arrived at Aria Valet Parking."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "arrive"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.177123"
+                                    },
+                                    {
+                                        "N": "36.108864"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "338"
+                            },
+                            "bearing_after": {
+                                "N": "0"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "0.0"
+                    },
+                    "duration": {
+                        "N": "0.0"
+                    }
+                }
+            }
+        ]
+    }
