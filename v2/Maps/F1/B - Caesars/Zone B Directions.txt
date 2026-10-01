@@ -1,0 +1,46 @@
+Outbound:
+    Drive on W Patrick Ln (0.5 miles) to S Torrey Pines Dr.
+    Turn Left onto S. Torrey Pines Dr.
+    Drive North on S. Torrey Pines Dr. to W. Russell Rd. (0.5 miles)
+    Turn Right onto W. Russell Rd.
+    Drive East on W. Russell Rd. to S. Valley View Blvd. (2.5 miles)
+    Turn Left onto S. Valley View Blvd.
+    Drive North on S. Valley View Blvd. to W. Harmon Ave. (2.2 miles)
+    Bear Right onto W. Harmon Ave.
+    Drive East on W. Harmon Ave. to Aldabaran Ave. (0.2 miles)
+    Turn Left onto Aldabaran Ave.
+    Drive North on Aldabaran Ave. to Jerry Lewis Way (292 feet)
+    Turn Right onto Jerry Lewis Way
+	Drive East on Jerry Lewis Way to Dean Martin Dr. (0.1 miles)
+	Turn Left onto Dean Martin Dr.
+	Drive North on Dean Martin Dr. to W. Twain Ave. (0.8 miles)
+	Turn right onto W. Twain Ave.
+	Drive East on W. Twain Ave. to Frank Sinatra Dr. (341 feet)
+	Turn Right onto Frank Sinatra Dr.
+	Drive South on Frank Sinatra Dr. to Jay Sarno Way. (500 feet)
+	Turn Left on Jay Sarno Way.
+	Drive East on Jay Sarno Way. to the Caesars Palace Rideshare Lot (553 feet)
+	Turn Right into the Caesars Palace Rideshare Lot
+	
+Return
+	Turn Left out of Caesars Palace Rideshare Lot onto Jay Sarno Way
+	Drive West on Jay Sarno Way to Frank Sinatra Dr. (553 feet)
+	Turn Right onto Frank Sinatra Dr.
+	Drive North on Frank Sinatra Dr. to Dean Martin Dr. (850 feet)
+	Turn Left onto Dean Martin Dr.
+	Drive South on Dean Martin Dr. to Jerry Lewis Way. (0.9 miles)
+	Turn Right onto Jerry Lewis Way
+	Drive West on Jerry Lewis Way to Aldebaran Ave. (0.1 miles)
+	Turn Left onto Aldebaran Ave.
+	Drive South on Aldebaran Ave. to W. Harmon Ave. (0.1 miles)
+	Turn Right onto W. Harmon Ave.
+	Bear Right on W. Harmon Ave. toward S. Valley View Blvd. (0.1 miles)
+	Follow the curve onto S. Valley View Blvd. (0.5 miles)
+	Drive South on S. Valley View Blvd. to W. Russell Rd. (1.3 miles)
+    Turn Right onto W. Russell Rd.
+    Drive West on W. Russell Rd. to S. Torrey Pines Dr. (2.5 miles)
+    Turn Left onto S. Torrey Pines Dr.
+    Drive South on S. Torrey Pines Dr. to W. Patrick Ln. (0.5 miles)
+    Turn Right onto W. Patrick Ln.
+    Drive W. on W. Patrick Ln. to the Hub (0.5 miles)
+    Destination is on the Left
