@@ -1,0 +1,448 @@
+﻿    "routeInstructions": {
+        "L": [
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.239943"
+                                    },
+                                    {
+                                        "N": "36.077793"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "81"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "563.0"
+                    },
+                    "duration": {
+                        "N": "46.9"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.23371"
+                                    },
+                                    {
+                                        "N": "36.078012"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "85"
+                            },
+                            "bearing_after": {
+                                "N": "0"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "43.9"
+                    },
+                    "duration": {
+                        "N": "3.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233724"
+                                    },
+                                    {
+                                        "N": "36.078404"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "356"
+                            },
+                            "bearing_after": {
+                                "N": "357"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "752.7"
+                    },
+                    "duration": {
+                        "N": "62.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233975"
+                                    },
+                                    {
+                                        "N": "36.085165"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "357"
+                            },
+                            "bearing_after": {
+                                "N": "82"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "47.8"
+                    },
+                    "duration": {
+                        "N": "4.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233455"
+                                    },
+                                    {
+                                        "N": "36.085199"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "89"
+                            },
+                            "bearing_after": {
+                                "N": "89"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "5181.7"
+                    },
+                    "duration": {
+                        "N": "431.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Bear right onto Frank Sinatra Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.1759"
+                                    },
+                                    {
+                                        "N": "36.085862"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "90"
+                            },
+                            "bearing_after": {
+                                "N": "158"
+                            },
+                            "modifier": {
+                                "S": "slight right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Frank Sinatra Drive"
+                    },
+                    "distance": {
+                        "N": "31.6"
+                    },
+                    "duration": {
+                        "N": "2.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on Frank Sinatra Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.175775"
+                                    },
+                                    {
+                                        "N": "36.085612"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "166"
+                            },
+                            "bearing_after": {
+                                "N": "180"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Frank Sinatra Drive"
+                    },
+                    "distance": {
+                        "N": "2736.9"
+                    },
+                    "duration": {
+                        "N": "228.1"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Bruno Mars Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.179773"
+                                    },
+                                    {
+                                        "N": "36.103712"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "353"
+                            },
+                            "bearing_after": {
+                                "N": "89"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Bruno Mars Drive"
+                    },
+                    "distance": {
+                        "N": "36.3"
+                    },
+                    "duration": {
+                        "N": "3.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive on Bruno Mars Drive past the parking garage."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.179369"
+                                    },
+                                    {
+                                        "N": "36.103719"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "89"
+                            },
+                            "bearing_after": {
+                                "N": "89"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Bruno Mars Drive"
+                    },
+                    "distance": {
+                        "N": "196.2"
+                    },
+                    "duration": {
+                        "N": "16.3"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Take the first left after the parking garage toward the Park MGM Rideshare area."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.177211"
+                                    },
+                                    {
+                                        "N": "36.103877"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "69"
+                            },
+                            "bearing_after": {
+                                "N": "339"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "149.1"
+                    },
+                    "duration": {
+                        "N": "12.4"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Park in the rideshare area for pickup."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "arrive"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.177382"
+                                    },
+                                    {
+                                        "N": "36.105192"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "4"
+                            },
+                            "bearing_after": {
+                                "N": "0"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "0.0"
+                    },
+                    "duration": {
+                        "N": "0.0"
+                    }
+                }
+            }
+        ]
+    }

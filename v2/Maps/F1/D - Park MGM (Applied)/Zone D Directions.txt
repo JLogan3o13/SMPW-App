@@ -1,0 +1,25 @@
+Outbound:
+    Drive on W Patrick Ln (0.5 miles) to S Torrey Pines Dr.
+    Turn Left onto S. Torrey Pines Dr.
+    Drive North on S. Torrey Pines Dr. to W. Russell Rd. (0.5 miles)
+    Turn Right onto W. Russell Rd.
+    Drive East on W. Russell Rd. to Frank Sinatra Dr. (3.2 miles)
+    Bear Right onto Frank Sinatra Dr.
+    Drive North on Frank Sinatra Dr. to Bruno Mars Dr. (1.9 miles)
+    Turn Right onto Bruno Mars Dr.
+    Take the first left after the parking garage toward the Park MGM Rideshare area (0.2 miles)
+	Park in the rideshare area for pickup (450 feet)
+	
+Return
+	Drive South from Rideshare area to Bruno Mars Dr. (450 feet)
+	Turn Right onto Bruno Mars Dr.
+	Drive West on Bruno Mars Dr to Frank Sinatra Dr. (0.2 miles)
+	Turn Left onto Frank Sinatra Dr.
+	Drive South on Frank Sinatra Dr. to W. Russell Rd. (1.9 miles)
+	Turn Left onto W. Russell Rd.
+    Drive West on W. Russell Rd. to S. Torrey Pines Dr. (3.2 miles)
+    Turn Left onto S. Torrey Pines Dr.
+    Drive South on S. Torrey Pines Dr. to W. Patrick Ln. (0.5 miles)
+    Turn Right onto W. Patrick Ln.
+    Drive W. on W. Patrick Ln. to the Hub (0.5 miles)
+    Destination is on the Left
