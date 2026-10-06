@@ -18,13 +18,16 @@ Outbound:
 	Drive North on Sammy Davis Jr. Dr. to entrance to Fashion Show Mall
 	Entrance is at 36.127758, -115.175310 (no official street name)
 	Turn right at stop sign (100 feet)
-	Follow service road to Macy's turnabout (0.3 miles)
-	Turn Left into Macy's turnabout
+	Follow service road to Sachs Fifth Ave. turnabout (0.25 miles)
+	Turn Left into Sachs Fifth Ave. turnabout
 	
 Return
-	Turn Left out of Macy's turnabout toward Spring Mountain Rd. (100 ft)
-	Turn Right onto Spring Mountain Rd.
-	Drive West on Sprint Mountain Rd. to Mel Torme Way. (630 feet)
+	Turn Left out of Sachs's Fifth Ave. turnabout onto service road.
+	Drive East on service road toward Stop sign (200 feet)
+	Turn Right at Stop sign toward Spring Mountain Rd.
+	Turn Right onto Spring Mountain Rd. (100 feet)
+	Stay in right lane on Spring Mountain Rd.
+	Drive West on Sprint Mountain Rd. to Mel Torme Way. (300 feet)
 	Turn Right onto Mel Torme Way
 	Drive North and East on Mel Torme Way to S. Sammy Davis Jr. Dr. (1100 feet)
 	Turn Left onto S. Sammy Davis Jr. Dr.
