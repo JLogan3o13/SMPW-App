@@ -1,0 +1,733 @@
+﻿    "returnRouteInstructions": {
+        "L": [
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive out of the Harmon Crossings Apartments parking lot."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.158707"
+                                    },
+                                    {
+                                        "N": "36.107088"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "138"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "26.4"
+                    },
+                    "duration": {
+                        "N": "2.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Lamar Circle."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.158414"
+                                    },
+                                    {
+                                        "N": "36.107068"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "95"
+                            },
+                            "bearing_after": {
+                                "N": "178"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Lamar Circle"
+                    },
+                    "distance": {
+                        "N": "62.4"
+                    },
+                    "duration": {
+                        "N": "5.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on Lamar Circle (becomes Kelch Drive) toward Tropicana Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.158384"
+                                    },
+                                    {
+                                        "N": "36.106507"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "177"
+                            },
+                            "bearing_after": {
+                                "N": "165"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Lamar Circle"
+                    },
+                    "distance": {
+                        "N": "698.0"
+                    },
+                    "duration": {
+                        "N": "58.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Tropicana Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.156632"
+                                    },
+                                    {
+                                        "N": "36.101037"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "179"
+                            },
+                            "bearing_after": {
+                                "N": "263"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Tropicana Avenue"
+                    },
+                    "distance": {
+                        "N": "49.7"
+                    },
+                    "duration": {
+                        "N": "4.1"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on Tropicana Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.15718"
+                                    },
+                                    {
+                                        "N": "36.10098"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "264"
+                            },
+                            "bearing_after": {
+                                "N": "267"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Tropicana Avenue"
+                    },
+                    "distance": {
+                        "N": "605.8"
+                    },
+                    "duration": {
+                        "N": "50.5"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto Koval Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.163906"
+                                    },
+                                    {
+                                        "N": "36.100837"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "265"
+                            },
+                            "bearing_after": {
+                                "N": "186"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Koval Lane"
+                    },
+                    "distance": {
+                        "N": "37.4"
+                    },
+                    "duration": {
+                        "N": "3.1"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on Koval Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.16395"
+                                    },
+                                    {
+                                        "N": "36.10051"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "182"
+                            },
+                            "bearing_after": {
+                                "N": "181"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Koval Lane"
+                    },
+                    "distance": {
+                        "N": "355.8"
+                    },
+                    "duration": {
+                        "N": "29.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto East Reno Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.164235"
+                                    },
+                                    {
+                                        "N": "36.097382"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "217"
+                            },
+                            "bearing_after": {
+                                "N": "248"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "East Reno Avenue"
+                    },
+                    "distance": {
+                        "N": "50.4"
+                    },
+                    "duration": {
+                        "N": "4.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on East Reno Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.164767"
+                                    },
+                                    {
+                                        "N": "36.097265"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "260"
+                            },
+                            "bearing_after": {
+                                "N": "271"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "East Reno Avenue"
+                    },
+                    "distance": {
+                        "N": "753.9"
+                    },
+                    "duration": {
+                        "N": "62.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto Las Vegas Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.1731"
+                                    },
+                                    {
+                                        "N": "36.097249"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "255"
+                            },
+                            "bearing_after": {
+                                "N": "185"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Las Vegas Boulevard"
+                    },
+                    "distance": {
+                        "N": "45.3"
+                    },
+                    "duration": {
+                        "N": "3.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on Las Vegas Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173142"
+                                    },
+                                    {
+                                        "N": "36.096845"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "181"
+                            },
+                            "bearing_after": {
+                                "N": "175"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Las Vegas Boulevard"
+                    },
+                    "distance": {
+                        "N": "1174.0"
+                    },
+                    "duration": {
+                        "N": "97.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173171"
+                                    },
+                                    {
+                                        "N": "36.086302"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "186"
+                            },
+                            "bearing_after": {
+                                "N": "261"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "35.6"
+                    },
+                    "duration": {
+                        "N": "3.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173563"
+                                    },
+                                    {
+                                        "N": "36.086254"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "261"
+                            },
+                            "bearing_after": {
+                                "N": "267"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "5454.8"
+                    },
+                    "duration": {
+                        "N": "454.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234162"
+                                    },
+                                    {
+                                        "N": "36.085252"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "267"
+                            },
+                            "bearing_after": {
+                                "N": "175"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "44.5"
+                    },
+                    "duration": {
+                        "N": "3.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234116"
+                                    },
+                                    {
+                                        "N": "36.084854"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "175"
+                            },
+                            "bearing_after": {
+                                "N": "176"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "757.0"
+                    },
+                    "duration": {
+                        "N": "63.1"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233735"
+                                    },
+                                    {
+                                        "N": "36.078055"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "176"
+                            },
+                            "bearing_after": {
+                                "N": "266"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "72.0"
+                    },
+                    "duration": {
+                        "N": "6.0"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234523"
+                                    },
+                                    {
+                                        "N": "36.078009"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "269"
+                            },
+                            "bearing_after": {
+                                "N": "269"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "484.5"
+                    },
+                    "duration": {
+                        "N": "40.4"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Your destination is on the left."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "arrive"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.239606"
+                                    },
+                                    {
+                                        "N": "36.077661"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "227"
+                            },
+                            "bearing_after": {
+                                "N": "0"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "0.0"
+                    },
+                    "duration": {
+                        "N": "0.0"
+                    }
+                }
+            }
+        ]
+    }

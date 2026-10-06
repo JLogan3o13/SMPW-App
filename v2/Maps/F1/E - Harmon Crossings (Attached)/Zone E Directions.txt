@@ -1,0 +1,38 @@
+Outbound:
+    Drive on W Patrick Ln (0.5 miles) to S Torrey Pines Dr.
+    Turn Left onto S. Torrey Pines Dr.
+    Drive North on S. Torrey Pines Dr. to W. Russell Rd. (0.5 miles)
+    Turn Right onto W. Russell Rd.
+    Drive East on W. Russell Rd. to Las Vegas Blvd. (3.4 miles)
+    Turn Left onto Las Vegas Blvd.
+    Drive North on Las Vegas Blvd. to E. Reno Ave. (0.8 miles)
+    Turn Right onto E. Reno Ave.
+	Drive East on E. Reno Ave. to Koval Ln. (0.5 miles)
+	Drive North on Koval Ln. to Tropicana Ave. (0.2 miles)
+	Turn Right onto Tropicana Ave.
+    Drive East on Tropicana Ave. (0.5 miles)
+	Use the center turn lane to make a U-Turn toward Kelch Dr.
+	Drive West on Tropicana Ave. to Kelch Dr. (0.1 miles)
+	Turn Right on Kelch Dr.
+	Drive North on Kelch Dr. to Lamar Circle (0.4 miles)
+	Drive North on Lamar Circle toward E. Harmon Ave. (350 feet)
+	Turn Left into the Harmon Crossings Apartment parking lot.
+	
+Return
+	Turn Right onto Lamar Circle
+	Drive South from Lamar Circle to Kelch Dr. (350 feet)
+	Drive South on Kelch Dr. to Tropicana Ave. (0.4 miles)
+	Turn Right onto Tropicana Ave.
+	Drive West on Tropicana Ave. to Koval Ln. (0.5 miles)
+	Turn Left onto Koval Ln.
+	Drive South on Koval Ln. to E. Reno Ave. (0.2 miles)
+	Drive West on E. Reno Ave. to S. Las Vegas Blvd. (0.5 miles)
+    Turn Left onto S. Las Vegas Blvd.
+    Drive South on S. Las Vegas Blvd. to W. Russell Rd. (0.8 miles)
+    Turn Right onto W. Russell Rd.
+    Drive W. on W. Russell Rd. to the S. Torrey Pines Dr. (3.4 miles)
+	Turn Left on S. Torrey Pines Dr.
+	Drive South on S. Torrey Pines Dr. to W. Patrick Ln. (0.5 miles)
+	Turn Right onto W. Patrick Ln.
+	Drive West on W. Patrick Ln. (0.5 miles)
+    Destination is on the Left
