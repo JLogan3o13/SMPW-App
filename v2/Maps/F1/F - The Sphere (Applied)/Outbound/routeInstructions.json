@@ -1,0 +1,568 @@
+﻿    "routeInstructions": {
+        "L": [
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.239937"
+                                    },
+                                    {
+                                        "N": "36.07774"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "70"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "569.2"
+                    },
+                    "duration": {
+                        "N": "47.4"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233689"
+                                    },
+                                    {
+                                        "N": "36.07801"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "85"
+                            },
+                            "bearing_after": {
+                                "N": "356"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "58.6"
+                    },
+                    "duration": {
+                        "N": "4.9"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.23373"
+                                    },
+                                    {
+                                        "N": "36.078536"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "356"
+                            },
+                            "bearing_after": {
+                                "N": "358"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "5637.5"
+                    },
+                    "duration": {
+                        "N": "469.8"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Desert Inn Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233836"
+                                    },
+                                    {
+                                        "N": "36.129207"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "3"
+                            },
+                            "bearing_after": {
+                                "N": "89"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Desert Inn Road"
+                    },
+                    "distance": {
+                        "N": "50.7"
+                    },
+                    "duration": {
+                        "N": "4.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on West Desert Inn Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233283"
+                                    },
+                                    {
+                                        "N": "36.129216"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "93"
+                            },
+                            "bearing_after": {
+                                "N": "92"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Desert Inn Road"
+                    },
+                    "distance": {
+                        "N": "7145.4"
+                    },
+                    "duration": {
+                        "N": "595.4"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Paradise Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.155011"
+                                    },
+                                    {
+                                        "N": "36.129386"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "97"
+                            },
+                            "bearing_after": {
+                                "N": "178"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Paradise Road"
+                    },
+                    "distance": {
+                        "N": "58.6"
+                    },
+                    "duration": {
+                        "N": "4.9"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on Paradise Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.154987"
+                                    },
+                                    {
+                                        "N": "36.128863"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "181"
+                            },
+                            "bearing_after": {
+                                "N": "182"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Paradise Road"
+                    },
+                    "distance": {
+                        "N": "1145.8"
+                    },
+                    "duration": {
+                        "N": "95.5"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Corporate Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.155178"
+                                    },
+                                    {
+                                        "N": "36.118577"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "187"
+                            },
+                            "bearing_after": {
+                                "N": "269"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Corporate Drive"
+                    },
+                    "distance": {
+                        "N": "39.3"
+                    },
+                    "duration": {
+                        "N": "3.3"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on Corporate Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.155614"
+                                    },
+                                    {
+                                        "N": "36.118573"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "271"
+                            },
+                            "bearing_after": {
+                                "N": "270"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Corporate Drive"
+                    },
+                    "distance": {
+                        "N": "115.4"
+                    },
+                    "duration": {
+                        "N": "9.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Howard Hughes Parkway."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.156898"
+                                    },
+                                    {
+                                        "N": "36.118576"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "271"
+                            },
+                            "bearing_after": {
+                                "N": "346"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Howard Hughes Parkway"
+                    },
+                    "distance": {
+                        "N": "42.8"
+                    },
+                    "duration": {
+                        "N": "3.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on Howard Hughes Parkway."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.157013"
+                                    },
+                                    {
+                                        "N": "36.118949"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "347"
+                            },
+                            "bearing_after": {
+                                "N": "336"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Howard Hughes Parkway"
+                    },
+                    "distance": {
+                        "N": "181.8"
+                    },
+                    "duration": {
+                        "N": "15.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right into the High Line at Hughes Center Apartments."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.157695"
+                                    },
+                                    {
+                                        "N": "36.120468"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "353"
+                            },
+                            "bearing_after": {
+                                "N": "85"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "30.9"
+                    },
+                    "duration": {
+                        "N": "2.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Follow the signs around the parking lot to the rideshare drop-off."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.15736"
+                                    },
+                                    {
+                                        "N": "36.12049"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "85"
+                            },
+                            "bearing_after": {
+                                "N": "105"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "428.1"
+                    },
+                    "duration": {
+                        "N": "35.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "You have arrived at the rideshare drop-off."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "arrive"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.15718"
+                                    },
+                                    {
+                                        "N": "36.12083"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "139"
+                            },
+                            "bearing_after": {
+                                "N": "0"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "0.0"
+                    },
+                    "duration": {
+                        "N": "0.0"
+                    }
+                }
+            }
+        ]
+    }
