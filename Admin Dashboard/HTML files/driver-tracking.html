@@ -171,7 +171,11 @@
         th.sortable {
             cursor: pointer;
             user-select: none;
-            position: relative;
+            /* Must stay sticky (not relative): this rule is more specific than
+               `thead th`, so a position: relative here overrides the sticky
+               header on every sortable column. Sticky still anchors the ::after arrow. */
+            position: sticky;
+            top: 0;
             padding-right: 24px;
         }
 
