@@ -270,7 +270,7 @@
     <!-- Route Controls Overlay -->
     <div id="routeControls" class="route-controls">
       <div class="route-row">
-        <button id="btnToggleDir" class="route-btn primary" type="button">Return Route</button>
+        <button id="btnToggleDir" class="route-btn primary" type="button">Back to Form</button>
       </div>
       <div id="routeStatus" class="route-status">
         <span class="route-status-text">Loading route…</span>
@@ -407,7 +407,8 @@
     const ROUTE_LAYER_ID  = 'routeLineLayer';
 
     // Disable route buttons until loaded
-    btnToggleDir.disabled = true;
+    // Back to Form works even if the route fails to load.
+    btnToggleDir.disabled = false;
 
     /***************
      * HELPERS UI
@@ -467,7 +468,9 @@
     }
 
     function syncButtons(){
-      btnToggleDir.textContent = (currentDir === 'outbound') ? 'Return Route' : 'Outbound Route';
+      // Button now always returns the driver to the main form (index.html),
+      // so they must re-enter passenger count before their next leg.
+      btnToggleDir.textContent = 'Back to Form';
     }
 
     function getGeometryForDir(){
@@ -1478,15 +1481,15 @@
       }
     });
 
+    // Back to Form: send the driver to the main form (index.html), keeping
+    // the same event, so they must pick passenger count before the next leg.
     btnToggleDir.addEventListener('click', () => {
-      if (!currentLocation) {
-        showRouteStatus('Loading route…', false);
-        return;
+      const { event } = getParams();
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
       }
-      currentDir = (currentDir === 'outbound') ? 'return' : 'outbound';
-      updateUrlDirParam(currentDir);
-      syncButtons();
-      renderRouteOnMap();
+      window.location.href = `/index.html?event=${encodeURIComponent(event)}`;
     });
 
 
