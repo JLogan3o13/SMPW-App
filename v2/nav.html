@@ -232,7 +232,7 @@
 <body>
   <header>
     <div class="title">
-      <span>LV Transportation</span>
+      <span>LV Transportation<span class="dot" id="wakeDot" style="display:inline-block;vertical-align:middle;margin-left:8px;"></span></span>
       <span id="headerDestination">Navigation</span>
     </div>
 
@@ -270,7 +270,7 @@
     <!-- Route Controls Overlay -->
     <div id="routeControls" class="route-controls">
       <div class="route-row">
-        <button id="btnToggleDir" class="route-btn primary" type="button">Back to Form</button>
+        <button id="btnToggleDir" class="route-btn primary" type="button">Return Route</button>
       </div>
       <div id="routeStatus" class="route-status">
         <span class="route-status-text">Loading route…</span>
@@ -407,8 +407,7 @@
     const ROUTE_LAYER_ID  = 'routeLineLayer';
 
     // Disable route buttons until loaded
-    // Back to Form works even if the route fails to load.
-    btnToggleDir.disabled = false;
+    btnToggleDir.disabled = true;
 
     /***************
      * HELPERS UI
@@ -468,9 +467,7 @@
     }
 
     function syncButtons(){
-      // Button now always returns the driver to the main form (index.html),
-      // so they must re-enter passenger count before their next leg.
-      btnToggleDir.textContent = 'Back to Form';
+      btnToggleDir.textContent = (currentDir === 'outbound') ? 'Return Route' : 'Outbound Route';
     }
 
     function getGeometryForDir(){
@@ -1481,21 +1478,91 @@
       }
     });
 
-    // Back to Form: send the driver to the main form (index.html), keeping
-    // the same event, so they must pick passenger count before the next leg.
     btnToggleDir.addEventListener('click', () => {
-      const { event } = getParams();
-      if (watchId !== null) {
-        navigator.geolocation.clearWatch(watchId);
-        watchId = null;
+      if (!currentLocation) {
+        showRouteStatus('Loading route…', false);
+        return;
       }
-      window.location.href = `/index.html?event=${encodeURIComponent(event)}`;
+      currentDir = (currentDir === 'outbound') ? 'return' : 'outbound';
+      updateUrlDirParam(currentDir);
+      syncButtons();
+      renderRouteOnMap();
     });
 
 
     // Route status close button
     routeStatusClose.addEventListener('click', () => {
       hideRouteStatus();
+    });
+
+    /***************
+     * KEEP SCREEN AWAKE  (browser's built-in Screen Wake Lock only)
+     * Dot next to the app name: green = screen should stay on,
+     * amber = waiting (tap anywhere once), red = this browser cannot keep it on.
+     * Nothing plays in the background; the browser simply holds the screen on while
+     * this page is open and visible.
+     ***************/
+    const wakeDotEl = document.getElementById('wakeDot');
+    let wakeSentinel = null;        // handle returned by the Wake Lock API
+    let wakeGestureHandler = null;  // one-tap retry, used if the first request is refused
+
+    function setWakeStatus(state){  // 'on' | 'pending' | 'off'
+      if(!wakeDotEl) return;
+      setDot(wakeDotEl, state === 'on' ? true : (state === 'off' ? false : null));
+    }
+
+    async function acquireNativeWakeLock(){
+      if(wakeSentinel && !wakeSentinel.released) return true;
+      try{
+        wakeSentinel = await navigator.wakeLock.request('screen');
+        wakeSentinel.addEventListener('release', () => {
+          wakeSentinel = null;
+          // The browser drops the lock whenever the page is hidden. If we are visible
+          // again, take it back (the visibilitychange listener below covers app switches).
+          if(document.visibilityState === 'visible'){
+            setTimeout(() => acquireWakeLock(false), 1000);
+          }
+        });
+        return true;
+      }catch(err){
+        console.warn('Wake lock request failed:', err && err.name, err && err.message);
+        wakeSentinel = null;
+        return false;
+      }
+    }
+
+    function hookWakeGesture(){
+      if(wakeGestureHandler) return;
+      wakeGestureHandler = async () => {
+        const ok = await acquireWakeLock(true);
+        if(ok){
+          document.removeEventListener('touchend', wakeGestureHandler);
+          document.removeEventListener('click', wakeGestureHandler);
+          wakeGestureHandler = null;
+        }
+      };
+      document.addEventListener('touchend', wakeGestureHandler, { passive: true });
+      document.addEventListener('click', wakeGestureHandler);
+    }
+
+    async function acquireWakeLock(fromGesture){
+      if(!('wakeLock' in navigator)){      // this browser has no wake lock: a tap cannot help
+        setWakeStatus('off');
+        return false;
+      }
+      const ok = await acquireNativeWakeLock();
+      if(ok){
+        setWakeStatus('on');
+      }else{
+        setWakeStatus(fromGesture ? 'off' : 'pending');
+        hookWakeGesture();                 // a tap counts as a user gesture; retry then
+      }
+      return ok;
+    }
+
+    // Coming back to the app (unlock, app switch, WhatsApp, etc.): take the lock again.
+    document.addEventListener('visibilitychange', () => {
+      if(document.visibilityState === 'visible') acquireWakeLock(false);
     });
 
     /***************
@@ -1512,6 +1579,7 @@
      * BOOT
      ***************/
     initMap();
+    acquireWakeLock(false);
   </script>
 </body>
 </html>
