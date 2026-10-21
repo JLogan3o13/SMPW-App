@@ -161,7 +161,7 @@
             vertical-align: top;
         }
         tbody tr:hover { background-color: #fafafa; }
-        tbody tr.is-completed td.col-name { color: #6b7280; }
+        tbody tr.is-closed td.col-name { color: #6b7280; }
 
         .col-id { width: 100px; }
         .col-name { width: 200px; font-weight: 600; }
@@ -205,6 +205,7 @@
         .s-done     { --s-bg: #e3f6e8; --s-fg: #17643a; --chip-color: #16a34a; }
         .s-delayed  { --s-bg: #fdecec; --s-fg: #a3202c; --chip-color: #dc2626; }
         .s-future   { --s-bg: #f1eafe; --s-fg: #5b2a9e; --chip-color: #7c3aed; }
+        .s-notplanned { --s-bg: #f5f5f4; --s-fg: #57534e; --chip-color: #a8a29e; }
         .chip-all   { --chip-color: #0f766e; }
         .chip-open  { --chip-color: #0f766e; }
 
@@ -454,13 +455,16 @@
         const API_BASE_URL = 'https://fkmhxbt6m5.execute-api.us-west-1.amazonaws.com/Prod';
         const API_KEY = ''; // Optional. Only needed if you require an API key on the API.
 
-        const STATUSES = ['Under Review', 'In Development', 'Completed', 'Delayed', 'Future Enhancement'];
+        const STATUSES = ['Under Review', 'In Development', 'Completed', 'Delayed', 'Future Enhancement', 'Not Planned'];
+        // Closed items are hidden from the default Open view
+        const CLOSED_STATUSES = ['Completed', 'Not Planned'];
         const STATUS_CLASS = {
             'Under Review': 's-review',
             'In Development': 's-dev',
             'Completed': 's-done',
             'Delayed': 's-delayed',
-            'Future Enhancement': 's-future'
+            'Future Enhancement': 's-future',
+            'Not Planned': 's-notplanned'
         };
         const PRIORITY_RANK = { High: 0, Medium: 1, Low: 2 };
         const APP_RANK = { MAP: 0, ADMIN: 1 };
@@ -548,7 +552,7 @@
             if (filters.app !== 'all' && item.app !== filters.app) return false;
             if (filters.priority !== 'all' && item.priority !== filters.priority) return false;
             if (!ignoreStatus) {
-                if (filters.status === 'open' && item.status === 'Completed') return false;
+                if (filters.status === 'open' && CLOSED_STATUSES.includes(item.status)) return false;
                 if (filters.status !== 'all' && filters.status !== 'open' && item.status !== filters.status) return false;
             }
             if (filters.search) {
@@ -606,7 +610,7 @@
             const pool = items.filter(i => matchesFilters(i, true));
             const counts = Object.fromEntries(STATUSES.map(s => [s, 0]));
             pool.forEach(i => { if (counts[i.status] !== undefined) counts[i.status]++; });
-            const openCount = pool.length - counts['Completed'];
+            const openCount = pool.filter(i => !CLOSED_STATUSES.includes(i.status)).length;
 
             const chips = [
                 { value: 'all', label: 'All items', count: pool.length, cls: 'chip-all' },
@@ -670,7 +674,7 @@
                     ? escapeHtml(formatDate(item.dateCompleted))
                     : '<span class="muted">—</span>';
                 return `
-                <tr data-id="${id}" class="${item.status === 'Completed' ? 'is-completed' : ''}">
+                <tr data-id="${id}" class="${CLOSED_STATUSES.includes(item.status) ? 'is-closed' : ''}">
                     <td class="col-id"><span class="id-badge app-${escapeHtml(item.app)}">${id}</span></td>
                     <td class="col-name">${escapeHtml(item.name)}</td>
                     <td>${desc}</td>
@@ -845,7 +849,7 @@
         // ------------------------ Event wiring ----------------------------
         function init() {
             $('statusFilter').innerHTML =
-                `<option value="all">All statuses</option><option value="open">Open (not completed)</option>` +
+                `<option value="all">All statuses</option><option value="open">Open (not completed or not planned)</option>` +
                 STATUSES.map(s => `<option value="${s}">${s}</option>`).join('');
             $('fStatus').innerHTML = statusOptions('Under Review');
 

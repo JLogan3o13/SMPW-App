@@ -73,7 +73,7 @@ The Lambda answers CORS preflight (OPTIONS) requests itself, so you don't need t
 - **IDs** are generated automatically when an item is added: `MAP-001`, `MAP-002`, `ADMIN-001`, and so on. The app can't be changed after creation because the ID depends on it.
 - **Status** changes save as soon as you pick a new value in the table's dropdown.
 - **Completed date** fills in automatically the first time an item is set to Completed. If the item is later moved back to another status, the date clears. If it's completed again, it gets a new date.
-- **The default view is Open**, meaning everything except Completed. The status chips across the top double as filters: click Completed to review finished work, or All items to see everything. The page remembers the filters you last used in each browser.
+- **The default view is Open**, meaning everything except Completed and Not Planned. The status chips across the top double as filters: click Completed to review finished work, or All items to see everything. The page remembers the filters you last used in each browser.
 - **Long descriptions and notes** show three lines in the table. Click the text to expand it, or open Edit to see and change everything.
 - **Created and last-updated times** are stored for every item and shown in the Edit window.
 
@@ -87,7 +87,7 @@ The Lambda answers CORS preflight (OPTIONS) requests itself, so you don't need t
 | PUT | `/backlog/{itemId}` | Any of: `name`, `description`, `status`, `priority`, `notes` | The updated item |
 | DELETE | `/backlog/{itemId}` | | `{"deleted": "MAP-001"}` |
 
-Allowed status values are `Under Review`, `In Development`, `Completed`, `Delayed`, and `Future Enhancement`. Allowed priority values are `High`, `Medium`, and `Low`. New items default to Under Review and Medium.
+Allowed status values are `Under Review`, `In Development`, `Completed`, `Delayed`, `Future Enhancement`, and `Not Planned`. Allowed priority values are `High`, `Medium`, and `Low`. New items default to Under Review and Medium.
 
 ## Optional: require an API key
 

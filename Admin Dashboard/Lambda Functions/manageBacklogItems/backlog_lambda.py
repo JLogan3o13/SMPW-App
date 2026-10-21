@@ -27,7 +27,7 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(TABLE_NAME)
 
 APPS = ('MAP', 'ADMIN')
-STATUSES = ('Under Review', 'In Development', 'Completed', 'Delayed', 'Future Enhancement')
+STATUSES = ('Under Review', 'In Development', 'Completed', 'Delayed', 'Future Enhancement', 'Not Planned')
 PRIORITIES = ('High', 'Medium', 'Low')
 COMPLETED = 'Completed'
 COUNTER_PREFIX = 'COUNTER#'
