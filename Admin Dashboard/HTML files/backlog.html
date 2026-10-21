@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backlog - Transportation Hub Admin</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1500px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+            color: white;
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .header h1 { font-size: 28px; font-weight: 600; }
+        .header-subtitle { font-size: 14px; opacity: 0.9; margin-top: 4px; }
+        .header-actions { display: flex; gap: 12px; }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-family: inherit;
+        }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn:focus-visible, select:focus-visible, input:focus-visible,
+        textarea:focus-visible, .stat-chip:focus-visible, th button:focus-visible {
+            outline: 3px solid #5eead4;
+            outline-offset: 2px;
+        }
+        .btn-primary { background-color: white; color: #0f766e; }
+        .btn-primary:hover { background-color: #f0fdfa; }
+        .btn-secondary { background-color: rgba(255,255,255,0.15); color: white; border: 1px solid white; }
+        .btn-secondary:hover { background-color: rgba(255,255,255,0.28); }
+        .btn-success { background-color: #0f766e; color: white; }
+        .btn-success:hover { background-color: #115e59; }
+        .btn-danger { background-color: #dc3545; color: white; }
+        .btn-danger:hover { background-color: #c82333; }
+        .btn-cancel { background-color: #6c757d; color: white; }
+        .btn-cancel:hover { background-color: #5a6268; }
+        .btn-link { background: none; color: #0f766e; padding: 6px 4px; text-decoration: underline; }
+        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-outline { background: white; color: #333; border: 1px solid #ccc; }
+        .btn-outline:hover { background: #f3f4f6; }
+        .btn-outline-danger { background: white; color: #c82333; border: 1px solid #f1aeb5; }
+        .btn-outline-danger:hover { background: #fdf2f3; }
+
+        /* Status summary */
+        .stats-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 20px 30px;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .stat-chip {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            min-width: 130px;
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-left: 4px solid var(--chip-color, #999);
+            border-radius: 6px;
+            cursor: pointer;
+            font-family: inherit;
+            text-align: left;
+        }
+        .stat-chip:hover { background: #fcfcfc; border-color: #c9c9c9; border-left-color: var(--chip-color, #999); }
+        .stat-chip[aria-pressed="true"] { background: #f0fdfa; border-color: #0f766e; border-left-color: var(--chip-color, #999); }
+        .stat-chip .stat-label { font-size: 12px; color: #666; }
+        .stat-chip .stat-value { font-size: 22px; font-weight: 600; color: #333; margin-top: 2px; }
+
+        /* Filters */
+        .action-bar {
+            padding: 16px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            align-items: flex-end;
+        }
+        .filter-group { display: flex; flex-direction: column; gap: 4px; }
+        .filter-group label { font-size: 12px; font-weight: 600; color: #555; }
+        .filter-group select, .filter-group input {
+            padding: 9px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            background: white;
+            min-width: 160px;
+        }
+        .filter-group.search { flex: 1; min-width: 200px; max-width: 360px; }
+        .filter-group.search input { width: 100%; }
+        .result-count { margin-left: auto; font-size: 13px; color: #666; padding-bottom: 10px; }
+
+        /* Table */
+        .table-container { padding: 20px 30px 30px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        th {
+            background-color: #f8f9fa;
+            text-align: left;
+            font-weight: 600;
+            font-size: 13px;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e0e0e0;
+            padding: 0;
+            white-space: nowrap;
+        }
+        th > span, th button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            font: inherit;
+            color: inherit;
+            text-transform: inherit;
+            letter-spacing: inherit;
+            text-align: left;
+            background: none;
+            border: none;
+        }
+        th button { cursor: pointer; }
+        th button:hover { background-color: #e9ecef; }
+        .sort-indicator { font-size: 10px; margin-left: 4px; opacity: 0.6; }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 14px;
+            vertical-align: top;
+        }
+        tbody tr:hover { background-color: #fafafa; }
+        tbody tr.is-completed td.col-name { color: #6b7280; }
+
+        .col-id { width: 100px; }
+        .col-name { width: 200px; font-weight: 600; }
+        .col-priority { width: 95px; }
+        .col-status { width: 190px; }
+        .col-completed { width: 115px; white-space: nowrap; }
+        .col-actions { width: 130px; }
+
+        .clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            white-space: pre-wrap;
+            line-height: 1.45;
+            cursor: pointer;
+        }
+        .clamp.expanded { -webkit-line-clamp: unset; display: block; }
+        .muted { color: #9ca3af; }
+
+        .id-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .app-MAP { background-color: #e7f3ff; color: #0058b0; }
+        .app-ADMIN { background-color: #fff4e6; color: #a35200; }
+
+        .priority { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+        .priority::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+        .p-High { color: #c82333; }
+        .p-Medium { color: #b45309; }
+        .p-Low { color: #6b7280; }
+
+        /* Status colors are shared by the chips, the inline dropdowns, and the modal */
+        .s-review   { --s-bg: #eef2f7; --s-fg: #3f4b5b; --chip-color: #64748b; }
+        .s-dev      { --s-bg: #e0efff; --s-fg: #0b4f9c; --chip-color: #2563eb; }
+        .s-done     { --s-bg: #e3f6e8; --s-fg: #17643a; --chip-color: #16a34a; }
+        .s-delayed  { --s-bg: #fdecec; --s-fg: #a3202c; --chip-color: #dc2626; }
+        .s-future   { --s-bg: #f1eafe; --s-fg: #5b2a9e; --chip-color: #7c3aed; }
+        .chip-all   { --chip-color: #0f766e; }
+        .chip-open  { --chip-color: #0f766e; }
+
+        .status-select {
+            width: 100%;
+            padding: 7px 10px;
+            border-radius: 6px;
+            border: 1px solid transparent;
+            background-color: var(--s-bg, #fff);
+            color: var(--s-fg, #333);
+            font-size: 13px;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+        }
+        .status-select:hover { border-color: var(--s-fg, #999); }
+        .status-select option { background: white; color: #333; font-weight: 400; }
+        .status-select:disabled { opacity: 0.6; cursor: wait; }
+
+        .action-buttons { display: flex; gap: 6px; }
+
+        /* Empty / loading / error states */
+        .state-row td { text-align: center; padding: 48px 20px; color: #666; }
+        .state-row p { margin-bottom: 12px; }
+        .state-row.error td { color: #a3202c; }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background-color: white;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 640px;
+            max-height: 92vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .modal-header {
+            padding: 20px 30px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-title { font-size: 20px; font-weight: 600; }
+        .modal-close {
+            background: none; border: none; font-size: 26px; color: #999;
+            cursor: pointer; width: 32px; height: 32px; line-height: 1;
+        }
+        .modal-close:hover { color: #333; }
+        .modal-body { padding: 24px 30px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+        .form-group label { font-size: 13px; font-weight: 600; color: #444; }
+        .form-group .hint { font-size: 12px; color: #777; font-weight: 400; }
+        .form-group input, .form-group select, .form-group textarea {
+            padding: 10px 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+        }
+        .form-group textarea { min-height: 96px; resize: vertical; line-height: 1.45; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #0f766e; outline: none; }
+        .form-error { color: #a3202c; font-size: 13px; margin-bottom: 12px; display: none; }
+        .form-error.visible { display: block; }
+        .item-meta { font-size: 13px; color: #666; background: #f8f9fa; border-radius: 6px; padding: 10px 12px; margin-bottom: 16px; line-height: 1.6; }
+        .modal-footer {
+            padding: 16px 30px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #1f2937;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 6px;
+            font-size: 14px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.25);
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 0.2s, transform 0.2s;
+            pointer-events: none;
+            z-index: 2000;
+            max-width: 420px;
+        }
+        .toast.visible { opacity: 1; transform: translateY(0); }
+        .toast.error { background: #a3202c; }
+
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+        @media (max-width: 700px) {
+            body { padding: 0; }
+            .container { border-radius: 0; }
+            .header, .stats-bar, .action-bar, .table-container { padding-left: 16px; padding-right: 16px; }
+            .form-row { grid-template-columns: 1fr; }
+            .modal-body, .modal-header, .modal-footer { padding-left: 18px; padding-right: 18px; }
+            .result-count { margin-left: 0; width: 100%; padding-bottom: 0; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .toast, .btn { transition: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div>
+                <h1>Backlog</h1>
+                <div class="header-subtitle">Fixes and improvements from volunteer feedback for the map and admin apps</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-secondary" id="refreshBtn" type="button">Refresh</button>
+                <button class="btn btn-primary" id="addBtn" type="button">+ Add item</button>
+            </div>
+        </header>
+
+        <div class="stats-bar" id="statsBar" role="group" aria-label="Filter by status"></div>
+
+        <div class="action-bar">
+            <div class="filter-group">
+                <label for="appFilter">App</label>
+                <select id="appFilter">
+                    <option value="all">All apps</option>
+                    <option value="MAP">Map app</option>
+                    <option value="ADMIN">Admin app</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label for="statusFilter">Status</label>
+                <select id="statusFilter"></select>
+            </div>
+            <div class="filter-group">
+                <label for="priorityFilter">Priority</label>
+                <select id="priorityFilter">
+                    <option value="all">All priorities</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                </select>
+            </div>
+            <div class="filter-group search">
+                <label for="searchInput">Search</label>
+                <input type="search" id="searchInput" placeholder="Name, description, notes, or ID">
+            </div>
+            <button class="btn btn-link" id="clearFiltersBtn" type="button" hidden>Clear filters</button>
+            <div class="result-count" id="resultCount" aria-live="polite"></div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-id"><button type="button" data-sort="itemId">ID<span class="sort-indicator"></span></button></th>
+                        <th class="col-name"><button type="button" data-sort="name">Name<span class="sort-indicator"></span></button></th>
+                        <th><span>Description</span></th>
+                        <th class="col-priority"><button type="button" data-sort="priority">Priority<span class="sort-indicator"></span></button></th>
+                        <th class="col-status"><button type="button" data-sort="status">Status<span class="sort-indicator"></span></button></th>
+                        <th class="col-completed"><button type="button" data-sort="dateCompleted">Completed<span class="sort-indicator"></span></button></th>
+                        <th><span>Notes</span></th>
+                        <th class="col-actions"><span class="sr-only">Actions</span></th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Add / edit modal -->
+    <div class="modal" id="itemModal" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle">Add item</h2>
+                <button class="modal-close" type="button" id="modalCloseBtn" aria-label="Close">&times;</button>
+            </div>
+            <form id="itemForm" novalidate>
+                <div class="modal-body">
+                    <div class="item-meta" id="itemMeta" hidden></div>
+                    <div class="form-error" id="formError" role="alert"></div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fApp">App</label>
+                            <select id="fApp">
+                                <option value="MAP">Map app</option>
+                                <option value="ADMIN">Admin app</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fPriority">Priority</label>
+                            <select id="fPriority">
+                                <option value="High">High</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="fName">Name</label>
+                        <input type="text" id="fName" maxlength="200" required placeholder="Short title, e.g. Zone pins hard to see at night">
+                    </div>
+                    <div class="form-group">
+                        <label for="fDescription">Description <span class="hint">What needs to be done and why</span></label>
+                        <textarea id="fDescription" maxlength="4000"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="fStatus">Status</label>
+                        <select id="fStatus"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="fNotes">Notes <span class="hint">Progress updates, who reported it, links</span></label>
+                        <textarea id="fNotes" maxlength="4000"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-danger" id="deleteBtn" style="margin-right:auto" hidden>Delete</button>
+                    <button type="button" class="btn btn-cancel" id="cancelBtn">Cancel</button>
+                    <button type="submit" class="btn btn-success" id="saveBtn">Add item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+        // ------------------------------------------------------------------
+        // Configuration: paste the Invoke URL of your API Gateway stage here
+        // (without /backlog on the end).
+        // ------------------------------------------------------------------
+        const API_BASE_URL = 'https://fkmhxbt6m5.execute-api.us-west-1.amazonaws.com/Prod';
+        const API_KEY = ''; // Optional. Only needed if you require an API key on the API.
+
+        const STATUSES = ['Under Review', 'In Development', 'Completed', 'Delayed', 'Future Enhancement'];
+        const STATUS_CLASS = {
+            'Under Review': 's-review',
+            'In Development': 's-dev',
+            'Completed': 's-done',
+            'Delayed': 's-delayed',
+            'Future Enhancement': 's-future'
+        };
+        const PRIORITY_RANK = { High: 0, Medium: 1, Low: 2 };
+        const APP_RANK = { MAP: 0, ADMIN: 1 };
+        const FILTER_STORAGE_KEY = 'backlogFilters';
+
+        let items = [];
+        let loadState = 'loading'; // loading | ready | error
+        let loadError = '';
+        let filters = { app: 'all', status: 'open', priority: 'all', search: '' };
+        let sort = { key: 'itemId', dir: 1 };
+        let editingId = null;
+        let lastFocused = null;
+
+        const $ = (id) => document.getElementById(id);
+
+        // ---------------------------- API ---------------------------------
+        async function api(path = '', options = {}) {
+            const headers = {};
+            if (options.body) headers['Content-Type'] = 'application/json';
+            if (API_KEY) headers['x-api-key'] = API_KEY;
+            const response = await fetch(`${API_BASE_URL}/backlog${path}`, { ...options, headers });
+            let data = {};
+            try { data = await response.json(); } catch (e) { /* empty body */ }
+            if (!response.ok) throw new Error(data.error || `Request failed with status ${response.status}`);
+            return data;
+        }
+
+        async function loadItems() {
+            loadState = 'loading';
+            render();
+            try {
+                const data = await api();
+                items = data.items || [];
+                loadState = 'ready';
+            } catch (err) {
+                loadState = 'error';
+                loadError = err.message;
+            }
+            render();
+        }
+
+        // -------------------------- Helpers -------------------------------
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        function formatDate(iso, withTime = false) {
+            if (!iso) return '';
+            const d = new Date(iso);
+            if (isNaN(d)) return '';
+            const opts = { month: 'short', day: 'numeric', year: 'numeric' };
+            if (withTime) Object.assign(opts, { hour: 'numeric', minute: '2-digit' });
+            return d.toLocaleString(undefined, opts);
+        }
+
+        function showToast(message, isError = false) {
+            const toast = $('toast');
+            toast.textContent = message;
+            toast.classList.toggle('error', isError);
+            toast.classList.add('visible');
+            clearTimeout(showToast.timer);
+            showToast.timer = setTimeout(() => toast.classList.remove('visible'), isError ? 6000 : 3000);
+        }
+
+        function statusOptions(selected) {
+            return STATUSES.map(s =>
+                `<option value="${s}"${s === selected ? ' selected' : ''}>${s}</option>`).join('');
+        }
+
+        function saveFilters() {
+            try { localStorage.setItem(FILTER_STORAGE_KEY, JSON.stringify({ ...filters, search: '' })); } catch (e) {}
+        }
+
+        function restoreFilters() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(FILTER_STORAGE_KEY) || 'null');
+                if (saved) filters = { ...filters, ...saved, search: '' };
+            } catch (e) {}
+        }
+
+        // ------------------------ Filter & sort ---------------------------
+        function matchesFilters(item, ignoreStatus = false) {
+            if (filters.app !== 'all' && item.app !== filters.app) return false;
+            if (filters.priority !== 'all' && item.priority !== filters.priority) return false;
+            if (!ignoreStatus) {
+                if (filters.status === 'open' && item.status === 'Completed') return false;
+                if (filters.status !== 'all' && filters.status !== 'open' && item.status !== filters.status) return false;
+            }
+            if (filters.search) {
+                const q = filters.search.toLowerCase();
+                const haystack = [item.itemId, item.name, item.description, item.notes].join(' ').toLowerCase();
+                if (!haystack.includes(q)) return false;
+            }
+            return true;
+        }
+
+        function compareItems(a, b) {
+            let result;
+            switch (sort.key) {
+                case 'name':
+                    result = (a.name || '').localeCompare(b.name || '');
+                    break;
+                case 'priority':
+                    result = (PRIORITY_RANK[a.priority] ?? 9) - (PRIORITY_RANK[b.priority] ?? 9);
+                    break;
+                case 'status':
+                    result = STATUSES.indexOf(a.status) - STATUSES.indexOf(b.status);
+                    break;
+                case 'dateCompleted':
+                    // Items with no completed date always sort last
+                    if (!a.dateCompleted && !b.dateCompleted) result = 0;
+                    else if (!a.dateCompleted) return 1;
+                    else if (!b.dateCompleted) return -1;
+                    else result = a.dateCompleted.localeCompare(b.dateCompleted);
+                    break;
+                default:
+                    result = 0;
+            }
+            if (result === 0) {
+                // Tie-break (and default sort) by app, then ID number
+                result = ((APP_RANK[a.app] ?? 9) - (APP_RANK[b.app] ?? 9)) ||
+                         ((a.itemNumber || 0) - (b.itemNumber || 0));
+                return sort.key === 'itemId' ? result * sort.dir : result;
+            }
+            return result * sort.dir;
+        }
+
+        // ---------------------------- Render ------------------------------
+        function render() {
+            renderStats();
+            renderTable();
+            renderSortIndicators();
+            const active = filters.app !== 'all' || filters.status !== 'open' ||
+                           filters.priority !== 'all' || filters.search !== '';
+            $('clearFiltersBtn').hidden = !active;
+        }
+
+        function renderStats() {
+            // Counts respect the app/priority/search filters but not the status filter,
+            // so the chips always show how work is spread across statuses.
+            const pool = items.filter(i => matchesFilters(i, true));
+            const counts = Object.fromEntries(STATUSES.map(s => [s, 0]));
+            pool.forEach(i => { if (counts[i.status] !== undefined) counts[i.status]++; });
+            const openCount = pool.length - counts['Completed'];
+
+            const chips = [
+                { value: 'all', label: 'All items', count: pool.length, cls: 'chip-all' },
+                { value: 'open', label: 'Open', count: openCount, cls: 'chip-open' },
+                ...STATUSES.map(s => ({ value: s, label: s, count: counts[s], cls: STATUS_CLASS[s] }))
+            ];
+            const showCounts = loadState === 'ready';
+            $('statsBar').innerHTML = chips.map(c => `
+                <button type="button" class="stat-chip ${c.cls}" data-status="${escapeHtml(c.value)}"
+                        aria-pressed="${filters.status === c.value}">
+                    <span class="stat-label">${escapeHtml(c.label)}</span>
+                    <span class="stat-value">${showCounts ? c.count : '–'}</span>
+                </button>`).join('');
+        }
+
+        function renderTable() {
+            const body = $('tableBody');
+
+            if (loadState === 'loading') {
+                body.innerHTML = `<tr class="state-row"><td colspan="8"><p>Loading the backlog…</p></td></tr>`;
+                $('resultCount').textContent = '';
+                return;
+            }
+            if (loadState === 'error') {
+                body.innerHTML = `<tr class="state-row error"><td colspan="8">
+                    <p>The backlog didn't load: ${escapeHtml(loadError)}</p>
+                    <p>Check that the API_BASE_URL setting in backlog.html points to your API Gateway stage, then try again.</p>
+                    <button type="button" class="btn btn-success" data-action="retry">Try again</button>
+                </td></tr>`;
+                $('resultCount').textContent = '';
+                return;
+            }
+
+            const visible = items.filter(i => matchesFilters(i)).sort(compareItems);
+            $('resultCount').textContent = `Showing ${visible.length} of ${items.length} item${items.length === 1 ? '' : 's'}`;
+
+            if (items.length === 0) {
+                body.innerHTML = `<tr class="state-row"><td colspan="8">
+                    <p>No backlog items yet. Add the first one from volunteer feedback.</p>
+                    <button type="button" class="btn btn-success" data-action="add">+ Add item</button>
+                </td></tr>`;
+                return;
+            }
+            if (visible.length === 0) {
+                body.innerHTML = `<tr class="state-row"><td colspan="8">
+                    <p>No items match these filters.</p>
+                    <button type="button" class="btn btn-outline" data-action="clear-filters">Clear filters</button>
+                </td></tr>`;
+                return;
+            }
+
+            body.innerHTML = visible.map(item => {
+                const id = escapeHtml(item.itemId);
+                const desc = item.description
+                    ? `<div class="clamp" title="Click to expand">${escapeHtml(item.description)}</div>`
+                    : '<span class="muted">—</span>';
+                const notes = item.notes
+                    ? `<div class="clamp" title="Click to expand">${escapeHtml(item.notes)}</div>`
+                    : '<span class="muted">—</span>';
+                const completed = item.dateCompleted
+                    ? escapeHtml(formatDate(item.dateCompleted))
+                    : '<span class="muted">—</span>';
+                return `
+                <tr data-id="${id}" class="${item.status === 'Completed' ? 'is-completed' : ''}">
+                    <td class="col-id"><span class="id-badge app-${escapeHtml(item.app)}">${id}</span></td>
+                    <td class="col-name">${escapeHtml(item.name)}</td>
+                    <td>${desc}</td>
+                    <td class="col-priority"><span class="priority p-${escapeHtml(item.priority)}">${escapeHtml(item.priority)}</span></td>
+                    <td class="col-status">
+                        <select class="status-select ${STATUS_CLASS[item.status] || ''}" data-id="${id}"
+                                aria-label="Status for ${id}">${statusOptions(item.status)}</select>
+                    </td>
+                    <td class="col-completed">${completed}</td>
+                    <td>${notes}</td>
+                    <td class="col-actions">
+                        <div class="action-buttons">
+                            <button type="button" class="btn btn-sm btn-outline" data-action="edit" data-id="${id}">Edit</button>
+                            <button type="button" class="btn btn-sm btn-outline-danger" data-action="delete" data-id="${id}"
+                                    aria-label="Delete ${id}">Delete</button>
+                        </div>
+                    </td>
+                </tr>`;
+            }).join('');
+        }
+
+        function renderSortIndicators() {
+            document.querySelectorAll('th button[data-sort]').forEach(btn => {
+                const active = btn.dataset.sort === sort.key;
+                btn.querySelector('.sort-indicator').textContent = active ? (sort.dir === 1 ? '▲' : '▼') : '';
+                btn.closest('th').setAttribute('aria-sort', active ? (sort.dir === 1 ? 'ascending' : 'descending') : 'none');
+            });
+        }
+
+        function syncFilterControls() {
+            $('appFilter').value = filters.app;
+            $('statusFilter').value = filters.status;
+            $('priorityFilter').value = filters.priority;
+            $('searchInput').value = filters.search;
+        }
+
+        // --------------------------- Actions ------------------------------
+        function replaceItem(updated) {
+            const idx = items.findIndex(i => i.itemId === updated.itemId);
+            if (idx >= 0) items[idx] = updated; else items.push(updated);
+        }
+
+        async function changeStatus(select) {
+            const id = select.dataset.id;
+            const item = items.find(i => i.itemId === id);
+            if (!item) return;
+            const previous = item.status;
+            const next = select.value;
+            select.disabled = true;
+            select.className = `status-select ${STATUS_CLASS[next] || ''}`;
+            try {
+                const data = await api(`/${encodeURIComponent(id)}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ status: next })
+                });
+                replaceItem(data.item);
+                render();
+                showToast(`${id} is now ${next}`);
+            } catch (err) {
+                select.value = previous;
+                select.className = `status-select ${STATUS_CLASS[previous] || ''}`;
+                select.disabled = false;
+                showToast(`${id} wasn't updated: ${err.message}`, true);
+            }
+        }
+
+        async function deleteItem(id) {
+            const item = items.find(i => i.itemId === id);
+            if (!item) return false;
+            if (!confirm(`Delete ${id} "${item.name}"? This can't be undone.`)) return false;
+            try {
+                await api(`/${encodeURIComponent(id)}`, { method: 'DELETE' });
+                items = items.filter(i => i.itemId !== id);
+                render();
+                showToast(`Deleted ${id}`);
+                return true;
+            } catch (err) {
+                showToast(`${id} wasn't deleted: ${err.message}`, true);
+                return false;
+            }
+        }
+
+        // ---------------------------- Modal -------------------------------
+        function openModal(id = null) {
+            editingId = id;
+            lastFocused = document.activeElement;
+            const item = id ? items.find(i => i.itemId === id) : null;
+            const editing = Boolean(item);
+
+            $('modalTitle').textContent = editing ? `Edit ${item.itemId}` : 'Add item';
+            $('saveBtn').textContent = editing ? 'Save changes' : 'Add item';
+            $('deleteBtn').hidden = !editing;
+            $('formError').classList.remove('visible');
+
+            $('fApp').value = item?.app || (filters.app !== 'all' ? filters.app : 'MAP');
+            $('fApp').disabled = editing; // ID depends on the app, so it's fixed after creation
+            $('fPriority').value = item?.priority || 'Medium';
+            $('fName').value = item?.name || '';
+            $('fDescription').value = item?.description || '';
+            $('fStatus').value = item?.status || 'Under Review';
+            $('fNotes').value = item?.notes || '';
+
+            const meta = $('itemMeta');
+            if (editing) {
+                const lines = [`Added ${escapeHtml(formatDate(item.createdAt, true))}`];
+                if (item.updatedAt && item.updatedAt !== item.createdAt) {
+                    lines.push(`Last updated ${escapeHtml(formatDate(item.updatedAt, true))}`);
+                }
+                if (item.dateCompleted) lines.push(`Completed ${escapeHtml(formatDate(item.dateCompleted, true))}`);
+                meta.innerHTML = lines.join('<br>');
+                meta.hidden = false;
+            } else {
+                meta.hidden = true;
+            }
+
+            $('itemModal').classList.add('active');
+            $('itemModal').setAttribute('aria-hidden', 'false');
+            setTimeout(() => $('fName').focus(), 0);
+        }
+
+        function closeModal() {
+            $('itemModal').classList.remove('active');
+            $('itemModal').setAttribute('aria-hidden', 'true');
+            editingId = null;
+            if (lastFocused && document.body.contains(lastFocused)) lastFocused.focus();
+        }
+
+        async function submitForm(event) {
+            event.preventDefault();
+            const errorBox = $('formError');
+            const name = $('fName').value.trim();
+            if (!name) {
+                errorBox.textContent = 'Give the item a name before saving.';
+                errorBox.classList.add('visible');
+                $('fName').focus();
+                return;
+            }
+
+            const payload = {
+                name,
+                description: $('fDescription').value.trim(),
+                priority: $('fPriority').value,
+                status: $('fStatus').value,
+                notes: $('fNotes').value.trim()
+            };
+            const saveBtn = $('saveBtn');
+            const originalLabel = saveBtn.textContent;
+            saveBtn.disabled = true;
+            saveBtn.textContent = 'Saving…';
+
+            try {
+                let data;
+                if (editingId) {
+                    data = await api(`/${encodeURIComponent(editingId)}`, { method: 'PUT', body: JSON.stringify(payload) });
+                } else {
+                    data = await api('', { method: 'POST', body: JSON.stringify({ ...payload, app: $('fApp').value }) });
+                }
+                replaceItem(data.item);
+                const verb = editingId ? 'Saved' : 'Added';
+                closeModal();
+                render();
+                showToast(`${verb} ${data.item.itemId}`);
+            } catch (err) {
+                errorBox.textContent = `This item wasn't saved: ${err.message}`;
+                errorBox.classList.add('visible');
+            } finally {
+                saveBtn.disabled = false;
+                saveBtn.textContent = originalLabel;
+            }
+        }
+
+        // ------------------------ Event wiring ----------------------------
+        function init() {
+            $('statusFilter').innerHTML =
+                `<option value="all">All statuses</option><option value="open">Open (not completed)</option>` +
+                STATUSES.map(s => `<option value="${s}">${s}</option>`).join('');
+            $('fStatus').innerHTML = statusOptions('Under Review');
+
+            restoreFilters();
+            syncFilterControls();
+
+            $('appFilter').addEventListener('change', e => { filters.app = e.target.value; saveFilters(); render(); });
+            $('statusFilter').addEventListener('change', e => { filters.status = e.target.value; saveFilters(); render(); });
+            $('priorityFilter').addEventListener('change', e => { filters.priority = e.target.value; saveFilters(); render(); });
+            $('searchInput').addEventListener('input', e => { filters.search = e.target.value.trim(); render(); });
+
+            $('clearFiltersBtn').addEventListener('click', clearFilters);
+
+            $('statsBar').addEventListener('click', e => {
+                const chip = e.target.closest('.stat-chip');
+                if (!chip) return;
+                filters.status = chip.dataset.status;
+                syncFilterControls();
+                saveFilters();
+                render();
+            });
+
+            document.querySelectorAll('th button[data-sort]').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.sort;
+                    sort = { key, dir: sort.key === key ? -sort.dir : 1 };
+                    render();
+                });
+            });
+
+            const body = $('tableBody');
+            body.addEventListener('change', e => {
+                if (e.target.classList.contains('status-select')) changeStatus(e.target);
+            });
+            body.addEventListener('click', e => {
+                const clamp = e.target.closest('.clamp');
+                if (clamp) { clamp.classList.toggle('expanded'); return; }
+                const btn = e.target.closest('button[data-action]');
+                if (!btn) return;
+                const action = btn.dataset.action;
+                if (action === 'edit') openModal(btn.dataset.id);
+                else if (action === 'delete') deleteItem(btn.dataset.id);
+                else if (action === 'add') openModal();
+                else if (action === 'retry') loadItems();
+                else if (action === 'clear-filters') clearFilters();
+            });
+
+            $('addBtn').addEventListener('click', () => openModal());
+            $('refreshBtn').addEventListener('click', loadItems);
+            $('itemForm').addEventListener('submit', submitForm);
+            $('cancelBtn').addEventListener('click', closeModal);
+            $('modalCloseBtn').addEventListener('click', closeModal);
+            $('deleteBtn').addEventListener('click', async () => {
+                if (await deleteItem(editingId)) closeModal();
+            });
+            $('itemModal').addEventListener('click', e => { if (e.target.id === 'itemModal') closeModal(); });
+            document.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && $('itemModal').classList.contains('active')) closeModal();
+            });
+
+            loadItems();
+        }
+
+        function clearFilters() {
+            filters = { app: 'all', status: 'open', priority: 'all', search: '' };
+            syncFilterControls();
+            saveFilters();
+            render();
+        }
+
+        init();
+    </script>
+</body>
+</html>

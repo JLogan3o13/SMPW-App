@@ -2,7 +2,7 @@ Outbound:
 	1. .\ConvertKML2GeoJSon.ps1 -KmlPath <path to KML> -OutputPath ".\out.geojson"
 		Produces Out.getjson file
 	
-	2. .\ConvertGeoJSON.ps1 -GeoJsonPath ".\out.geojson" -AttributeName "Route1Geometry" -FeatureIndex 0 > Route1Geometry.json
+	2. .\ConvertGeoJSON.ps1 -GeoJsonPath ".\out.geojson" -AttributeName "Route1Geometry" -FeatureIndex 0 -OutputPath Route1Geometry.json
 		Produces Route1Geometry json file
 	
 	3. .\ConvertCoordsToWaypoints.ps1 -InputFile <path to json>
