@@ -1,0 +1,571 @@
+﻿    "Route1ReturnInstructions": {
+        "L": [
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on Lee Way."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.179527"
+                                    },
+                                    {
+                                        "N": "36.092888"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "268"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Lee Way"
+                    },
+                    "distance": {
+                        "N": "41.5"
+                    },
+                    "duration": {
+                        "N": "3.5"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Frank Sinatra Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.179985"
+                                    },
+                                    {
+                                        "N": "36.092899"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "272"
+                            },
+                            "bearing_after": {
+                                "N": "356"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Frank Sinatra Drive"
+                    },
+                    "distance": {
+                        "N": "20.0"
+                    },
+                    "duration": {
+                        "N": "1.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive north on Frank Sinatra Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.180003"
+                                    },
+                                    {
+                                        "N": "36.093078"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "356"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Frank Sinatra Drive"
+                    },
+                    "distance": {
+                        "N": "462.0"
+                    },
+                    "duration": {
+                        "N": "38.5"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto East Reno Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.179987"
+                                    },
+                                    {
+                                        "N": "36.097229"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "6"
+                            },
+                            "bearing_after": {
+                                "N": "87"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "East Reno Avenue"
+                    },
+                    "distance": {
+                        "N": "20.0"
+                    },
+                    "duration": {
+                        "N": "1.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive east on East Reno Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.179765"
+                                    },
+                                    {
+                                        "N": "36.097241"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "86"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "East Reno Avenue"
+                    },
+                    "distance": {
+                        "N": "595.1"
+                    },
+                    "duration": {
+                        "N": "49.6"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto Las Vegas Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.17315"
+                                    },
+                                    {
+                                        "N": "36.09725"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "87"
+                            },
+                            "bearing_after": {
+                                "N": "178"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Las Vegas Boulevard"
+                    },
+                    "distance": {
+                        "N": "20.0"
+                    },
+                    "duration": {
+                        "N": "1.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on Las Vegas Boulevard."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173144"
+                                    },
+                                    {
+                                        "N": "36.09707"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "178"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "Las Vegas Boulevard"
+                    },
+                    "distance": {
+                        "N": "1205.3"
+                    },
+                    "duration": {
+                        "N": "100.4"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173115"
+                                    },
+                                    {
+                                        "N": "36.086235"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "180"
+                            },
+                            "bearing_after": {
+                                "N": "270"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "20.0"
+                    },
+                    "duration": {
+                        "N": "1.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on West Russell Road."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.173331"
+                                    },
+                                    {
+                                        "N": "36.086204"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "272"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Russell Road"
+                    },
+                    "distance": {
+                        "N": "5472.9"
+                    },
+                    "duration": {
+                        "N": "456.1"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn left onto South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234132"
+                                    },
+                                    {
+                                        "N": "36.085252"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "267"
+                            },
+                            "bearing_after": {
+                                "N": "177"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "20.0"
+                    },
+                    "duration": {
+                        "N": "1.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive south on South Torrey Pines Drive."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.234133"
+                                    },
+                                    {
+                                        "N": "36.085072"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "180"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "South Torrey Pines Drive"
+                    },
+                    "distance": {
+                        "N": "781.9"
+                    },
+                    "duration": {
+                        "N": "65.2"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Turn right onto West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.23374"
+                                    },
+                                    {
+                                        "N": "36.078049"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "177"
+                            },
+                            "bearing_after": {
+                                "N": "264"
+                            },
+                            "modifier": {
+                                "S": "right"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "20.0"
+                    },
+                    "duration": {
+                        "N": "1.7"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Drive west on West Patrick Lane."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "depart"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.233952"
+                                    },
+                                    {
+                                        "N": "36.07802"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "268"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Patrick Lane"
+                    },
+                    "distance": {
+                        "N": "562.2"
+                    },
+                    "duration": {
+                        "N": "46.9"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "instruction": {
+                        "S": "Your destination is on the left."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "arrive"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.23994"
+                                    },
+                                    {
+                                        "N": "36.077669"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "222"
+                            },
+                            "bearing_after": {
+                                "N": "0"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": ""
+                    },
+                    "distance": {
+                        "N": "0.0"
+                    },
+                    "duration": {
+                        "N": "0.0"
+                    }
+                }
+            }
+        ]
+    }
