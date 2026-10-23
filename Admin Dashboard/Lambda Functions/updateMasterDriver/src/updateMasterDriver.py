@@ -4,6 +4,11 @@ import boto3
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('MasterDrivers')
 
+
+def build_display_name(first, last):
+    """Single source of truth for a driver's display name: 'First Last'."""
+    return f"{(first or '').strip()} {(last or '').strip()}".strip()
+
 def lambda_handler(event, context):
     try:
         # Parse the request body
@@ -14,10 +19,22 @@ def lambda_handler(event, context):
 
         driver_id = body['driverId']
 
+        # Reject blank names instead of saving a nameless driver
+        if not build_display_name(body.get('firstName'), body.get('lastName')):
+            return {
+                'statusCode': 400,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*'
+                },
+                'body': json.dumps({'error': 'firstName and lastName are required'})
+            }
+
         # Core fields always present
         set_parts = [
             'firstName = :firstName',
             'lastName = :lastName',
+            '#name = :name',
             'phoneNumber = :phoneNumber',
             'make = :make',
             'model = :model',
@@ -25,8 +42,10 @@ def lambda_handler(event, context):
         ]
 
         expression_values = {
-            ':firstName':   body['firstName'],
-            ':lastName':    body['lastName'],
+            ':firstName':   body['firstName'].strip(),
+            ':lastName':    body['lastName'].strip(),
+            # Recomputed on every edit so it can never go stale
+            ':name':        build_display_name(body['firstName'], body['lastName']),
             ':phoneNumber': body['phoneNumber'],
             ':make':        body['make'],
             ':model':       body['model'],
@@ -53,6 +72,7 @@ def lambda_handler(event, context):
         response = table.update_item(
             Key={'driverId': driver_id},
             UpdateExpression=update_expression,
+            ExpressionAttributeNames={'#name': 'name'},  # 'name' is a DynamoDB reserved word
             ExpressionAttributeValues=expression_values,
             ReturnValues='ALL_NEW'
         )

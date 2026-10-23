@@ -126,7 +126,7 @@
 
         /* Table */
         .table-container { padding: 20px 30px 30px; overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 1100px; }
+        table { width: 100%; border-collapse: collapse; min-width: 1240px; }
         th {
             background-color: #f8f9fa;
             text-align: left;
@@ -166,6 +166,7 @@
         .col-id { width: 100px; }
         .col-name { width: 200px; font-weight: 600; }
         .col-priority { width: 95px; }
+        .col-event { width: 120px; }
         .col-status { width: 190px; }
         .col-completed { width: 115px; white-space: nowrap; }
         .col-actions { width: 130px; }
@@ -192,6 +193,8 @@
         }
         .app-MAP { background-color: #e7f3ff; color: #0058b0; }
         .app-ADMIN { background-color: #fff4e6; color: #a35200; }
+        .app-BOTH { background-color: #e6f6f4; color: #0f6b62; }
+        .event-tag { display: inline-block; padding: 3px 9px; border-radius: 4px; background: #f3f4f6; color: #374151; font-size: 12px; font-weight: 500; white-space: nowrap; }
 
         .priority { font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
         .priority::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
@@ -347,9 +350,14 @@
                 <label for="appFilter">App</label>
                 <select id="appFilter">
                     <option value="all">All apps</option>
-                    <option value="MAP">Map app</option>
-                    <option value="ADMIN">Admin app</option>
+                    <option value="MAP">Map app (incl. Both)</option>
+                    <option value="ADMIN">Admin app (incl. Both)</option>
+                    <option value="BOTH">Both only</option>
                 </select>
+            </div>
+            <div class="filter-group">
+                <label for="eventFilter">Event</label>
+                <select id="eventFilter"></select>
             </div>
             <div class="filter-group">
                 <label for="statusFilter">Status</label>
@@ -379,6 +387,7 @@
                         <th class="col-id"><button type="button" data-sort="itemId">ID<span class="sort-indicator"></span></button></th>
                         <th class="col-name"><button type="button" data-sort="name">Name<span class="sort-indicator"></span></button></th>
                         <th><span>Description</span></th>
+                        <th class="col-event"><button type="button" data-sort="event">Event<span class="sort-indicator"></span></button></th>
                         <th class="col-priority"><button type="button" data-sort="priority">Priority<span class="sort-indicator"></span></button></th>
                         <th class="col-status"><button type="button" data-sort="status">Status<span class="sort-indicator"></span></button></th>
                         <th class="col-completed"><button type="button" data-sort="dateCompleted">Completed<span class="sort-indicator"></span></button></th>
@@ -408,15 +417,12 @@
                             <select id="fApp">
                                 <option value="MAP">Map app</option>
                                 <option value="ADMIN">Admin app</option>
+                                <option value="BOTH">Both</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="fPriority">Priority</label>
-                            <select id="fPriority">
-                                <option value="High">High</option>
-                                <option value="Medium" selected>Medium</option>
-                                <option value="Low">Low</option>
-                            </select>
+                            <label for="fEvent">Event</label>
+                            <select id="fEvent"></select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -427,9 +433,19 @@
                         <label for="fDescription">Description <span class="hint">What needs to be done and why</span></label>
                         <textarea id="fDescription" maxlength="4000"></textarea>
                     </div>
-                    <div class="form-group">
-                        <label for="fStatus">Status</label>
-                        <select id="fStatus"></select>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fPriority">Priority</label>
+                            <select id="fPriority">
+                                <option value="High">High</option>
+                                <option value="Medium" selected>Medium</option>
+                                <option value="Low">Low</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="fStatus">Status</label>
+                            <select id="fStatus"></select>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="fNotes">Notes <span class="hint">Progress updates, who reported it, links</span></label>
@@ -467,13 +483,16 @@
             'Not Planned': 's-notplanned'
         };
         const PRIORITY_RANK = { High: 0, Medium: 1, Low: 2 };
-        const APP_RANK = { MAP: 0, ADMIN: 1 };
+        const APP_RANK = { MAP: 0, ADMIN: 1, BOTH: 2 };
+        const EVENTS = ['Raiders Games', 'Formula 1', 'General'];
+        const DEFAULT_EVENT = 'General';
+        const eventOf = (item) => item.event || DEFAULT_EVENT;
         const FILTER_STORAGE_KEY = 'backlogFilters';
 
         let items = [];
         let loadState = 'loading'; // loading | ready | error
         let loadError = '';
-        let filters = { app: 'all', status: 'open', priority: 'all', search: '' };
+        let filters = { app: 'all', event: 'all', status: 'open', priority: 'all', search: '' };
         let sort = { key: 'itemId', dir: 1 };
         let editingId = null;
         let lastFocused = null;
@@ -549,7 +568,10 @@
 
         // ------------------------ Filter & sort ---------------------------
         function matchesFilters(item, ignoreStatus = false) {
-            if (filters.app !== 'all' && item.app !== filters.app) return false;
+            // Map and Admin filters also include items that affect both apps
+            if (filters.app === 'BOTH' && item.app !== 'BOTH') return false;
+            if ((filters.app === 'MAP' || filters.app === 'ADMIN') && item.app !== filters.app && item.app !== 'BOTH') return false;
+            if (filters.event !== 'all' && eventOf(item) !== filters.event) return false;
             if (filters.priority !== 'all' && item.priority !== filters.priority) return false;
             if (!ignoreStatus) {
                 if (filters.status === 'open' && CLOSED_STATUSES.includes(item.status)) return false;
@@ -557,7 +579,7 @@
             }
             if (filters.search) {
                 const q = filters.search.toLowerCase();
-                const haystack = [item.itemId, item.name, item.description, item.notes].join(' ').toLowerCase();
+                const haystack = [item.itemId, item.name, item.description, item.notes, eventOf(item)].join(' ').toLowerCase();
                 if (!haystack.includes(q)) return false;
             }
             return true;
@@ -574,6 +596,9 @@
                     break;
                 case 'status':
                     result = STATUSES.indexOf(a.status) - STATUSES.indexOf(b.status);
+                    break;
+                case 'event':
+                    result = EVENTS.indexOf(eventOf(a)) - EVENTS.indexOf(eventOf(b));
                     break;
                 case 'dateCompleted':
                     // Items with no completed date always sort last
@@ -599,7 +624,7 @@
             renderStats();
             renderTable();
             renderSortIndicators();
-            const active = filters.app !== 'all' || filters.status !== 'open' ||
+            const active = filters.app !== 'all' || filters.event !== 'all' || filters.status !== 'open' ||
                            filters.priority !== 'all' || filters.search !== '';
             $('clearFiltersBtn').hidden = !active;
         }
@@ -630,12 +655,12 @@
             const body = $('tableBody');
 
             if (loadState === 'loading') {
-                body.innerHTML = `<tr class="state-row"><td colspan="8"><p>Loading the backlog…</p></td></tr>`;
+                body.innerHTML = `<tr class="state-row"><td colspan="9"><p>Loading the backlog…</p></td></tr>`;
                 $('resultCount').textContent = '';
                 return;
             }
             if (loadState === 'error') {
-                body.innerHTML = `<tr class="state-row error"><td colspan="8">
+                body.innerHTML = `<tr class="state-row error"><td colspan="9">
                     <p>The backlog didn't load: ${escapeHtml(loadError)}</p>
                     <p>Check that the API_BASE_URL setting in backlog.html points to your API Gateway stage, then try again.</p>
                     <button type="button" class="btn btn-success" data-action="retry">Try again</button>
@@ -648,14 +673,14 @@
             $('resultCount').textContent = `Showing ${visible.length} of ${items.length} item${items.length === 1 ? '' : 's'}`;
 
             if (items.length === 0) {
-                body.innerHTML = `<tr class="state-row"><td colspan="8">
+                body.innerHTML = `<tr class="state-row"><td colspan="9">
                     <p>No backlog items yet. Add the first one from volunteer feedback.</p>
                     <button type="button" class="btn btn-success" data-action="add">+ Add item</button>
                 </td></tr>`;
                 return;
             }
             if (visible.length === 0) {
-                body.innerHTML = `<tr class="state-row"><td colspan="8">
+                body.innerHTML = `<tr class="state-row"><td colspan="9">
                     <p>No items match these filters.</p>
                     <button type="button" class="btn btn-outline" data-action="clear-filters">Clear filters</button>
                 </td></tr>`;
@@ -678,6 +703,7 @@
                     <td class="col-id"><span class="id-badge app-${escapeHtml(item.app)}">${id}</span></td>
                     <td class="col-name">${escapeHtml(item.name)}</td>
                     <td>${desc}</td>
+                    <td class="col-event"><span class="event-tag">${escapeHtml(eventOf(item))}</span></td>
                     <td class="col-priority"><span class="priority p-${escapeHtml(item.priority)}">${escapeHtml(item.priority)}</span></td>
                     <td class="col-status">
                         <select class="status-select ${STATUS_CLASS[item.status] || ''}" data-id="${id}"
@@ -707,6 +733,7 @@
         function syncFilterControls() {
             $('appFilter').value = filters.app;
             $('statusFilter').value = filters.status;
+            $('eventFilter').value = filters.event;
             $('priorityFilter').value = filters.priority;
             $('searchInput').value = filters.search;
         }
@@ -771,6 +798,7 @@
 
             $('fApp').value = item?.app || (filters.app !== 'all' ? filters.app : 'MAP');
             $('fApp').disabled = editing; // ID depends on the app, so it's fixed after creation
+            $('fEvent').value = item ? eventOf(item) : (filters.event !== 'all' ? filters.event : DEFAULT_EVENT);
             $('fPriority').value = item?.priority || 'Medium';
             $('fName').value = item?.name || '';
             $('fDescription').value = item?.description || '';
@@ -817,6 +845,7 @@
                 name,
                 description: $('fDescription').value.trim(),
                 priority: $('fPriority').value,
+                event: $('fEvent').value,
                 status: $('fStatus').value,
                 notes: $('fNotes').value.trim()
             };
@@ -849,15 +878,19 @@
         // ------------------------ Event wiring ----------------------------
         function init() {
             $('statusFilter').innerHTML =
-                `<option value="all">All statuses</option><option value="open">Open (not completed or not planned)</option>` +
+                `<option value="all">All statuses</option><option value="open">Open</option>` +
                 STATUSES.map(s => `<option value="${s}">${s}</option>`).join('');
             $('fStatus').innerHTML = statusOptions('Under Review');
+            $('eventFilter').innerHTML = `<option value="all">All events</option>` +
+                EVENTS.map(e => `<option value="${e}">${e}</option>`).join('');
+            $('fEvent').innerHTML = EVENTS.map(e => `<option value="${e}">${e}</option>`).join('');
 
             restoreFilters();
             syncFilterControls();
 
             $('appFilter').addEventListener('change', e => { filters.app = e.target.value; saveFilters(); render(); });
             $('statusFilter').addEventListener('change', e => { filters.status = e.target.value; saveFilters(); render(); });
+            $('eventFilter').addEventListener('change', e => { filters.event = e.target.value; saveFilters(); render(); });
             $('priorityFilter').addEventListener('change', e => { filters.priority = e.target.value; saveFilters(); render(); });
             $('searchInput').addEventListener('input', e => { filters.search = e.target.value.trim(); render(); });
 
@@ -914,7 +947,7 @@
         }
 
         function clearFilters() {
-            filters = { app: 'all', status: 'open', priority: 'all', search: '' };
+            filters = { app: 'all', event: 'all', status: 'open', priority: 'all', search: '' };
             syncFilterControls();
             saveFilters();
             render();

@@ -5,6 +5,22 @@ from decimal import Decimal
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table('ZoneTotals')
 
+# Standard zones, always returned (with zeros when there's no activity yet).
+# Overflow zones (<Zone><Sub-zone>Z, e.g. B1Z) are listed at the end of their parent zone.
+# Any other zone found in the table for the date is also returned, after these,
+# so a new zone shows up without editing this list.
+ALL_ZONES = [
+    'A1', 'A2', 'A3',
+    'B1', 'B2', 'B3', 'B4', 'B5', 'B1Z',
+    'C1', 'C2', 'C3', 'C4', 'C2Z', 'C4Z',
+    'D1', 'D2', 'D3', 'D4', 'D5', 'D3Z',
+    'E1', 'E2', 'E3', 'E4', 'E5Z', 'E6Z', 'E7Z',
+    'F1', 'F2', 'F3', 'F4', 'F5Z',
+]
+
+# Zones that are no longer used and should never be returned
+RETIRED_ZONES = {'Z'}
+
 class DecimalEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Decimal):
@@ -39,32 +55,32 @@ def lambda_handler(event, context):
         
         # Query all zones for this event date (note: EventDate is capitalized)
         try:
-            response = table.query(
-                KeyConditionExpression='EventDate = :date',
-                ExpressionAttributeValues={
-                    ':date': event_date
-                }
-            )
-            zone_totals = response.get('Items', [])
+            query_kwargs = {
+                'KeyConditionExpression': 'EventDate = :date',
+                'ExpressionAttributeValues': {':date': event_date}
+            }
+            zone_totals = []
+            while True:
+                response = table.query(**query_kwargs)
+                zone_totals.extend(response.get('Items', []))
+                if 'LastEvaluatedKey' not in response:
+                    break
+                query_kwargs['ExclusiveStartKey'] = response['LastEvaluatedKey']
             print(f"Found {len(zone_totals)} zone totals in database")
         except Exception as e:
             print(f"Error querying table: {str(e)}")
             zone_totals = []
         
-        # Create a result with all sub-zones plus Z overflow
-        all_zones = [
-            'A1', 'A2', 'A3',
-            'B1', 'B2', 'B3', 'B4', 'B5',
-            'C1', 'C2', 'C3', 'C4',
-            'D1', 'D2', 'D3', 'D4', 'D5',
-            'E1', 'E2', 'E3', 'E4',
-            'F1', 'F2', 'F3', 'F4',
-            'Z'
-        ]
-        zone_map = {zt['zone']: zt for zt in zone_totals}
+        zone_map = {zt['zone']: zt for zt in zone_totals if zt.get('zone')}
+
+        # Standard zones first, then any other (non-retired) zones found in the table
+        extra_zones = sorted(z for z in zone_map if z not in ALL_ZONES and z not in RETIRED_ZONES)
+        zones_to_return = ALL_ZONES + extra_zones
+        if extra_zones:
+            print(f"Including zones not in standard list: {extra_zones}")
         
         result = []
-        for zone in all_zones:
+        for zone in zones_to_return:
             if zone in zone_map:
                 zone_data = zone_map[zone]
                 result.append({

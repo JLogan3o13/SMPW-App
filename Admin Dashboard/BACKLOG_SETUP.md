@@ -10,7 +10,7 @@ Three pieces go into AWS (region **us-west-1**, same as your other APIs): a Dyna
 4. Table settings → **Customize settings** → Capacity mode: **On-demand**. A backlog this size will cost pennies, if anything.
 5. Create the table.
 
-You don't need to add any data. The Lambda creates two counter records (`COUNTER#MAP` and `COUNTER#ADMIN`) the first time an item is added for each app. Leave those records alone, because they're how the next ID number is chosen. The dashboard hides them.
+You don't need to add any data. The Lambda creates a counter record (`COUNTER#MAP`, `COUNTER#ADMIN`, or `COUNTER#BOTH`) the first time an item is added for each app. Leave those records alone, because they're how the next ID number is chosen. The dashboard hides them.
 
 ## 2. Create the Lambda function
 
@@ -70,7 +70,9 @@ The Lambda answers CORS preflight (OPTIONS) requests itself, so you don't need t
 
 ## How the page works
 
-- **IDs** are generated automatically when an item is added: `MAP-001`, `MAP-002`, `ADMIN-001`, and so on. The app can't be changed after creation because the ID depends on it.
+- **IDs** are generated automatically when an item is added: `MAP-001`, `ADMIN-001`, `BOTH-001`, and so on. Use **Both** for work that affects the map and admin apps, rather than creating two items. The app can't be changed after creation because the ID depends on it.
+- **App filter**: Map app and Admin app each include Both items, since that work affects them too. Choose **Both only** to see just the shared items.
+- **Event** marks which event the work matters for: Raiders Games, Formula 1, or General. Items created before this field existed show as General.
 - **Status** changes save as soon as you pick a new value in the table's dropdown.
 - **Completed date** fills in automatically the first time an item is set to Completed. If the item is later moved back to another status, the date clears. If it's completed again, it gets a new date.
 - **The default view is Open**, meaning everything except Completed and Not Planned. The status chips across the top double as filters: click Completed to review finished work, or All items to see everything. The page remembers the filters you last used in each browser.
@@ -82,12 +84,12 @@ The Lambda answers CORS preflight (OPTIONS) requests itself, so you don't need t
 | Method | Path | Body | Result |
 |---|---|---|---|
 | GET | `/backlog` | | All items |
-| POST | `/backlog` | `app` (MAP or ADMIN), `name` (required), `description`, `status`, `priority`, `notes` | The new item, with its ID |
+| POST | `/backlog` | `app` (MAP, ADMIN, or BOTH), `name` (required), `description`, `status`, `priority`, `event`, `notes` | The new item, with its ID |
 | GET | `/backlog/{itemId}` | | One item |
-| PUT | `/backlog/{itemId}` | Any of: `name`, `description`, `status`, `priority`, `notes` | The updated item |
+| PUT | `/backlog/{itemId}` | Any of: `name`, `description`, `status`, `priority`, `event`, `notes` | The updated item |
 | DELETE | `/backlog/{itemId}` | | `{"deleted": "MAP-001"}` |
 
-Allowed status values are `Under Review`, `In Development`, `Completed`, `Delayed`, `Future Enhancement`, and `Not Planned`. Allowed priority values are `High`, `Medium`, and `Low`. New items default to Under Review and Medium.
+Allowed status values are `Under Review`, `In Development`, `Completed`, `Delayed`, `Future Enhancement`, and `Not Planned`. Allowed priority values are `High`, `Medium`, and `Low`. Allowed event values are `Raiders Games`, `Formula 1`, and `General`. New items default to Under Review, Medium, and General.
 
 ## Optional: require an API key
 

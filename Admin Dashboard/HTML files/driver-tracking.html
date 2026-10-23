@@ -736,6 +736,28 @@
         };
         const EVENT_DATE = getLocalDate();
 
+        // Zone structure — single source of truth for this page.
+        // Overflow zones (<Zone><Sub-zone>Z, e.g. B1Z) are listed at the end of their parent zone.
+        const ZONE_GROUPS = [
+            { letter: 'A', subzones: ['A1', 'A2', 'A3'] },
+            { letter: 'B', subzones: ['B1', 'B2', 'B3', 'B4', 'B5', 'B1Z'] },
+            { letter: 'C', subzones: ['C1', 'C2', 'C3', 'C4', 'C2Z', 'C4Z'] },
+            { letter: 'D', subzones: ['D1', 'D2', 'D3', 'D4', 'D5', 'D3Z'] },
+            { letter: 'E', subzones: ['E1', 'E2', 'E3', 'E4', 'E5Z', 'E6Z', 'E7Z'] },
+            { letter: 'F', subzones: ['F1', 'F2', 'F3', 'F4', 'F5Z'] },
+        ];
+        const ZONE_ORDER = ZONE_GROUPS.flatMap(g => g.subzones);
+
+        // Orders zones the same way as the list above (overflow zones last within each zone).
+        // Blank zones sort first; any zone not in the list sorts after known zones, alphabetically.
+        function compareZones(a, b) {
+            const za = (a || '').toString().trim().toUpperCase();
+            const zb = (b || '').toString().trim().toUpperCase();
+            const rank = z => z === '' ? -1 : (ZONE_ORDER.indexOf(z) === -1 ? ZONE_ORDER.length : ZONE_ORDER.indexOf(z));
+            const diff = rank(za) - rank(zb);
+            return diff !== 0 ? diff : za.localeCompare(zb);
+        }
+
         let drivers = [];
         let masterDriverMap = {}; // keyed by driverId, holds phoneNumber, firstName, lastName
         let editingCell = null;
@@ -872,6 +894,11 @@
                 valueA = parseInt(valueA) || 0;
                 valueB = parseInt(valueB) || 0;
                 return direction === 'asc' ? valueA - valueB : valueB - valueA;
+            }
+            
+            // Handle zone column (overflow zones last within each zone)
+            if (column === 'zone') {
+                return direction === 'asc' ? compareZones(valueA, valueB) : compareZones(valueB, valueA);
             }
             
             // Handle string columns
@@ -1230,23 +1257,14 @@
                     </select>
                 `;
             } else if (field === 'zone') {
-                const zoneGroups = [
-                    { letter: 'A', subzones: ['A1', 'A2', 'A3'] },
-                    { letter: 'B', subzones: ['B1', 'B2', 'B3', 'B4', 'B5'] },
-                    { letter: 'C', subzones: ['C1', 'C2', 'C3', 'C4'] },
-                    { letter: 'D', subzones: ['D1', 'D2', 'D3', 'D4', 'D5'] },
-                    { letter: 'E', subzones: ['E1', 'E2', 'E3', 'E4'] },
-                    { letter: 'F', subzones: ['F1', 'F2', 'F3', 'F4'] },
-                ];
                 let options = '<option value="">Not assigned</option>';
-                zoneGroups.forEach(group => {
+                ZONE_GROUPS.forEach(group => {
                     options += `<optgroup label="Zone ${group.letter}">`;
                     group.subzones.forEach(zone => {
                         options += `<option value="${zone}" ${currentValue === zone ? 'selected' : ''}>${zone}</option>`;
                     });
                     options += '</optgroup>';
                 });
-                options += `<option value="Z" ${currentValue === 'Z' ? 'selected' : ''}>Z (Overflow)</option>`;
                 cell.innerHTML = `<select onchange="updateValue(this, '${driverId}', '${field}')">${options}</select>`;
             } else {
                 const inputType = (field === 'passengers' || field === 'carNumber') ? 'number' : 'text';
@@ -1353,8 +1371,8 @@
                 zoneCapacities[zone] += driver.seatCapacity;
             });
             
-            // Sort zones alphabetically
-            const sortedZones = Object.keys(zoneCapacities).sort();
+            // Sort zones in standard zone order (overflow zones last within each zone)
+            const sortedZones = Object.keys(zoneCapacities).sort(compareZones);
             
             // Update the zone capacity display
             const zoneCapacityGrid = document.getElementById('zone-capacity-grid');

@@ -497,23 +497,9 @@
             padding-left: 50px;
         }
 
-        .zone-standalone {
-            padding: 0 30px 30px;
-        }
-
-        .zone-standalone-label {
-            font-size: 13px;
-            font-weight: 600;
-            color: #888;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-        }
-
         @media (max-width: 768px) {
             .zone-groups { padding: 16px; }
             .group-grid  { padding-left: 0; grid-template-columns: 1fr 1fr; }
-            .zone-standalone { padding: 0 16px 24px; }
         }
     </style>
 </head>
@@ -556,11 +542,6 @@
             <!-- Group sections will be populated here -->
         </div>
 
-        <div class="zone-standalone" id="zone-standalone" style="display:none;">
-            <div class="zone-standalone-label">⚡ Overflow</div>
-            <div id="zone-z-card"></div>
-        </div>
-
         <div class="last-updated">
             Last updated: <span id="last-updated-time">--</span>
         </div>
@@ -582,15 +563,16 @@
 
         // Zone structure — single source of truth for this page
         const ZONE_GROUPS = [
+            // Overflow zones (<Zone><Sub-zone>Z, e.g. B1Z) are listed at the end of their parent zone
             { letter: 'A', subzones: ['A1', 'A2', 'A3'] },
-            { letter: 'B', subzones: ['B1', 'B2', 'B3', 'B4', 'B5'] },
-            { letter: 'C', subzones: ['C1', 'C2', 'C3', 'C4'] },
-            { letter: 'D', subzones: ['D1', 'D2', 'D3', 'D4', 'D5'] },
-            { letter: 'E', subzones: ['E1', 'E2', 'E3', 'E4'] },
-            { letter: 'F', subzones: ['F1', 'F2', 'F3', 'F4'] },
+            { letter: 'B', subzones: ['B1', 'B2', 'B3', 'B4', 'B5', 'B1Z'] },
+            { letter: 'C', subzones: ['C1', 'C2', 'C3', 'C4', 'C2Z', 'C4Z'] },
+            { letter: 'D', subzones: ['D1', 'D2', 'D3', 'D4', 'D5', 'D3Z'] },
+            { letter: 'E', subzones: ['E1', 'E2', 'E3', 'E4', 'E5Z', 'E6Z', 'E7Z'] },
+            { letter: 'F', subzones: ['F1', 'F2', 'F3', 'F4', 'F5Z'] },
         ];
         const ALL_SUBZONES = ZONE_GROUPS.flatMap(g => g.subzones);
-        const ALL_ZONES = [...ALL_SUBZONES, 'Z'];
+        const ALL_ZONES = ALL_SUBZONES;
 
         let zoneTotals = [];
         let drivers = [];
@@ -677,8 +659,6 @@
             zoneTotals.forEach(z => { zoneTotalsMap[z.zone] = z; });
 
             const zoneGroupsEl  = document.getElementById('zone-groups');
-            const zoneStandalone = document.getElementById('zone-standalone');
-            const zoneZCard     = document.getElementById('zone-z-card');
             zoneGroupsEl.innerHTML = '';
 
             let totalPassengers = 0;
@@ -686,7 +666,7 @@
             let totalPickedUp   = 0;
             let activeZones     = 0;
 
-            // Accumulate overall stats across all zones including Z
+            // Accumulate overall stats across all zones
             ALL_ZONES.forEach(zone => {
                 const zd = zoneTotalsMap[zone];
                 if (zd) {
@@ -730,15 +710,6 @@
                 `;
                 zoneGroupsEl.appendChild(section);
             });
-
-            // Render Z (overflow) as standalone card at bottom
-            const zData = zoneTotalsMap['Z'];
-            if (zData || stagedByZone['Z'] > 0) {
-                zoneZCard.innerHTML = buildZoneCard('Z (Overflow)', zData, stagedByZone['Z'] || 0);
-                zoneStandalone.style.display = 'block';
-            } else {
-                zoneStandalone.style.display = 'none';
-            }
 
             // Update summary stats
             document.getElementById('total-passengers').textContent = totalPassengers;

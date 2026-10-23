@@ -420,13 +420,15 @@
                 // Clear existing options
                 zoneSelect.innerHTML = '<option value="">-- Choose a Zone --</option>';
                 
-                // Add zones to dropdown
-                data.zones.forEach(zone => {
-                    const option = document.createElement('option');
-                    option.value = zone;
-                    option.textContent = `Zone ${zone}`;
-                    zoneSelect.appendChild(option);
-                });
+                // Add zones to dropdown (Zone Z is retired and excluded)
+                data.zones
+                    .filter(zone => String(zone).trim().toUpperCase() !== 'Z')
+                    .forEach(zone => {
+                        const option = document.createElement('option');
+                        option.value = zone;
+                        option.textContent = `Zone ${zone}`;
+                        zoneSelect.appendChild(option);
+                    });
                 
                 hideLoading();
                 

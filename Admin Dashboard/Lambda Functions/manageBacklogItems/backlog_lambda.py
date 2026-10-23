@@ -3,13 +3,13 @@ manageBacklogItems - Lambda handler for the admin Backlog dashboard.
 
 Routes (API Gateway REST API, Lambda proxy integration):
     GET    /backlog              -> list all backlog items
-    POST   /backlog              -> create an item (ID is generated: MAP-001, ADMIN-001, ...)
+    POST   /backlog              -> create an item (ID is generated: MAP-001, ADMIN-001, BOTH-001, ...)
     GET    /backlog/{itemId}     -> get one item
-    PUT    /backlog/{itemId}     -> update name/description/status/priority/notes
+    PUT    /backlog/{itemId}     -> update name/description/status/priority/event/notes
     DELETE /backlog/{itemId}     -> delete an item
 
 DynamoDB table: BacklogItems (partition key: itemId, String)
-    Counter records "COUNTER#MAP" and "COUNTER#ADMIN" live in the same table
+    Counter records "COUNTER#MAP", "COUNTER#ADMIN" and "COUNTER#BOTH" live in the same table
     and hold the last number issued for each app. They are hidden from the list.
 """
 
@@ -26,13 +26,15 @@ TABLE_NAME = os.environ.get('TABLE_NAME', 'BacklogItems')
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(TABLE_NAME)
 
-APPS = ('MAP', 'ADMIN')
+APPS = ('MAP', 'ADMIN', 'BOTH')
 STATUSES = ('Under Review', 'In Development', 'Completed', 'Delayed', 'Future Enhancement', 'Not Planned')
 PRIORITIES = ('High', 'Medium', 'Low')
+EVENTS = ('Raiders Games', 'Formula 1', 'General')
+DEFAULT_EVENT = 'General'
 COMPLETED = 'Completed'
 COUNTER_PREFIX = 'COUNTER#'
 
-EDITABLE_FIELDS = ('name', 'description', 'status', 'priority', 'notes')
+EDITABLE_FIELDS = ('name', 'description', 'status', 'priority', 'event', 'notes')
 MAX_LENGTHS = {'name': 200, 'description': 4000, 'notes': 4000}
 
 CORS_HEADERS = {
@@ -111,6 +113,8 @@ def clean_fields(data, creating):
             raise ValidationError(f'status must be one of: {", ".join(STATUSES)}')
         if field == 'priority' and value not in PRIORITIES:
             raise ValidationError(f'priority must be one of: {", ".join(PRIORITIES)}')
+        if field == 'event' and value not in EVENTS:
+            raise ValidationError(f'event must be one of: {", ".join(EVENTS)}')
         cleaned[field] = value
 
     if creating and not cleaned.get('name'):
@@ -123,6 +127,12 @@ def normalize_id(item_id):
     if not item_id or item_id.startswith(COUNTER_PREFIX):
         raise NotFoundError(f'Item {item_id} not found')
     return item_id
+
+
+def with_defaults(item):
+    """Items created before the Event field existed are treated as General."""
+    item.setdefault('event', DEFAULT_EVENT)
+    return item
 
 
 def sort_key(item):
@@ -139,7 +149,7 @@ def list_items():
     scan_kwargs = {}
     while True:
         resp = table.scan(**scan_kwargs)
-        items.extend(i for i in resp.get('Items', [])
+        items.extend(with_defaults(i) for i in resp.get('Items', [])
                      if not i.get('itemId', '').startswith(COUNTER_PREFIX))
         if 'LastEvaluatedKey' not in resp:
             break
@@ -153,7 +163,7 @@ def get_item(item_id):
     resp = table.get_item(Key={'itemId': item_id})
     if 'Item' not in resp:
         raise NotFoundError(f'Item {item_id} not found')
-    return respond(200, {'item': resp['Item']})
+    return respond(200, {'item': with_defaults(resp['Item'])})
 
 
 def next_number(app):
@@ -180,6 +190,7 @@ def create_item(data):
         'description': fields.get('description', ''),
         'status': fields.get('status', 'Under Review'),
         'priority': fields.get('priority', 'Medium'),
+        'event': fields.get('event', DEFAULT_EVENT),
         'notes': fields.get('notes', ''),
         'createdAt': timestamp,
         'updatedAt': timestamp,
@@ -244,7 +255,7 @@ def update_item(item_id, data):
             raise NotFoundError(f'Item {item_id} not found')
         raise
     print(f'Updated {item_id}: {list(fields)}')
-    return respond(200, {'item': resp['Attributes']})
+    return respond(200, {'item': with_defaults(resp['Attributes'])})
 
 
 def delete_item(item_id):
