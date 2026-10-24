@@ -842,7 +842,20 @@
         cruiseText = cruiseText.replace(/\.\s*$/, '') + ` to ${nextStep.name}.`;
       }
 
-      turnDistanceEl.textContent = 'Continue';
+      // Cruise-leg countdown: instead of a static "Continue", show how far
+      // it is (measured ALONG the route) to the point where this leg ends.
+      // While cruising, that's the NEXT step (the real upcoming turn). If
+      // tracking has already landed on a pending turn, it's that turn itself.
+      // Uses the same arc-length numbers and formatDistance() as the 800m
+      // countdown, so the hand-off at 800m is seamless. Falls back to
+      // "Continue" if the distance can't be worked out for any reason.
+      const legEndStep = currentIsCruising ? nextStep : currentStep;
+      const distToLegEnd = (legEndStep && typeof legEndStep._arcLength === 'number')
+        ? legEndStep._arcLength - currentArcLength
+        : null;
+      turnDistanceEl.textContent = (distToLegEnd !== null && distToLegEnd >= 0)
+        ? formatDistance(distToLegEnd)
+        : 'Continue';
       turnIconEl.textContent = safeCurrent.icon;
       turnTextEl.textContent = cruiseText;
       turnProgressEl.textContent = `Step ${currentStepIndex + 1} of ${currentInstructions.length}`;
