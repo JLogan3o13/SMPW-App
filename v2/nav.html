@@ -115,7 +115,8 @@
     .turn-distance{
       font-size: 18px;
       font-weight: 800;
-      opacity: 1.1;
+      line-height: 1.1;
+      opacity: 1;
       margin-bottom: 2px;
       letter-spacing: 0.3px;
     }
@@ -226,6 +227,37 @@
     .route-status-text{
       flex: 1;
     }
+    /* AUTO "BACK AT HUB" MESSAGE: no buttons, shows on its own and fades */
+    #hubToast{
+      position: fixed;
+      left: 12px; right: 12px;
+      bottom: 84px;
+      z-index: 13;
+      padding: 14px 16px;
+      border-radius: 14px;
+      background: rgba(22, 163, 74, 0.96);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      color: #fff;
+      font-size: 17px;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      pointer-events: none;
+    }
+    #hubToast.show{
+      opacity: 1;
+      transform: none;
+    }
+    #hubToast.warn{
+      background: rgba(217, 119, 6, 0.96);
+    }
+    @media (prefers-reduced-motion: reduce){
+      #hubToast{ transition: none; transform: none; }
+    }
   </style>
 </head>
 
@@ -254,6 +286,8 @@
 
   <div id="errorBanner"><span id="errorText"></span></div>
 
+  <div id="hubToast" role="status" aria-live="polite"></div>
+
   <div id="map"></div>
 
   <div id="topOverlay">
@@ -270,7 +304,7 @@
     <!-- Route Controls Overlay -->
     <div id="routeControls" class="route-controls">
       <div class="route-row">
-        <button id="btnToggleDir" class="route-btn primary" type="button">Return Route</button>
+        <button id="btnToggleDir" class="route-btn primary" type="button">Back to Form</button>
       </div>
       <div id="routeStatus" class="route-status">
         <span class="route-status-text">Loading route…</span>
@@ -293,6 +327,32 @@
     const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
 
     const HUB_ORIGIN = { lat: 36.07744, lng: -115.23981 };
+    // ── Auto "back at Hub" (return trips only) ──
+    // When a driver on the RETURN map parks in the Hub lot, the app sets their
+    // status on Driver Tracking to "Available" by itself. No button involved.
+    const HUB_AUTO_ARRIVAL_ENABLED = true;  // master on/off switch
+    const HUB_AUTO_ARRIVAL_MOCK = false;    // true = only log the change to the console, never send it (for testing)
+
+    // Hub parking lot corners (measured in Google Maps)
+    const HUB_LOT_NW = { lat: 36.07764, lng: -115.24017 };
+    const HUB_LOT_SE = { lat: 36.07711, lng: -115.23941 };
+    // Extra room for GPS drift, added on the south, east and west sides only.
+    // The north side gets none, so cars on W Patrick Ln stay outside the area.
+    const HUB_LOT_BUFFER_M = 15;
+
+    const HUB_ARM_DISTANCE_M = 500;            // car must first be at least this far from the lot
+    const HUB_ROUTE_END_STRETCH_M = 500;       // car must be in the last stretch of the return route:
+    const HUB_ROUTE_END_STRETCH_FRACTION = 0.10; //   the larger of 500 m or 10% of the route
+    const HUB_DWELL_MS = 20000;                // stopped/crawling inside the lot this long (20 s)
+    const HUB_SLOW_SPEED_MPS = 2.2;            // "crawling" = under ~5 mph
+    const HUB_MAX_ACCURACY_M = 30;             // ignore GPS readings less accurate than this
+    const HUB_REDIRECT_DELAY_MS = 4000;        // show the message this long, then go back to the form
+
+    // Same Driver Tracking API and car-number key that index.html uses
+    const OPERATIONS_API_URL = 'https://x6wxqzeqw9.execute-api.us-west-1.amazonaws.com/prod';
+    const CAR_NUMBER_STORAGE_KEY = 'lvt_carNumber';
+    // Only these statuses get changed. Anything else means Key Team set it; leave it alone.
+    const HUB_RETURN_STATUSES = ['Dropped Off', 'Picked Up', 'In Transit'];
 
     // Off-route tuning
     const OFF_ROUTE_THRESHOLD_M = 75;
@@ -407,7 +467,8 @@
     const ROUTE_LAYER_ID  = 'routeLineLayer';
 
     // Disable route buttons until loaded
-    btnToggleDir.disabled = true;
+    // Back to Form works even if the route fails to load.
+    btnToggleDir.disabled = false;
 
     /***************
      * HELPERS UI
@@ -467,7 +528,7 @@
     }
 
     function syncButtons(){
-      btnToggleDir.textContent = (currentDir === 'outbound') ? 'Return Route' : 'Outbound Route';
+      btnToggleDir.textContent = 'Back to Form';
     }
 
     function getGeometryForDir(){
@@ -842,13 +903,8 @@
         cruiseText = cruiseText.replace(/\.\s*$/, '') + ` to ${nextStep.name}.`;
       }
 
-      // Cruise-leg countdown: instead of a static "Continue", show how far
-      // it is (measured ALONG the route) to the point where this leg ends.
-      // While cruising, that's the NEXT step (the real upcoming turn). If
-      // tracking has already landed on a pending turn, it's that turn itself.
-      // Uses the same arc-length numbers and formatDistance() as the 800m
-      // countdown, so the hand-off at 800m is seamless. Falls back to
-      // "Continue" if the distance can't be worked out for any reason.
+      // Cruise-leg countdown: show distance (along the route) to the end of
+      // this leg instead of a static "Continue". Falls back to "Continue".
       const legEndStep = currentIsCruising ? nextStep : currentStep;
       const distToLegEnd = (legEndStep && typeof legEndStep._arcLength === 'number')
         ? legEndStep._arcLength - currentArcLength
@@ -1417,6 +1473,9 @@
 
       evaluateOffRoute();
       updateCurrentStep();
+      // Auto "back at Hub" check (return trips only). Wrapped so a problem
+      // here can never interrupt navigation.
+      try { checkHubArrival(pos); } catch (e) { console.warn('Hub arrival check failed', e); }
 
       if(followMode){
         map.easeTo({
@@ -1452,6 +1511,266 @@
         { enableHighAccuracy: true, maximumAge: 1000, timeout: 10000 }
       );
     }
+
+    /***************
+     * AUTO "BACK AT HUB"  (return trips only)
+     *
+     * Sets the driver's status to "Available" on Driver Tracking when ALL of
+     * these are true:
+     *   1. This is the RETURN map (the outbound map never checks).
+     *   2. The car has been at least 500 m from the lot during this trip.
+     *   3. The car is in the last stretch of the return route.
+     *   4. The car is inside the Hub lot rectangle.
+     *   5. The car has been stopped or crawling there for 20 seconds,
+     *      with a reasonably accurate GPS reading.
+     * Before changing anything it re-reads the board. It only changes
+     * Dropped Off / Picked Up / In Transit. If Key Team already set something
+     * else, it does nothing. It fires once per trip and, if the update fails
+     * (weak signal), keeps retrying quietly until it saves.
+     ***************/
+    const HUB_TRIP_STORAGE_KEY = 'lvt_hubTrip';
+
+    const HUB_BOX = (() => {
+      const midLat = (HUB_LOT_NW.lat + HUB_LOT_SE.lat) / 2;
+      const dLat = HUB_LOT_BUFFER_M / 111320;
+      const dLng = HUB_LOT_BUFFER_M / (111320 * Math.cos(midLat * Math.PI / 180));
+      return {
+        north: HUB_LOT_NW.lat,            // no buffer: W Patrick Ln side
+        south: HUB_LOT_SE.lat - dLat,
+        west:  HUB_LOT_NW.lng - dLng,
+        east:  HUB_LOT_SE.lng + dLng
+      };
+    })();
+
+    const HUB_LOT_CENTER = {
+      lat: (HUB_LOT_NW.lat + HUB_LOT_SE.lat) / 2,
+      lng: (HUB_LOT_NW.lng + HUB_LOT_SE.lng) / 2
+    };
+
+    const hubToastEl = document.getElementById('hubToast');
+
+    let hubArmed = false;        // true once the car has been 500 m+ away
+    let hubTriggered = false;    // true once arrival was detected (sending or retrying)
+    let hubDone = false;         // true once finished for this trip
+    let hubDwellStart = null;    // when the car started sitting in the lot
+    let hubPrevFix = null;       // previous GPS fix, for a speed estimate when the phone gives none
+    let hubRetryDelayMs = 5000;
+
+    // A page reload in the middle of a return trip keeps the "has been away"
+    // status, so the check still works if the driver reloads near the Hub.
+    function loadHubTripState(){
+      try{
+        const s = JSON.parse(sessionStorage.getItem(HUB_TRIP_STORAGE_KEY) || 'null');
+        if(!s || s.search !== window.location.search) return;
+        if(Date.now() - (s.ts || 0) > 3 * 60 * 60 * 1000) return; // older than 3 hours: ignore
+        hubArmed = !!s.armed;
+      }catch(e){ /* storage unavailable: start fresh */ }
+    }
+
+    function saveHubTripState(){
+      try{
+        sessionStorage.setItem(HUB_TRIP_STORAGE_KEY, JSON.stringify({
+          search: window.location.search, armed: hubArmed, ts: Date.now()
+        }));
+      }catch(e){ /* not critical */ }
+    }
+
+    function clearHubTripState(){
+      try{ sessionStorage.removeItem(HUB_TRIP_STORAGE_KEY); }catch(e){ /* not critical */ }
+    }
+
+    function isInsideHubBox(lng, lat){
+      return lat <= HUB_BOX.north && lat >= HUB_BOX.south &&
+             lng >= HUB_BOX.west  && lng <= HUB_BOX.east;
+    }
+
+    // True when the car is in the last stretch of the return route.
+    // If the route line didn't load, this check is skipped (the others still apply).
+    function isNearReturnRouteEnd(lngLat){
+      if(!lastRouteCoords || !lastRouteCumDist || lastRouteCumDist.length < 2) return true;
+      const proj = projectPointOntoPolyline(lngLat, lastRouteCoords, lastRouteCumDist);
+      if(!proj) return true;
+      const total = lastRouteCumDist[lastRouteCumDist.length - 1];
+      const stretch = Math.max(HUB_ROUTE_END_STRETCH_M, total * HUB_ROUTE_END_STRETCH_FRACTION);
+      return (total - proj.arcLength) <= stretch;
+    }
+
+    function estimateSpeedMps(lng, lat, t, reportedSpeed){
+      let est = null;
+      if(typeof reportedSpeed === 'number' && reportedSpeed >= 0){
+        est = reportedSpeed;
+      } else if(hubPrevFix){
+        const dt = (t - hubPrevFix.t) / 1000;
+        if(dt >= 0.5) est = haversineMeters(hubPrevFix.lng, hubPrevFix.lat, lng, lat) / dt;
+      }
+      hubPrevFix = { lng, lat, t };
+      return est;
+    }
+
+    function checkHubArrival(pos){
+      if(!HUB_AUTO_ARRIVAL_ENABLED) return;
+      if(currentDir !== 'return') return;          // never on the outbound map
+      if(hubDone || hubTriggered) return;
+
+      const { latitude, longitude, accuracy, speed } = pos.coords;
+      const t = pos.timestamp || Date.now();
+      const speedMps = estimateSpeedMps(longitude, latitude, t, speed);
+
+      // Step 1: the car must first be well away from the Hub
+      if(!hubArmed){
+        const distFromLot = haversineMeters(longitude, latitude, HUB_LOT_CENTER.lng, HUB_LOT_CENTER.lat);
+        if(distFromLot >= HUB_ARM_DISTANCE_M && (typeof accuracy !== 'number' || accuracy <= 100)){
+          hubArmed = true;
+          saveHubTripState();
+          console.log('[Hub] Armed: car is away from the Hub on a return trip');
+        }
+        return;
+      }
+
+      // A fuzzy GPS reading neither starts nor resets the timer; just wait for a better one
+      if(typeof accuracy === 'number' && accuracy > HUB_MAX_ACCURACY_M) return;
+
+      const inLot = isInsideHubBox(longitude, latitude) && isNearReturnRouteEnd([longitude, latitude]);
+      const slow = (speedMps !== null && speedMps <= HUB_SLOW_SPEED_MPS);
+
+      if(!(inLot && slow)){
+        if(hubDwellStart !== null) console.log('[Hub] Left the lot or sped up: timer reset');
+        hubDwellStart = null;
+        return;
+      }
+
+      if(hubDwellStart === null){
+        hubDwellStart = t;
+        console.log('[Hub] In the lot and slow: starting 20 s timer');
+        return;
+      }
+
+      if(t - hubDwellStart >= HUB_DWELL_MS){
+        hubTriggered = true;
+        console.log('[Hub] Arrival confirmed: updating status');
+        markBackAtHub();
+      }
+    }
+
+    function hubLocalDate(){
+      // Same local-date format index.html and Driver Tracking use
+      const now = new Date();
+      const y = now.getFullYear();
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const d = String(now.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
+    async function hubFetch(url, options = {}){
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 8000);
+      try{
+        return await fetch(url, { ...options, signal: controller.signal });
+      } finally {
+        clearTimeout(timer);
+      }
+    }
+
+    // One attempt: read the board, then (if appropriate) set Available.
+    // Returns { kind: 'available' | 'problem' | 'skip' }, or throws on a
+    // network/server error so the caller retries.
+    async function attemptHubStatusUpdate(){
+      const carNumber = (localStorage.getItem(CAR_NUMBER_STORAGE_KEY) || '').trim();
+      if(!carNumber){
+        return { kind: 'problem', message: 'You’re back at the Hub, but this phone has no car number saved. Let Key Team know you’re here.' };
+      }
+
+      const eventDate = hubLocalDate();
+      const resp = await hubFetch(`${OPERATIONS_API_URL}/operations?eventDate=${eventDate}`);
+      if(!resp.ok) throw new Error(`Board read failed: ${resp.status}`);
+      const rows = await resp.json();
+
+      const matches = (Array.isArray(rows) ? rows : []).filter(r =>
+        r.carNumber &&
+        String(r.carNumber).trim() === carNumber &&
+        r.status !== 'Checked Out'
+      );
+
+      if(matches.length === 0){
+        return { kind: 'problem', message: `Car ${carNumber} isn’t on today’s board. Let Key Team know you’re back.` };
+      }
+      if(matches.length > 1){
+        return { kind: 'problem', message: `Car ${carNumber} is listed more than once on today’s board. Let Key Team know you’re back.` };
+      }
+
+      const row = matches[0];
+
+      if(row.status === 'Available'){
+        return { kind: 'available', carNumber };   // Key Team already did it
+      }
+      if(!HUB_RETURN_STATUSES.includes(row.status)){
+        console.log(`[Hub] Status is "${row.status}"; Key Team set it, leaving it alone`);
+        return { kind: 'skip' };
+      }
+
+      const payload = { driverId: row.driverId, eventDate, status: 'Available' };
+
+      if(HUB_AUTO_ARRIVAL_MOCK){
+        console.log('[Hub][MOCK] Would PUT to /operations:', payload);
+        return { kind: 'available', carNumber };
+      }
+
+      const put = await hubFetch(`${OPERATIONS_API_URL}/operations`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      if(!put.ok) throw new Error(`Status update failed: ${put.status}`);
+
+      console.log(`[Hub] Car ${carNumber} (driver ${row.driverId}) set to Available`);
+      return { kind: 'available', carNumber };
+    }
+
+    async function markBackAtHub(){
+      let outcome;
+      try{
+        outcome = await attemptHubStatusUpdate();
+      }catch(err){
+        // Weak signal or server hiccup: try again quietly, waiting a little longer each time (max 30 s)
+        console.warn(`[Hub] Update didn’t go through, retrying in ${hubRetryDelayMs / 1000} s`, err);
+        setTimeout(markBackAtHub, hubRetryDelayMs);
+        hubRetryDelayMs = Math.min(hubRetryDelayMs * 2, 30000);
+        return;
+      }
+
+      hubDone = true;
+      clearHubTripState();
+
+      if(outcome.kind === 'available'){
+        showHubToast(`Welcome back. Car ${outcome.carNumber} marked Available ✓`, 'ok', 0);
+        setTimeout(returnToForm, HUB_REDIRECT_DELAY_MS);
+      } else if(outcome.kind === 'problem'){
+        showHubToast(outcome.message, 'warn', 10000);
+      }
+      // 'skip': Key Team has it handled; nothing to show
+    }
+
+    function showHubToast(text, kind, autoHideMs){
+      if(!hubToastEl) return;
+      hubToastEl.textContent = text;
+      hubToastEl.classList.toggle('warn', kind === 'warn');
+      hubToastEl.classList.add('show');
+      if(autoHideMs > 0){
+        setTimeout(() => hubToastEl.classList.remove('show'), autoHideMs);
+      }
+    }
+
+    // Same destination as the Back to Form button
+    function returnToForm(){
+      const { event } = getParams();
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
+      }
+      window.location.href = `/index.html?event=${encodeURIComponent(event)}`;
+    }
+
+    loadHubTripState();
 
     /***************
      * CONTROLS
@@ -1491,15 +1810,15 @@
       }
     });
 
+    // Back to Form: stop GPS and return the driver to the main form
+    // (index.html) for the same event, so they re-enter passenger count.
     btnToggleDir.addEventListener('click', () => {
-      if (!currentLocation) {
-        showRouteStatus('Loading route…', false);
-        return;
+      const { event } = getParams();
+      if (watchId !== null) {
+        navigator.geolocation.clearWatch(watchId);
+        watchId = null;
       }
-      currentDir = (currentDir === 'outbound') ? 'return' : 'outbound';
-      updateUrlDirParam(currentDir);
-      syncButtons();
-      renderRouteOnMap();
+      window.location.href = `/index.html?event=${encodeURIComponent(event)}`;
     });
 
 
