@@ -258,6 +258,183 @@
     @media (prefers-reduced-motion: reduce){
       #hubToast{ transition: none; transform: none; }
     }
+    /* =========================================================
+       LANDSCAPE PHONE LAYOUT
+       Only applies when a phone is turned sideways (short screen).
+       Portrait layout above is completely unchanged.
+       - Header shrinks to one thin row
+       - Re-center / View / Follow move to a column on the right
+       - Back to Form sits at the bottom of that column
+       - Turn / OFF ROUTE box becomes a compact card, top-left
+       ========================================================= */
+    @media (orientation: landscape) and (max-height: 540px){
+      :root{
+        --hdr: 40px;          /* header height in landscape */
+        --side: 132px;        /* width of the right button column */
+        --gap: 8px;
+        --safe-l: env(safe-area-inset-left, 0px);
+        --safe-r: env(safe-area-inset-right, 0px);
+        --safe-b: env(safe-area-inset-bottom, 0px);
+      }
+
+      /* One-row header: brand | status pills | destination */
+      header{
+        height: var(--hdr);
+        padding: 0 calc(10px + var(--safe-r)) 0 calc(10px + var(--safe-l));
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        overflow: hidden;
+      }
+      .title{ display: contents; }
+      .title span:first-child{ order: 1; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+      .statusRow{
+        order: 2;
+        margin-top: 0;
+        gap: 6px;
+        flex-wrap: nowrap;
+        overflow: hidden;
+        min-width: 0;
+      }
+      .pill{ padding: 3px 8px; font-size: 11px; gap: 6px; white-space: nowrap; }
+      .pill .dot{ width: 8px; height: 8px; }
+      #headerDestination{
+        order: 3;
+        margin-left: auto;
+        font-size: 14px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 38vw;
+        flex-shrink: 1;
+      }
+
+      /* Map fills everything except the header and the right column */
+      #map{
+        top: var(--hdr);
+        bottom: 0;
+        left: 0;
+        right: calc(var(--side) + var(--gap) * 2 + var(--safe-r));
+      }
+
+      /* Right column: Re-center / View / Follow stacked at the top */
+      .controls{
+        top: calc(var(--hdr) + var(--gap));
+        bottom: auto;
+        left: auto;
+        right: calc(var(--gap) + var(--safe-r));
+        width: var(--side);
+        flex-direction: column;
+        gap: var(--gap);
+      }
+      .controls button{
+        flex: 0 0 auto;
+        padding: 12px 6px;
+        font-size: 13px;
+        border-radius: 12px;
+      }
+
+      /* Turn-by-turn / OFF ROUTE: compact card in the map's top-left */
+      #topOverlay{
+        top: calc(var(--hdr) + var(--gap));
+        left: calc(var(--gap) + var(--safe-l));
+        right: auto;
+        width: min(320px, 42vw);
+      }
+      #turnBox{ padding: 10px 12px; border-radius: 12px; }
+      .turn-distance{ font-size: 14px; }
+      .turn-instruction{ font-size: 16px; gap: 8px; line-height: 1.2; }
+      .turn-icon{ font-size: 24px; }
+      .turn-progress{ margin-top: 4px; font-size: 11px; }
+
+      /* Split the route controls apart so each piece can go where it fits */
+      #routeControls{ display: contents; }
+
+      /* Back to Form: bottom of the right column */
+      .route-row{
+        position: fixed;
+        right: calc(var(--gap) + var(--safe-r));
+        bottom: calc(var(--gap) + var(--safe-b));
+        width: var(--side);
+        z-index: 11;
+      }
+      .route-btn{ padding: 12px 6px; font-size: 13px; }
+
+      /* Small route status note: bottom-left corner of the map */
+      .route-status{
+        position: fixed;
+        left: calc(var(--gap) + var(--safe-l));
+        bottom: calc(var(--gap) + var(--safe-b));
+        max-width: min(340px, 40vw);
+        margin-top: 0;
+        padding: 6px 10px;
+        font-size: 12px;
+        z-index: 11;
+      }
+
+      /* Error banner and "Welcome back" message stay over the map only */
+      #errorBanner{
+        top: calc(var(--hdr) + var(--gap));
+        left: calc(var(--gap) + var(--safe-l));
+        right: calc(var(--side) + var(--gap) * 3 + var(--safe-r));
+      }
+      #hubToast{
+        left: calc(var(--gap) + var(--safe-l));
+        right: calc(var(--side) + var(--gap) * 3 + var(--safe-r));
+        bottom: calc(var(--gap) + var(--safe-b));
+        padding: 10px 12px;
+        font-size: 15px;
+      }
+    }
+    /* Hide/show tab for the right button column (landscape only) */
+    #sideToggle{ display: none; }
+    @media (orientation: landscape) and (max-height: 540px){
+      #sideToggle{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 50%;
+        transform: translateY(-50%);
+        right: calc(var(--side) + var(--gap) * 2 + var(--safe-r));
+        z-index: 12;
+        width: 34px;
+        height: 76px;
+        padding: 0;
+        border: 1px solid rgba(255,255,255,0.18);
+        border-right: none;
+        border-radius: 12px 0 0 12px;
+        background: rgba(10, 15, 30, 0.88);
+        color: #fff;
+        font-size: 26px;
+        font-weight: 800;
+        line-height: 1;
+        cursor: pointer;
+        box-shadow: -2px 0 10px rgba(0,0,0,0.35);
+      }
+      #sideToggle:focus-visible{ outline: 2px solid #9fb4ff; outline-offset: 2px; }
+
+      /* Collapsed: buttons hidden, map runs to the right edge,
+         tab sits on the right edge to bring the buttons back */
+      body.side-collapsed .controls{ display: none; }
+
+      /* Back to Form stays visible as a small button, bottom-right */
+      body.side-collapsed .route-row{ width: auto; }
+      body.side-collapsed .route-btn{
+        padding: 10px 14px;
+        font-size: 13px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.35);
+      }
+      body.side-collapsed #map{ right: 0; }
+      body.side-collapsed #sideToggle{ right: var(--safe-r); }
+      body.side-collapsed #errorBanner{
+        right: calc(34px + var(--gap) * 2 + var(--safe-r));
+      }
+      /* Keep the "Welcome back" message clear of the small Back to Form button */
+      body.side-collapsed #hubToast{
+        right: calc(130px + var(--gap) * 2 + var(--safe-r));
+      }
+    }
   </style>
 </head>
 
@@ -318,6 +495,9 @@
     <button id="viewToggleBtn" class="secondary"><span>🗺️</span> View: 3D</button>
     <button id="followBtn" class="secondary" disabled><span>🧭</span> Follow: Off</button>
   </div>
+
+  <!-- Landscape only: hides/shows the right-hand button column -->
+  <button id="sideToggle" type="button" aria-label="Hide buttons" aria-expanded="true">›</button>
 
   <script>
     /***************
@@ -399,7 +579,28 @@
     // reveals more of the road ahead above it). Only applied while actively
     // following (live tracking or Follow just turned on) — a plain re-center
     // with Follow off still centers normally.
-    const FOLLOW_CAMERA_OFFSET = [0, 120];
+    // How far below center the driver's car sits in Follow mode (pixels).
+    // Portrait: 120px down so more road ahead is visible.
+    // Landscape: the map is much shorter, so use a smaller shift.
+    // Uses the same rule as the landscape layout in the styles above.
+    const LANDSCAPE_QUERY = window.matchMedia('(orientation: landscape) and (max-height: 540px)');
+    let FOLLOW_CAMERA_OFFSET = LANDSCAPE_QUERY.matches ? [0, 50] : [0, 120];
+    function onOrientationChange(){
+      FOLLOW_CAMERA_OFFSET = LANDSCAPE_QUERY.matches ? [0, 50] : [0, 120];
+      // Let the map redraw at its new size after the phone is rotated
+      setTimeout(() => {
+        try {
+          if (typeof map !== 'undefined' && map) {
+            map.resize();
+            if (followMode && lastUserLngLat) {
+              map.easeTo({ center: lastUserLngLat, offset: FOLLOW_CAMERA_OFFSET, duration: 300 });
+            }
+          }
+        } catch (e) { console.warn('Resize after rotate failed', e); }
+      }, 250);
+    }
+    if (LANDSCAPE_QUERY.addEventListener) LANDSCAPE_QUERY.addEventListener('change', onOrientationChange);
+    else if (LANDSCAPE_QUERY.addListener) LANDSCAPE_QUERY.addListener(onOrientationChange);
 
     /***************
      * DOM
@@ -1798,6 +1999,27 @@
       is3DView = !is3DView;
       viewToggleBtn.textContent = is3DView ? '🗺️ View: 3D' : '🗺️ View: 2D';
       map.easeTo({ pitch: is3DView ? 60 : 0, duration: 500 });
+    });
+
+    // Landscape: hide/show the right-hand button column.
+    // Starts open on every trip so drivers can set View and Follow first.
+    const sideToggleBtn = document.getElementById('sideToggle');
+    sideToggleBtn.addEventListener('click', () => {
+      const collapsed = document.body.classList.toggle('side-collapsed');
+      sideToggleBtn.textContent = collapsed ? '‹' : '›';
+      sideToggleBtn.setAttribute('aria-label', collapsed ? 'Show buttons' : 'Hide buttons');
+      sideToggleBtn.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+      // The map just changed width: redraw it and keep the driver in view
+      setTimeout(() => {
+        try {
+          if (map) {
+            map.resize();
+            if (followMode && lastUserLngLat) {
+              map.easeTo({ center: lastUserLngLat, offset: FOLLOW_CAMERA_OFFSET, duration: 300 });
+            }
+          }
+        } catch (e) { console.warn('Resize after hide/show failed', e); }
+      }, 50);
     });
 
     followBtn.addEventListener('click', () => {

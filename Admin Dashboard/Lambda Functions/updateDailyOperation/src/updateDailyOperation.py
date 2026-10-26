@@ -164,8 +164,11 @@ def lambda_handler(event, context):
                 ExpressionAttributeValues={':zero': 0}
             )
         
-        # Status changed to "Available" from "Dropped Off" or "Picked Up"
-        if new_status == 'Available' and old_status in ['Dropped Off', 'Picked Up']:
+        # Status changed to "Available" from "Dropped Off", "Picked Up" or "In Transit"
+        # ("In Transit" added so an empty return trip, Dropped Off -> In Transit -> Available,
+        #  also clears the zone. This runs the same whether Key Team or the app's
+        #  automatic back-at-Hub check makes the change.)
+        if new_status == 'Available' and old_status in ['Dropped Off', 'Picked Up', 'In Transit']:
             print(f"Status changed to Available from {old_status}")
             
             # Get the driver type to check if it's Staged
