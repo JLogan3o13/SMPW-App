@@ -937,15 +937,22 @@
       return '➡️';
     }
 
+    // Driver-facing distances in US units. Internal settings (800m turn
+    // point, 75m off-route) stay in meters; only the displayed text changes.
+    // Under 1,000 ft: feet, rounded to the nearest 50 (minimum 50 ft).
+    // 1,000 ft and up: miles to one decimal.
+    function formatFeet(meters){
+      const feet = Math.max(50, Math.round((meters * 3.28084) / 50) * 50);
+      return `${feet.toLocaleString('en-US')} ft`;
+    }
+
     function formatDistance(meters){
-      if (meters < 100) {
-        return `In ${Math.round(meters / 10) * 10} m`;
-      } else if (meters < 1000) {
-        return `In ${Math.round(meters / 50) * 50} m`;
-      } else {
-        const miles = meters / 1609.34;
-        return `In ${miles.toFixed(1)} mi`;
+      const feet = meters * 3.28084;
+      if (feet < 1000) {
+        return `In ${formatFeet(meters)}`;
       }
+      const miles = meters / 1609.34;
+      return `In ${miles.toFixed(1)} mi`;
     }
 
     // ---- Heading-mismatch safety net ----
@@ -1329,7 +1336,7 @@
       }
 
       if(isOffRoute){
-        setRouteStatus(false, `Route: Off route (${Math.round(d)}m)`);
+        setRouteStatus(false, `Route: Off route (${formatFeet(d)})`);
       } else {
         setRouteStatus(true, `Route: On route`);
       }
