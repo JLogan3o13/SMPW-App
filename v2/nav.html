@@ -435,6 +435,28 @@
         right: calc(130px + var(--gap) * 2 + var(--safe-r));
       }
     }
+    /* Hub check debug readout: only shown with &hubdebug=1 in the URL */
+    #hubDebug{
+      display: none;
+      position: fixed;
+      left: 12px;
+      bottom: 150px;
+      z-index: 13;
+      max-width: 260px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.78);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: #fff;
+      font-size: 12px;
+      line-height: 1.45;
+      white-space: pre-line;
+      pointer-events: none;
+    }
+    #hubDebug.show{ display: block; }
+    @media (orientation: landscape) and (max-height: 540px){
+      #hubDebug{ left: calc(8px + env(safe-area-inset-left, 0px)); bottom: 48px; }
+    }
   </style>
 </head>
 
@@ -464,6 +486,7 @@
   <div id="errorBanner"><span id="errorText"></span></div>
 
   <div id="hubToast" role="status" aria-live="polite"></div>
+  <div id="hubDebug" aria-hidden="true"></div>
 
   <div id="map"></div>
 
@@ -523,9 +546,10 @@
     const HUB_ARM_DISTANCE_M = 500;            // car must first be at least this far from the lot
     const HUB_ROUTE_END_STRETCH_M = 500;       // car must be in the last stretch of the return route:
     const HUB_ROUTE_END_STRETCH_FRACTION = 0.10; //   the larger of 500 m or 10% of the route
-    const HUB_DWELL_MS = 20000;                // stopped/crawling inside the lot this long (20 s)
-    const HUB_SLOW_SPEED_MPS = 2.2;            // "crawling" = under ~5 mph
-    const HUB_MAX_ACCURACY_M = 30;             // ignore GPS readings less accurate than this
+    const HUB_DWELL_MS = 20000;                // must stay put inside the lot this long (20 s)
+    const HUB_STAY_RADIUS_M = 25;              // "staying put" = all readings within 25 m of where the timer started
+    const HUB_TICK_MS = 2000;                  // check the timer every 2 s, even when the phone sends no new GPS reading
+    const HUB_MAX_ACCURACY_M = 50;             // ignore GPS readings less accurate than this
     const HUB_REDIRECT_DELAY_MS = 4000;        // show the message this long, then go back to the form
 
     // Same Driver Tracking API and car-number key that index.html uses
@@ -1026,6 +1050,12 @@
     }
 
     function updateTurnDisplay(){
+      // Return trip and inside the Hub lot: the trip is over, so hide the
+      // turn box (otherwise "destination is on the left" sticks on screen).
+      if (isInHubLotOnReturn()) {
+        turnBox.style.display = 'none';
+        return;
+      }
       // Off-route warning always shows when off-route, regardless of the
       // turn-by-turn toggle below.
       if (isOffRoute) {
@@ -1729,14 +1759,54 @@
      *   2. The car has been at least 500 m from the lot during this trip.
      *   3. The car is in the last stretch of the return route.
      *   4. The car is inside the Hub lot rectangle.
-     *   5. The car has been stopped or crawling there for 20 seconds,
-     *      with a reasonably accurate GPS reading.
+     *   5. The car has stayed within 25 m of one spot for 20 seconds.
+     *      (Jitter-proof: a parked phone's GPS wanders a few meters.)
+     * The 20 s timer runs on its own clock every 2 s, so it still finishes
+     * when a parked iPhone stops sending new GPS readings.
+     * GPS readings worse than 50 m accuracy are ignored (they neither start
+     * nor reset the timer).
      * Before changing anything it re-reads the board. It only changes
      * Dropped Off / Picked Up / In Transit. If Key Team already set something
      * else, it does nothing. It fires once per trip and, if the update fails
      * (weak signal), keeps retrying quietly until it saves.
+     *
+     * Add &hubdebug=1 to the nav URL to see a live readout of every check.
      ***************/
     const HUB_TRIP_STORAGE_KEY = 'lvt_hubTrip';
+    // Debug readout: on with &hubdebug=1 in the URL, or by tapping the
+    // "LV Transportation" title 5 times (works in the Home Screen app, which
+    // has no address bar). Stays on until turned off the same way
+    // (5 more taps, or &hubdebug=0).
+    const HUB_DEBUG_STORAGE_KEY = 'lvt_hubDebug';
+    let HUB_DEBUG = false;
+    (() => {
+      const q = new URLSearchParams(window.location.search).get('hubdebug');
+      try{
+        if(q === '1') localStorage.setItem(HUB_DEBUG_STORAGE_KEY, '1');
+        if(q === '0') localStorage.removeItem(HUB_DEBUG_STORAGE_KEY);
+        HUB_DEBUG = localStorage.getItem(HUB_DEBUG_STORAGE_KEY) === '1';
+      }catch(e){ HUB_DEBUG = (q === '1'); }
+    })();
+
+    (() => {
+      const titleEl = document.querySelector('.title span:first-child');
+      if(!titleEl) return;
+      let taps = 0, firstTap = 0;
+      titleEl.addEventListener('click', () => {
+        const now = Date.now();
+        if(now - firstTap > 3000){ taps = 0; firstTap = now; }
+        taps++;
+        if(taps < 5) return;
+        taps = 0;
+        HUB_DEBUG = !HUB_DEBUG;
+        try{
+          if(HUB_DEBUG) localStorage.setItem(HUB_DEBUG_STORAGE_KEY, '1');
+          else localStorage.removeItem(HUB_DEBUG_STORAGE_KEY);
+        }catch(e){ /* not critical */ }
+        if(HUB_DEBUG) renderHubDebug();
+        else if(hubDebugEl) hubDebugEl.classList.remove('show');
+      });
+    })();
 
     const HUB_BOX = (() => {
       const midLat = (HUB_LOT_NW.lat + HUB_LOT_SE.lat) / 2;
@@ -1756,13 +1826,18 @@
     };
 
     const hubToastEl = document.getElementById('hubToast');
+    const hubDebugEl = document.getElementById('hubDebug');
 
     let hubArmed = false;        // true once the car has been 500 m+ away
-    let hubTriggered = false;    // true once arrival was detected (sending or retrying)
+    let hubTriggered = false;    // true once arrival was confirmed (sending or retrying)
     let hubDone = false;         // true once finished for this trip
-    let hubDwellStart = null;    // when the car started sitting in the lot
-    let hubPrevFix = null;       // previous GPS fix, for a speed estimate when the phone gives none
+    let hubAnchor = null;        // { lng, lat, t } where the 20 s timer started
+    let hubLastFix = null;       // last GPS reading seen, for the debug readout
+    let hubLastInLot = false;    // last good reading was inside the lot (and near route end)
+    let hubLastMovedM = 0;       // distance of last reading from the timer's start spot
     let hubRetryDelayMs = 5000;
+    let hubRetryCount = 0;
+    let hubStateText = 'watching';
 
     // A page reload in the middle of a return trip keeps the "has been away"
     // status, so the check still works if the driver reloads near the Hub.
@@ -1792,6 +1867,12 @@
              lng >= HUB_BOX.west  && lng <= HUB_BOX.east;
     }
 
+    // Used by the turn box: true while on the return map and inside the lot.
+    function isInHubLotOnReturn(){
+      if(currentDir !== 'return' || !lastRawUserLngLat) return false;
+      return isInsideHubBox(lastRawUserLngLat[0], lastRawUserLngLat[1]);
+    }
+
     // True when the car is in the last stretch of the return route.
     // If the route line didn't load, this check is skipped (the others still apply).
     function isNearReturnRouteEnd(lngLat){
@@ -1803,26 +1884,15 @@
       return (total - proj.arcLength) <= stretch;
     }
 
-    function estimateSpeedMps(lng, lat, t, reportedSpeed){
-      let est = null;
-      if(typeof reportedSpeed === 'number' && reportedSpeed >= 0){
-        est = reportedSpeed;
-      } else if(hubPrevFix){
-        const dt = (t - hubPrevFix.t) / 1000;
-        if(dt >= 0.5) est = haversineMeters(hubPrevFix.lng, hubPrevFix.lat, lng, lat) / dt;
-      }
-      hubPrevFix = { lng, lat, t };
-      return est;
-    }
-
+    // Called on every GPS reading
     function checkHubArrival(pos){
       if(!HUB_AUTO_ARRIVAL_ENABLED) return;
-      if(currentDir !== 'return') return;          // never on the outbound map
-      if(hubDone || hubTriggered) return;
+      if(currentDir !== 'return'){ renderHubDebug(); return; }   // never on the outbound map
+      if(hubDone || hubTriggered){ renderHubDebug(); return; }
 
-      const { latitude, longitude, accuracy, speed } = pos.coords;
-      const t = pos.timestamp || Date.now();
-      const speedMps = estimateSpeedMps(longitude, latitude, t, speed);
+      const { latitude, longitude, accuracy } = pos.coords;
+      const now = Date.now();
+      hubLastFix = { lng: longitude, lat: latitude, acc: accuracy, t: now };
 
       // Step 1: the car must first be well away from the Hub
       if(!hubArmed){
@@ -1832,33 +1902,57 @@
           saveHubTripState();
           console.log('[Hub] Armed: car is away from the Hub on a return trip');
         }
+        renderHubDebug();
         return;
       }
 
-      // A fuzzy GPS reading neither starts nor resets the timer; just wait for a better one
-      if(typeof accuracy === 'number' && accuracy > HUB_MAX_ACCURACY_M) return;
-
-      const inLot = isInsideHubBox(longitude, latitude) && isNearReturnRouteEnd([longitude, latitude]);
-      const slow = (speedMps !== null && speedMps <= HUB_SLOW_SPEED_MPS);
-
-      if(!(inLot && slow)){
-        if(hubDwellStart !== null) console.log('[Hub] Left the lot or sped up: timer reset');
-        hubDwellStart = null;
+      // A fuzzy GPS reading neither starts nor resets the timer; wait for a better one
+      if(typeof accuracy === 'number' && accuracy > HUB_MAX_ACCURACY_M){
+        renderHubDebug();
         return;
       }
 
-      if(hubDwellStart === null){
-        hubDwellStart = t;
-        console.log('[Hub] In the lot and slow: starting 20 s timer');
-        return;
+      hubLastInLot = isInsideHubBox(longitude, latitude) && isNearReturnRouteEnd([longitude, latitude]);
+
+      if(!hubLastInLot){
+        if(hubAnchor) console.log('[Hub] Left the lot: timer reset');
+        hubAnchor = null;
+        hubLastMovedM = 0;
+      } else if(!hubAnchor){
+        hubAnchor = { lng: longitude, lat: latitude, t: now };
+        hubLastMovedM = 0;
+        console.log('[Hub] In the lot: starting 20 s timer');
+      } else {
+        hubLastMovedM = haversineMeters(hubAnchor.lng, hubAnchor.lat, longitude, latitude);
+        if(hubLastMovedM > HUB_STAY_RADIUS_M){
+          // Still driving around the lot: restart the timer from here
+          console.log(`[Hub] Moved ${Math.round(hubLastMovedM)} m: timer restarted`);
+          hubAnchor = { lng: longitude, lat: latitude, t: now };
+          hubLastMovedM = 0;
+        }
       }
 
-      if(t - hubDwellStart >= HUB_DWELL_MS){
+      evaluateHubTimer();
+    }
+
+    // Runs on every GPS reading AND every 2 s on its own, so the timer
+    // finishes even if a parked phone stops sending readings.
+    function evaluateHubTimer(){
+      if(!HUB_AUTO_ARRIVAL_ENABLED || currentDir !== 'return') return;
+      if(hubDone || hubTriggered || !hubArmed || !hubAnchor) { renderHubDebug(); return; }
+
+      if(Date.now() - hubAnchor.t >= HUB_DWELL_MS){
         hubTriggered = true;
+        hubStateText = 'sending…';
         console.log('[Hub] Arrival confirmed: updating status');
         markBackAtHub();
       }
+      renderHubDebug();
     }
+
+    setInterval(() => {
+      try { evaluateHubTimer(); } catch (e) { console.warn('Hub timer check failed', e); }
+    }, HUB_TICK_MS);
 
     function hubLocalDate(){
       // Same local-date format index.html and Driver Tracking use
@@ -1913,14 +2007,14 @@
       }
       if(!HUB_RETURN_STATUSES.includes(row.status)){
         console.log(`[Hub] Status is "${row.status}"; Key Team set it, leaving it alone`);
-        return { kind: 'skip' };
+        return { kind: 'skip', status: row.status };
       }
 
       const payload = { driverId: row.driverId, eventDate, status: 'Available' };
 
       if(HUB_AUTO_ARRIVAL_MOCK){
         console.log('[Hub][MOCK] Would PUT to /operations:', payload);
-        return { kind: 'available', carNumber };
+        return { kind: 'available', carNumber, mock: true };
       }
 
       const put = await hubFetch(`${OPERATIONS_API_URL}/operations`, {
@@ -1940,7 +2034,10 @@
         outcome = await attemptHubStatusUpdate();
       }catch(err){
         // Weak signal or server hiccup: try again quietly, waiting a little longer each time (max 30 s)
+        hubRetryCount++;
+        hubStateText = `retry #${hubRetryCount} in ${hubRetryDelayMs / 1000} s (${err.message})`;
         console.warn(`[Hub] Update didn’t go through, retrying in ${hubRetryDelayMs / 1000} s`, err);
+        renderHubDebug();
         setTimeout(markBackAtHub, hubRetryDelayMs);
         hubRetryDelayMs = Math.min(hubRetryDelayMs * 2, 30000);
         return;
@@ -1950,12 +2047,17 @@
       clearHubTripState();
 
       if(outcome.kind === 'available'){
+        hubStateText = outcome.mock ? 'done (MOCK: nothing sent)' : 'done: set to Available';
         showHubToast(`Welcome back. Car ${outcome.carNumber} marked Available ✓`, 'ok', 0);
-        setTimeout(returnToForm, HUB_REDIRECT_DELAY_MS);
+        // In debug mode, stay on the map so the readout can be read
+        if(!HUB_DEBUG) setTimeout(returnToForm, HUB_REDIRECT_DELAY_MS);
       } else if(outcome.kind === 'problem'){
+        hubStateText = 'stopped: ' + outcome.message;
         showHubToast(outcome.message, 'warn', 10000);
+      } else {
+        hubStateText = `skipped: status was "${outcome.status}"`;
       }
-      // 'skip': Key Team has it handled; nothing to show
+      renderHubDebug();
     }
 
     function showHubToast(text, kind, autoHideMs){
@@ -1966,6 +2068,47 @@
       if(autoHideMs > 0){
         setTimeout(() => hubToastEl.classList.remove('show'), autoHideMs);
       }
+    }
+
+    // Live readout of every check (only with &hubdebug=1)
+    function renderHubDebug(){
+      if(!HUB_DEBUG || !hubDebugEl) return;
+      hubDebugEl.classList.add('show');
+
+      if(!HUB_AUTO_ARRIVAL_ENABLED){ hubDebugEl.textContent = 'Hub check: OFF (switch)'; return; }
+      if(currentDir !== 'return'){ hubDebugEl.textContent = 'Hub check: off (outbound trip)'; return; }
+
+      const lines = ['Hub check' + (HUB_AUTO_ARRIVAL_MOCK ? ' (MOCK)' : '')];
+      const fix = hubLastFix;
+
+      if(!fix){
+        lines.push('GPS: no reading yet');
+      } else {
+        const acc = (typeof fix.acc === 'number') ? Math.round(fix.acc) : '?';
+        const accOk = (typeof fix.acc !== 'number' || fix.acc <= HUB_MAX_ACCURACY_M);
+        lines.push(`GPS accuracy: ${acc} m ${accOk ? '✓' : '✗ (over ' + HUB_MAX_ACCURACY_M + ', ignored)'}`);
+        lines.push(`Reading age: ${Math.round((Date.now() - fix.t) / 1000)} s`);
+      }
+
+      if(!hubArmed){
+        const d = fix ? Math.round(haversineMeters(fix.lng, fix.lat, HUB_LOT_CENTER.lng, HUB_LOT_CENTER.lat)) : '?';
+        lines.push(`Armed: no (${d} m from Hub, needs ${HUB_ARM_DISTANCE_M})`);
+      } else {
+        lines.push('Armed: yes ✓');
+        if(fix){
+          lines.push(`In lot box: ${isInsideHubBox(fix.lng, fix.lat) ? 'yes ✓' : 'no'}`);
+          lines.push(`Near route end: ${isNearReturnRouteEnd([fix.lng, fix.lat]) ? 'yes ✓' : 'no'}`);
+        }
+        if(hubAnchor){
+          const secs = Math.min(HUB_DWELL_MS, Date.now() - hubAnchor.t) / 1000;
+          lines.push(`Staying put: ${Math.floor(secs)} / ${HUB_DWELL_MS / 1000} s (moved ${Math.round(hubLastMovedM)} of ${HUB_STAY_RADIUS_M} m)`);
+        } else if(!hubTriggered && !hubDone){
+          lines.push('Timer: not running');
+        }
+      }
+
+      lines.push(`State: ${hubStateText}`);
+      hubDebugEl.textContent = lines.join('\n');
     }
 
     // Same destination as the Back to Form button
