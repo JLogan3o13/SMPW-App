@@ -267,7 +267,7 @@
        - Back to Form sits at the bottom of that column
        - Turn / OFF ROUTE box becomes a compact card, top-left
        ========================================================= */
-    @media (orientation: landscape) and (max-height: 540px){
+    @media (orientation: landscape) and (max-height: 540px), (orientation: landscape) and (any-pointer: coarse){
       :root{
         --hdr: 40px;          /* header height in landscape */
         --side: 132px;        /* width of the right button column */
@@ -388,7 +388,7 @@
     }
     /* Hide/show tab for the right button column (landscape only) */
     #sideToggle{ display: none; }
-    @media (orientation: landscape) and (max-height: 540px){
+    @media (orientation: landscape) and (max-height: 540px), (orientation: landscape) and (any-pointer: coarse){
       #sideToggle{
         display: flex;
         align-items: center;
@@ -454,8 +454,38 @@
       pointer-events: none;
     }
     #hubDebug.show{ display: block; }
-    @media (orientation: landscape) and (max-height: 540px){
+    @media (orientation: landscape) and (max-height: 540px), (orientation: landscape) and (any-pointer: coarse){
       #hubDebug{ left: calc(8px + env(safe-area-inset-left, 0px)); bottom: 48px; }
+    }
+    /* =========================================================
+       LANDSCAPE TABLET SIZING
+       Tablets use the same sideways layout as phones (above), with
+       bigger buttons and text since there is more room.
+       ========================================================= */
+    @media (orientation: landscape) and (min-height: 541px) and (any-pointer: coarse){
+      :root{
+        --hdr: 50px;
+        --side: 170px;
+        --gap: 10px;
+      }
+      .title span:first-child{ font-size: 14px; }
+      .pill{ padding: 5px 10px; font-size: 13px; }
+      .pill .dot{ width: 10px; height: 10px; }
+      #headerDestination{ font-size: 17px; }
+      .controls button{ padding: 16px 8px; font-size: 15px; }
+      .route-btn{ padding: 16px 8px; font-size: 15px; }
+      body.side-collapsed .route-btn{ padding: 14px 18px; font-size: 15px; }
+      body.side-collapsed #hubToast{ right: calc(160px + var(--gap) * 2 + var(--safe-r)); }
+      #topOverlay{ width: min(420px, 40vw); }
+      #turnBox{ padding: 14px 16px; }
+      .turn-distance{ font-size: 17px; }
+      .turn-instruction{ font-size: 21px; }
+      .turn-icon{ font-size: 30px; }
+      .turn-progress{ font-size: 13px; }
+      .route-status{ font-size: 14px; padding: 8px 12px; }
+      #sideToggle{ width: 40px; height: 90px; font-size: 30px; }
+      body.side-collapsed #errorBanner{ right: calc(40px + var(--gap) * 2 + var(--safe-r)); }
+      #hubDebug{ bottom: 60px; }
     }
   </style>
 </head>
@@ -607,10 +637,16 @@
     // Portrait: 120px down so more road ahead is visible.
     // Landscape: the map is much shorter, so use a smaller shift.
     // Uses the same rule as the landscape layout in the styles above.
-    const LANDSCAPE_QUERY = window.matchMedia('(orientation: landscape) and (max-height: 540px)');
-    let FOLLOW_CAMERA_OFFSET = LANDSCAPE_QUERY.matches ? [0, 50] : [0, 120];
+    const LANDSCAPE_QUERY = window.matchMedia('(orientation: landscape) and (max-height: 540px), (orientation: landscape) and (any-pointer: coarse)');
+    // Tablets held sideways have a much taller map than phones, so use a bigger shift.
+    const LANDSCAPE_TABLET_QUERY = window.matchMedia('(orientation: landscape) and (min-height: 541px) and (any-pointer: coarse)');
+    function pickFollowOffset(){
+      if (!LANDSCAPE_QUERY.matches) return [0, 120];        // portrait (phone or tablet)
+      return LANDSCAPE_TABLET_QUERY.matches ? [0, 100] : [0, 50];
+    }
+    let FOLLOW_CAMERA_OFFSET = pickFollowOffset();
     function onOrientationChange(){
-      FOLLOW_CAMERA_OFFSET = LANDSCAPE_QUERY.matches ? [0, 50] : [0, 120];
+      FOLLOW_CAMERA_OFFSET = pickFollowOffset();
       // Let the map redraw at its new size after the phone is rotated
       setTimeout(() => {
         try {
@@ -2075,10 +2111,17 @@
       if(!HUB_DEBUG || !hubDebugEl) return;
       hubDebugEl.classList.add('show');
 
-      if(!HUB_AUTO_ARRIVAL_ENABLED){ hubDebugEl.textContent = 'Hub check: OFF (switch)'; return; }
-      if(currentDir !== 'return'){ hubDebugEl.textContent = 'Hub check: off (outbound trip)'; return; }
+      // Screen line: helps explain which layout a device is getting
+      const mq = (q) => window.matchMedia(q).matches;
+      const screenLine =
+        `Screen: ${window.innerWidth}×${window.innerHeight}, ` +
+        `touch: ${mq('(any-pointer: coarse)') ? 'yes' : 'no'}, ` +
+        `layout: ${LANDSCAPE_QUERY.matches ? (LANDSCAPE_TABLET_QUERY.matches ? 'landscape tablet' : 'landscape phone') : 'normal'}`;
 
-      const lines = ['Hub check' + (HUB_AUTO_ARRIVAL_MOCK ? ' (MOCK)' : '')];
+      if(!HUB_AUTO_ARRIVAL_ENABLED){ hubDebugEl.textContent = screenLine + '\nHub check: OFF (switch)'; return; }
+      if(currentDir !== 'return'){ hubDebugEl.textContent = screenLine + '\nHub check: off (outbound trip)'; return; }
+
+      const lines = [screenLine, 'Hub check' + (HUB_AUTO_ARRIVAL_MOCK ? ' (MOCK)' : '')];
       const fix = hubLastFix;
 
       if(!fix){
