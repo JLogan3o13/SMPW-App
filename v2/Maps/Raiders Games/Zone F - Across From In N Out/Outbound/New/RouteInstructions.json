@@ -1,4 +1,4 @@
-﻿    "routeInstructions": {
+    "routeInstructions": {
         "L": [
             {
                 "M": {
@@ -408,10 +408,10 @@
             {
                 "M": {
                     "distance": {
-                        "N": "259.6"
+                        "N": "92.9"
                     },
                     "duration": {
-                        "N": "21.6"
+                        "N": "7.7"
                     },
                     "instruction": {
                         "S": "Drive north on Polaris Avenue."
@@ -447,13 +447,55 @@
             {
                 "M": {
                     "distance": {
+                        "N": "24.3"
+                    },
+                    "duration": {
+                        "N": "2.0"
+                    },
+                    "instruction": {
+                        "S": "Turn left onto West Quail Avenue."
+                    },
+                    "maneuver": {
+                        "M": {
+                            "type": {
+                                "S": "turn"
+                            },
+                            "location": {
+                                "L": [
+                                    {
+                                        "N": "-115.185539"
+                                    },
+                                    {
+                                        "N": "36.084464"
+                                    }
+                                ]
+                            },
+                            "bearing_before": {
+                                "N": "0"
+                            },
+                            "bearing_after": {
+                                "N": "270"
+                            },
+                            "modifier": {
+                                "S": "left"
+                            }
+                        }
+                    },
+                    "name": {
+                        "S": "West Quail Avenue"
+                    }
+                }
+            },
+            {
+                "M": {
+                    "distance": {
                         "N": "0.0"
                     },
                     "duration": {
                         "N": "0.0"
                     },
                     "instruction": {
-                        "S": "Your destination is on the left."
+                        "S": "Park at the curb on the right. This is your destination."
                     },
                     "maneuver": {
                         "M": {
@@ -463,10 +505,10 @@
                             "location": {
                                 "L": [
                                     {
-                                        "N": "-115.185857"
+                                        "N": "-115.185809"
                                     },
                                     {
-                                        "N": "36.085954"
+                                        "N": "36.084464"
                                     }
                                 ]
                             },
