@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>TRAINING - LV Transportation Route Preview</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111827" />
+  <meta name="robots" content="noindex" />
+
+  <!--
+    ROUTE PREVIEW - STANDALONE DEMO PAGE
+    - Read-only. Uses the same Destinations API and Mapbox token as nav.html.
+    - Does NOT change nav.html, the API, Lambda, or any data.
+    - ROLLBACK: delete this one file from hosting. Nothing else to undo.
+    URL params (same as nav.html): ?event=RaidersGames&zone=XXX&locationIndex=0&dir=outbound
+  -->
+
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.0/mapbox-gl.js"></script>
+
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: #0b1220; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #fff; }
+
+    header{
+      position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+      padding: 10px 12px;
+      background: rgba(10,15,30,0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .title{ display:flex; justify-content: space-between; align-items:center; gap:10px; }
+    .back{
+      color:#fff; text-decoration:none; font-weight:800; font-size:13px;
+      padding: 6px 10px; border-radius: 999px;
+      background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.2);
+      white-space: nowrap;
+    }
+    .badge{
+      font-size: 10px; font-weight: 900; letter-spacing: .5px;
+      padding: 5px 8px; border-radius: 999px; text-align:center;
+      background: #6d28d9; border: 1px solid #8b5cf6; color:#fff;
+    }
+    header{ border-bottom: 3px solid #6d28d9 !important; }
+    #destLabel{ margin-top:4px; font-size:16px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+
+    .pickRow{ display:flex; gap:8px; margin-top:8px; }
+    select{
+      flex: 1; min-width: 0;
+      padding: 10px; border-radius: 10px;
+      background: rgba(255,255,255,0.08); color:#fff;
+      border: 1px solid rgba(255,255,255,0.15); font-size: 14px;
+    }
+    .seg{ display:flex; border-radius:10px; overflow:hidden; border:1px solid rgba(255,255,255,0.15); }
+    .seg button{
+      padding: 10px 12px; border:none; font-weight:800; font-size:13px; cursor:pointer;
+      background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.8);
+    }
+    .seg button.active{ background:#22c55e; color:#fff; }
+
+    #map{ position: fixed; top: 128px; left:0; right:0; bottom: 150px; }
+
+    #turnBanner{
+      position: fixed; top: 136px; left: 12px; right: 12px; z-index: 11;
+      display:flex; align-items:center; gap:12px;
+      padding: 10px 14px; border-radius: 14px;
+      background: rgba(17,24,39,0.92); border: 1px solid rgba(255,255,255,0.12);
+      transition: background .2s, border-color .2s;
+    }
+    #turnBanner.soon{ background: rgba(180,83,9,0.95); border-color: rgba(251,191,36,0.8); }
+    #turnArrow{ font-size: 34px; line-height:1; width: 40px; text-align:center; font-weight:900; }
+    #turnText{ font-size: 18px; font-weight: 900; }
+    #turnDist{ font-size: 13px; opacity: .85; margin-top:2px; }
+
+    #errorBanner{
+      position: fixed; top: 210px; left: 12px; right: 12px; z-index: 12; display:none;
+      padding: 10px 12px; border-radius: 12px;
+      background: rgba(239,68,68,0.25); border: 1px solid rgba(239,68,68,0.5); font-size: 13px;
+    }
+
+    .panel{
+      position: fixed; left:0; right:0; bottom:0; z-index: 10;
+      padding: 10px 12px calc(12px + env(safe-area-inset-bottom));
+      background: rgba(10,15,30,0.94); border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .stats{ display:flex; justify-content: space-between; font-size: 12px; opacity:.85; margin-bottom: 6px; }
+    input[type=range]{ width:100%; accent-color:#22c55e; margin: 0 0 10px; }
+    .controls{ display:flex; gap:8px; }
+    .controls button{
+      flex:1; padding: 13px 6px; border:none; border-radius: 12px;
+      font-weight: 900; font-size: 14px; cursor:pointer;
+      background: rgba(255,255,255,0.10); color:#fff; border: 1px solid rgba(255,255,255,0.15);
+    }
+    .controls button.primary{ flex: 1.6; background:#22c55e; border-color:#22c55e; }
+    .controls button:disabled{ opacity:.45; cursor:not-allowed; }
+
+    .car{
+      width: 22px; height: 22px; border-radius: 50%;
+      background:#3b82f6; border: 3px solid #fff;
+      box-shadow: 0 0 0 6px rgba(59,130,246,0.3);
+    }
+    .dest{
+      width: 18px; height: 18px; border-radius: 50%;
+      background:#f59e0b; border: 3px solid #fff;
+      box-shadow: 0 0 0 4px rgba(245,158,11,0.25);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="title">
+      <a id="btnBack" class="back" href="/training.html">&#8592; Back to training</a>
+      <span class="badge">TRAINING &middot; NOT FOR LIVE DRIVING</span>
+    </div>
+    <div id="destLabel">Loading&hellip;</div>
+    <div class="pickRow">
+      <select id="locSelect" disabled><option>Loading locations&hellip;</option></select>
+      <div class="seg">
+        <button id="btnOut" class="active" type="button">Outbound</button>
+        <button id="btnRet" type="button">Return</button>
+      </div>
+    </div>
+  </header>
+
+  <div id="map"></div>
+
+  <div id="turnBanner">
+    <div id="turnArrow">&#8593;</div>
+    <div>
+      <div id="turnText">Press Play to preview</div>
+      <div id="turnDist">&nbsp;</div>
+    </div>
+  </div>
+
+  <div id="errorBanner"><span id="errorText"></span></div>
+
+  <div class="panel">
+    <div class="stats">
+      <span id="statLeft">--</span>
+      <span id="statTurns">--</span>
+      <span id="statPct">0%</span>
+    </div>
+    <input id="scrub" type="range" min="0" max="1000" value="0" disabled />
+    <div class="controls">
+      <button id="btnRestart" type="button" disabled>Restart</button>
+      <button id="btnPlay" class="primary" type="button" disabled>Play</button>
+      <button id="btnSpeed" type="button" disabled>1x</button>
+      <button id="btnOverview" type="button" disabled>Overview</button>
+    </div>
+  </div>
+
+  <script>
+    /***************
+     * CONFIG (same values as nav.html)
+     ***************/
+    const MAPBOX_TOKEN = 'pk.eyJ1IjoiamxvZ2FuM28xMyIsImEiOiJjbWlpNzZuOHYwYnIzM2Nwd2xobTlkZzRyIn0.RiVncFBsWabC5_qCRvEqXg';
+    const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
+    const HUB_ORIGIN = { lat: 36.07744, lng: -115.23981 };
+
+    // Preview tuning
+    const BASE_SPEED_MPS = 18;          // 1x is about 40 mph of "virtual driving"
+    const SPEEDS = [1, 2, 4, 8];
+    const CAMERA_ZOOM = 16.4;
+    const CAMERA_PITCH = 62;
+    const LOOKAHEAD_M = 70;             // camera points toward the road this far ahead
+    const TURN_SAMPLE_M = 25;           // distance either side of a vertex used to measure a turn
+    const TURN_MIN_DELTA_DEG = 30;      // smaller bends are ignored
+    const TURN_MERGE_M = 40;            // turns closer than this are treated as one
+    const TURN_SOON_M = 250;            // banner turns amber inside this distance
+
+    // Arrows as unicode escapes (avoids file-encoding problems)
+    const ARROWS = {
+      straight: '↑', left: '←', right: '→',
+      bearLeft: '↖', bearRight: '↗', uturn: '↶', arrive: '◉'
+    };
+
+    /***************
+     * DOM
+     ***************/
+    const $ = (id) => document.getElementById(id);
+    const locSelect = $('locSelect'), btnOut = $('btnOut'), btnRet = $('btnRet');
+    const destLabel = $('destLabel');
+    const turnBanner = $('turnBanner'), turnArrow = $('turnArrow'), turnText = $('turnText'), turnDist = $('turnDist');
+    const statLeft = $('statLeft'), statTurns = $('statTurns'), statPct = $('statPct');
+    const scrub = $('scrub');
+    const btnRestart = $('btnRestart'), btnPlay = $('btnPlay'), btnSpeed = $('btnSpeed'), btnOverview = $('btnOverview');
+
+    /***************
+     * STATE
+     ***************/
+    let map;
+    let locations = [];
+    let currentIndex = 0;
+    let currentDir = 'outbound';
+    let route = null;            // { coords, cum, total, turns }
+    let progressM = 0;
+    let playing = false;
+    let speedIdx = 0;
+    let lastTs = null;
+    let camBearing = null;
+    let cameraOnRoute = false;
+    let scrubbing = false;
+    let hubMarker = null, destMarker = null, carMarker = null;
+
+    const SRC_ID = 'preview-route';
+    const LYR_BASE = 'preview-route-base';
+    const LYR_AHEAD = 'preview-route-ahead';
+
+    /***************
+     * HELPERS
+     ***************/
+    function getParams(){
+      const p = new URLSearchParams(window.location.search);
+      return {
+        event: p.get('event') || 'RaidersGames',
+        zone: p.get('zone') || '',
+        locationIndex: parseInt(p.get('locationIndex') || '0', 10) || 0,
+        dir: (p.get('dir') || 'outbound').toLowerCase()
+      };
+    }
+
+    function setUrlParam(key, val){
+      try{
+        const url = new URL(window.location.href);
+        url.searchParams.set(key, val);
+        window.history.replaceState({}, '', url.toString());
+      } catch(e){ /* ignore */ }
+    }
+
+    function showError(msg){ $('errorText').textContent = msg; $('errorBanner').style.display = 'block'; }
+    function clearError(){ $('errorBanner').style.display = 'none'; }
+
+    function fmtDist(m){
+      const miles = m / 1609.344;
+      if(miles < 0.1){
+        const ft = Math.max(50, Math.round((m * 3.28084) / 50) * 50);
+        return `${ft} ft`;
+      }
+      return `${miles.toFixed(1)} mi`;
+    }
+
+    function toRad(d){ return d * Math.PI / 180; }
+    function toDeg(r){ return r * 180 / Math.PI; }
+
+    function haversine(a, b){
+      const R = 6371000;
+      const dLat = toRad(b[1] - a[1]);
+      const dLng = toRad(b[0] - a[0]);
+      const s = Math.sin(dLat/2)**2 + Math.cos(toRad(a[1])) * Math.cos(toRad(b[1])) * Math.sin(dLng/2)**2;
+      return 2 * R * Math.asin(Math.sqrt(s));
+    }
+
+    function bearing(a, b){
+      const y = Math.sin(toRad(b[0] - a[0])) * Math.cos(toRad(b[1]));
+      const x = Math.cos(toRad(a[1])) * Math.sin(toRad(b[1])) -
+                Math.sin(toRad(a[1])) * Math.cos(toRad(b[1])) * Math.cos(toRad(b[0] - a[0]));
+      return (toDeg(Math.atan2(y, x)) + 360) % 360;
+    }
+
+    function angleDiff(from, to){
+      let d = (to - from) % 360;
+      if(d > 180) d -= 360;
+      if(d <= -180) d += 360;
+      return d;
+    }
+
+    function normalizeToCoords(geo){
+      if(!geo) return null;
+      if(typeof geo === 'string'){ try { geo = JSON.parse(geo); } catch(e){ return null; } }
+      if(geo.type === 'FeatureCollection') geo = geo.features?.[0];
+      if(geo?.type === 'Feature') geo = geo.geometry;
+      if(!geo) return null;
+      if(geo.type === 'LineString') return geo.coordinates;
+      if(geo.type === 'MultiLineString') return geo.coordinates.flat();
+      return null;
+    }
+
+    /***************
+     * ROUTE MATH
+     ***************/
+    function buildRoute(rawCoords){
+      const coords = [];
+      for(const c of rawCoords || []){
+        const lng = Number(c?.[0]), lat = Number(c?.[1]);
+        if(!Number.isFinite(lng) || !Number.isFinite(lat)) continue;
+        const prev = coords[coords.length - 1];
+        if(prev && prev[0] === lng && prev[1] === lat) continue;
+        coords.push([lng, lat]);
+      }
+      if(coords.length < 2) return null;
+
+      const cum = [0];
+      for(let i = 1; i < coords.length; i++) cum.push(cum[i-1] + haversine(coords[i-1], coords[i]));
+      const r = { coords, cum, total: cum[cum.length - 1] };
+      if(r.total < 1) return null;
+      r.turns = detectTurns(r);
+      return r;
+    }
+
+    function pointAt(r, d){
+      d = Math.max(0, Math.min(r.total, d));
+      let lo = 0, hi = r.cum.length - 1;
+      while(hi - lo > 1){
+        const mid = (lo + hi) >> 1;
+        if(r.cum[mid] <= d) lo = mid; else hi = mid;
+      }
+      const segLen = r.cum[hi] - r.cum[lo];
+      const t = segLen > 0 ? (d - r.cum[lo]) / segLen : 0;
+      const a = r.coords[lo], b = r.coords[hi];
+      return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t];
+    }
+
+    function detectTurns(r){
+      const raw = [];
+      for(let i = 1; i < r.coords.length - 1; i++){
+        const d = r.cum[i];
+        if(d < TURN_SAMPLE_M || d > r.total - TURN_SAMPLE_M) continue;
+        const a = pointAt(r, d - TURN_SAMPLE_M);
+        const b = r.coords[i];
+        const c = pointAt(r, d + TURN_SAMPLE_M);
+        const delta = angleDiff(bearing(a, b), bearing(b, c));
+        if(Math.abs(delta) < TURN_MIN_DELTA_DEG) continue;
+
+        const last = raw[raw.length - 1];
+        if(last && d - last.d < TURN_MERGE_M){
+          if(Math.abs(delta) > Math.abs(last.delta)){ last.d = d; last.delta = delta; }
+          continue;
+        }
+        raw.push({ d, delta });
+      }
+
+      return raw.map(t => {
+        const abs = Math.abs(t.delta);
+        const right = t.delta > 0;
+        if(abs >= 150) return { d: t.d, text: 'Make a U-turn', arrow: ARROWS.uturn };
+        if(abs >= 60)  return { d: t.d, text: right ? 'Turn right' : 'Turn left', arrow: right ? ARROWS.right : ARROWS.left };
+        return { d: t.d, text: right ? 'Bear right' : 'Bear left', arrow: right ? ARROWS.bearRight : ARROWS.bearLeft };
+      });
+    }
+
+    /***************
+     * VIEW UPDATE
+     ***************/
+    function updateView(dt, instant){
+      if(!route) return;
+
+      const pos = pointAt(route, progressM);
+      const ahead = pointAt(route, Math.min(route.total, progressM + LOOKAHEAD_M));
+      const target = (pos[0] === ahead[0] && pos[1] === ahead[1])
+        ? (camBearing ?? 0)
+        : bearing(pos, ahead);
+
+      if(camBearing === null || instant){
+        camBearing = target;
+      } else {
+        const k = 1 - Math.exp(-(dt || 0.016) * 3);
+        camBearing = (camBearing + angleDiff(camBearing, target) * k + 360) % 360;
+      }
+
+      carMarker.setLngLat(pos);
+
+      if(cameraOnRoute){
+        map.jumpTo({ center: pos, bearing: camBearing, zoom: CAMERA_ZOOM, pitch: CAMERA_PITCH });
+      }
+
+      const frac = Math.max(0, Math.min(1, progressM / route.total));
+      if(map.getLayer(LYR_AHEAD)){
+        map.setPaintProperty(LYR_AHEAD, 'line-trim-offset', [0, frac]);
+      }
+
+      // Stats
+      statLeft.textContent = `${fmtDist(route.total - progressM)} left`;
+      const turnsLeft = route.turns.filter(t => t.d > progressM).length;
+      statTurns.textContent = `${turnsLeft} of ${route.turns.length} turns left`;
+      statPct.textContent = `${Math.round(frac * 100)}%`;
+      if(!scrubbing) scrub.value = Math.round(frac * 1000);
+
+      // Turn banner
+      const next = route.turns.find(t => t.d > progressM);
+      if(progressM >= route.total - 1){
+        setBanner(ARROWS.arrive, 'Arrived', currentLocation()?.label || '', true);
+      } else if(next){
+        const dist = next.d - progressM;
+        setBanner(next.arrow, next.text, `in ${fmtDist(dist)}`, dist <= TURN_SOON_M);
+      } else {
+        const dist = route.total - progressM;
+        setBanner(ARROWS.arrive, 'Destination ahead', `in ${fmtDist(dist)}`, dist <= TURN_SOON_M);
+      }
+    }
+
+    function setBanner(arrow, text, sub, soon){
+      turnArrow.textContent = arrow;
+      turnText.textContent = text;
+      turnDist.textContent = sub || ' ';
+      turnBanner.classList.toggle('soon', !!soon);
+    }
+
+    /***************
+     * PLAYBACK
+     ***************/
+    function frame(ts){
+      if(!playing){ lastTs = null; return; }
+      if(lastTs === null) lastTs = ts;
+      const dt = Math.min(0.1, (ts - lastTs) / 1000);
+      lastTs = ts;
+
+      progressM += BASE_SPEED_MPS * SPEEDS[speedIdx] * dt;
+      if(progressM >= route.total){
+        progressM = route.total;
+        updateView(dt, false);
+        pause();
+        btnPlay.textContent = 'Replay';
+        return;
+      }
+      updateView(dt, false);
+      requestAnimationFrame(frame);
+    }
+
+    function play(){
+      if(!route) return;
+      if(progressM >= route.total) progressM = 0;
+      playing = true;
+      btnPlay.textContent = 'Pause';
+
+      if(!cameraOnRoute){
+        // Glide from the overview down to driver's-eye view, then start moving
+        const pos = pointAt(route, progressM);
+        const ahead = pointAt(route, Math.min(route.total, progressM + LOOKAHEAD_M));
+        camBearing = bearing(pos, ahead);
+        map.flyTo({ center: pos, bearing: camBearing, zoom: CAMERA_ZOOM, pitch: CAMERA_PITCH, duration: 1800 });
+        map.once('moveend', () => {
+          cameraOnRoute = true;
+          if(playing){ lastTs = null; requestAnimationFrame(frame); }
+        });
+      } else {
+        lastTs = null;
+        requestAnimationFrame(frame);
+      }
+    }
+
+    function pause(){
+      playing = false;
+      btnPlay.textContent = 'Play';
+    }
+
+    function showOverview(){
+      if(!route) return;
+      pause();
+      cameraOnRoute = false;
+      const b = route.coords.reduce((acc, c) => acc.extend(c), new mapboxgl.LngLatBounds(route.coords[0], route.coords[0]));
+      b.extend([HUB_ORIGIN.lng, HUB_ORIGIN.lat]);
+      map.fitBounds(b, { padding: { top: 110, bottom: 40, left: 40, right: 40 }, pitch: 0, bearing: 0, duration: 900 });
+    }
+
+    /***************
+     * LOAD ROUTE
+     ***************/
+    function currentLocation(){ return locations[currentIndex] || null; }
+
+    // "Back to training" returns to the same event/zone/location the driver picked
+    function updateBackLink(){
+      const { event, zone } = getParams();
+      $('btnBack').href = `/training.html?event=${encodeURIComponent(event)}` +
+        (zone ? `&zone=${encodeURIComponent(zone)}&locationIndex=${currentIndex}` : '');
+    }
+    updateBackLink();
+
+    function loadRoute(){
+      pause();
+      clearError();
+      progressM = 0;
+      camBearing = null;
+      cameraOnRoute = false;
+
+      const loc = currentLocation();
+      updateBackLink();
+      destLabel.textContent = loc?.label || `Location ${currentIndex + 1}`;
+      btnOut.classList.toggle('active', currentDir === 'outbound');
+      btnRet.classList.toggle('active', currentDir === 'return');
+
+      const geo = (currentDir === 'return') ? loc?.returnRouteGeometry : loc?.routeGeometry;
+      route = buildRoute(normalizeToCoords(geo));
+
+      const enabled = !!route;
+      [btnRestart, btnPlay, btnSpeed, btnOverview, scrub].forEach(el => el.disabled = !enabled);
+
+      if(!route){
+        map.getSource(SRC_ID)?.setData({ type: 'FeatureCollection', features: [] });
+        destMarker?.remove(); destMarker = null;
+        carMarker?.remove(); carMarker = null;
+        setBanner(ARROWS.straight, 'No route line', `No ${currentDir} route saved for this location.`, false);
+        statLeft.textContent = '--'; statTurns.textContent = '--'; statPct.textContent = '0%';
+        return;
+      }
+
+      map.getSource(SRC_ID).setData({
+        type: 'Feature', properties: {},
+        geometry: { type: 'LineString', coordinates: route.coords }
+      });
+
+      const end = route.coords[route.coords.length - 1];
+      if(!destMarker){
+        const el = document.createElement('div'); el.className = 'dest';
+        destMarker = new mapboxgl.Marker({ element: el }).setLngLat(end).addTo(map);
+      } else destMarker.setLngLat(end);
+
+      if(!carMarker){
+        const el = document.createElement('div'); el.className = 'car';
+        carMarker = new mapboxgl.Marker({ element: el }).setLngLat(route.coords[0]).addTo(map);
+      }
+
+      btnPlay.textContent = 'Play';
+      updateView(0, true);
+      setBanner(ARROWS.straight, 'Press Play to preview', `${fmtDist(route.total)} · ${route.turns.length} turns`, false);
+      showOverview();
+    }
+
+    async function loadLocations(){
+      const { event, zone, locationIndex, dir } = getParams();
+      currentDir = (dir === 'return') ? 'return' : 'outbound';
+
+      const resp = await fetch(`${API_BASE_URL}?event=${encodeURIComponent(event)}&zone=${encodeURIComponent(zone)}`);
+      if(!resp.ok) throw new Error(`Destinations API error: ${resp.status}`);
+      const data = await resp.json();
+      if(!Array.isArray(data.locations) || !data.locations.length){
+        throw new Error('No locations returned. Check the event and zone in the link (e.g. ?event=RaidersGames&zone=...).');
+      }
+
+      locations = data.locations;
+      currentIndex = Math.min(Math.max(0, locationIndex), locations.length - 1);
+
+      locSelect.innerHTML = '';
+      locations.forEach((loc, i) => {
+        const opt = document.createElement('option');
+        opt.value = String(i);
+        opt.textContent = loc.label || `Location ${i + 1}`;
+        locSelect.appendChild(opt);
+      });
+      locSelect.value = String(currentIndex);
+      locSelect.disabled = false;
+    }
+
+    /***************
+     * MAP INIT
+     ***************/
+    function initMap(){
+      mapboxgl.accessToken = MAPBOX_TOKEN;
+      map = new mapboxgl.Map({
+        container: 'map',
+        style: 'mapbox://styles/mapbox/standard',
+        center: [HUB_ORIGIN.lng, HUB_ORIGIN.lat],
+        zoom: 12, pitch: 0, bearing: 0
+      });
+
+      map.on('error', (e) => {
+        console.error('Mapbox error', e?.error || e);
+      });
+
+      // Stop auto-camera if someone drags the map while paused in driver view
+      map.on('dragstart', () => { if(!playing) cameraOnRoute = false; });
+
+      map.on('load', async () => {
+        map.addSource(SRC_ID, { type: 'geojson', lineMetrics: true, data: { type: 'FeatureCollection', features: [] } });
+        map.addLayer({
+          id: LYR_BASE, type: 'line', source: SRC_ID,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#64748b', 'line-width': 8, 'line-opacity': 0.55 }
+        });
+        map.addLayer({
+          id: LYR_AHEAD, type: 'line', source: SRC_ID,
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#22c55e', 'line-width': 6, 'line-opacity': 0.95, 'line-trim-offset': [0, 0] }
+        });
+
+        hubMarker = new mapboxgl.Marker({ color: '#22c55e' })
+          .setLngLat([HUB_ORIGIN.lng, HUB_ORIGIN.lat])
+          .addTo(map);
+
+        try{
+          await loadLocations();
+          loadRoute();
+        } catch(err){
+          console.error(err);
+          destLabel.textContent = 'Route Preview';
+          setBanner(ARROWS.straight, 'Could not load routes', '', false);
+          showError(err.message);
+        }
+      });
+    }
+
+    /***************
+     * CONTROLS
+     ***************/
+    btnPlay.addEventListener('click', () => { playing ? pause() : play(); });
+
+    btnRestart.addEventListener('click', () => {
+      pause();
+      progressM = 0;
+      cameraOnRoute = false;
+      updateView(0, true);
+      play();
+    });
+
+    btnSpeed.addEventListener('click', () => {
+      speedIdx = (speedIdx + 1) % SPEEDS.length;
+      btnSpeed.textContent = `${SPEEDS[speedIdx]}x`;
+    });
+
+    btnOverview.addEventListener('click', showOverview);
+
+    scrub.addEventListener('pointerdown', () => { scrubbing = true; });
+    scrub.addEventListener('pointerup', () => { scrubbing = false; });
+    scrub.addEventListener('input', () => {
+      if(!route) return;
+      progressM = (Number(scrub.value) / 1000) * route.total;
+      if(!cameraOnRoute && !playing){
+        cameraOnRoute = true;
+      }
+      updateView(0, true);
+    });
+
+    locSelect.addEventListener('change', () => {
+      currentIndex = parseInt(locSelect.value, 10) || 0;
+      setUrlParam('locationIndex', currentIndex);
+      loadRoute();
+    });
+
+    btnOut.addEventListener('click', () => {
+      if(currentDir === 'outbound') return;
+      currentDir = 'outbound'; setUrlParam('dir', currentDir); loadRoute();
+    });
+    btnRet.addEventListener('click', () => {
+      if(currentDir === 'return') return;
+      currentDir = 'return'; setUrlParam('dir', currentDir); loadRoute();
+    });
+
+    // Spacebar = play/pause (handy when presenting from a laptop)
+    document.addEventListener('keydown', (e) => {
+      if(e.code === 'Space' && e.target.tagName !== 'SELECT'){
+        e.preventDefault();
+        if(route) (playing ? pause() : play());
+      }
+    });
+
+    /***************
+     * BOOT
+     ***************/
+    initMap();
+  </script>
+</body>
+</html>

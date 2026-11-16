@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex">
+    <title>TRAINING - LV Transportation Route Preview</title>
+
+    <!--
+      DRIVER TRAINING PAGE (route preview only)
+      - Read-only. The ONLY call it makes is GET to the Destinations API (zones/locations).
+      - No car number, no passenger count, no Driver Tracking, no Zone Totals, no GPS.
+      - Deliberately has NO manifest / home-screen icon so drivers don't save it as the app.
+      - Links:  Raiders: /training.html     F1: /training.html?event=Formula1
+      - ROLLBACK: delete training.html and route-preview.html. Nothing else to undo.
+    -->
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+            background-color: #f3effa;
+        }
+
+        /* Permanent training banner - always visible, never scrolls away */
+        .training-bar {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            margin: 0 -20px 30px;
+            padding: 12px 16px;
+            background: #6d28d9;
+            color: #fff;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        .training-bar small {
+            display: block;
+            font-weight: normal;
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border-top: 6px solid #6d28d9;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #4c1d95;
+            text-align: center;
+            margin: 0 0 6px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #6b5b95;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .form-group { margin-bottom: 20px; }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: white;
+        }
+        select:focus { outline: none; border-color: #6d28d9; }
+        select:disabled { background-color: #f9f9f9; color: #999; }
+
+        .button-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .nav-button {
+            padding: 15px 10px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .nav-button:disabled { background-color: #cccccc; cursor: not-allowed; }
+
+        .go-button { background-color: #6d28d9; }
+        .go-button:hover:not(:disabled) { background-color: #5b21b6; }
+
+        .return-button { background-color: #b45309; }
+        .return-button:hover:not(:disabled) { background-color: #92400e; }
+
+        .photo-link {
+            display: none;
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6d28d9;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .loading { text-align: center; color: #666; margin: 10px 0; }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            border: 1px solid #f5c6cb;
+        }
+
+        .footnote {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+            text-align: center;
+        }
+
+        /* Photo Modal Styles (same as index.html) */
+        .photo-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0; top: 0;
+            width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.8);
+        }
+        .photo-modal-content {
+            position: relative;
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 80%;
+            overflow: auto;
+        }
+        .photo-modal img { width: 100%; height: auto; border-radius: 8px; }
+        .photo-modal h3 { margin-top: 0; color: #333; text-align: center; }
+        .photo-modal-close {
+            position: absolute;
+            top: 10px; right: 15px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #666;
+        }
+        .photo-modal-close:hover { color: #000; }
+        .parking-info { text-align: center; margin-top: 15px; color: #666; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="training-bar">
+        TRAINING MODE &ndash; NOT FOR LIVE DRIVING
+        <small>Preview routes before your shift. Nothing here is recorded.</small>
+    </div>
+
+    <div class="form-container">
+        <h1>Route Training</h1>
+        <div class="subtitle" id="eventInfo"></div>
+
+        <form id="trainingForm" onsubmit="return false;">
+            <div class="form-group">
+                <label for="zone">Select Zone:</label>
+                <select id="zone" name="zone">
+                    <option value="">Loading zones...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Select Location:</label>
+                <select id="location" name="location" disabled>
+                    <option value="">-- Select a Zone First --</option>
+                </select>
+                <span class="photo-link" id="photoLink">View parking photo</span>
+            </div>
+
+            <div class="button-container">
+                <button type="button" class="nav-button go-button" id="goButton" disabled>
+                    Preview route to destination
+                </button>
+                <button type="button" class="nav-button return-button" id="returnButton" disabled>
+                    Preview return to Hub
+                </button>
+            </div>
+        </form>
+
+        <div class="loading" id="loadingMessage" style="display: none;"></div>
+        <div class="error" id="errorMessage" style="display: none;"></div>
+
+        <div class="footnote">
+            For live driving, use the regular LV Transportation link.
+        </div>
+    </div>
+
+    <!-- Photo Modal -->
+    <div class="photo-modal" id="photoModal">
+        <div class="photo-modal-content">
+            <span class="photo-modal-close" id="closeModal">&times;</span>
+            <h3 id="modalTitle">Parking Location</h3>
+            <img id="modalImage" src="" alt="Parking location">
+            <div class="parking-info">
+                <p id="parkingInstructionText"><strong>Follow the arrow in the image to find your parking spot</strong></p>
+                <p>Tap "Preview route to destination" to watch the drive</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Read-only Destinations API (same one index.html uses for zones/locations)
+        const API_BASE_URL = 'https://630rul04gh.execute-api.us-west-1.amazonaws.com/prod/destinations';
+        const PHOTO_BASE_URL = 'https://d3czxqxcb96n5u.cloudfront.net/';
+        const PREVIEW_PAGE = '/route-preview.html';
+
+        const zoneSelect = document.getElementById('zone');
+        const locationSelect = document.getElementById('location');
+        const goButton = document.getElementById('goButton');
+        const returnButton = document.getElementById('returnButton');
+        const photoLink = document.getElementById('photoLink');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const errorMessage = document.getElementById('errorMessage');
+        const eventInfo = document.getElementById('eventInfo');
+
+        const photoModal = document.getElementById('photoModal');
+        const modalImage = document.getElementById('modalImage');
+        const modalTitle = document.getElementById('modalTitle');
+        const closeModal = document.getElementById('closeModal');
+        const parkingInstructionText = document.getElementById('parkingInstructionText');
+
+        let currentLocations = {};
+        let currentEvent = '';
+
+        // Friendly names for the event line under the title
+        const EVENT_NAMES = { RaidersGames: 'Raiders Games', Formula1: 'Formula 1' };
+
+        function getParams() {
+            const p = new URLSearchParams(window.location.search);
+            return {
+                event: p.get('event') || 'RaidersGames',
+                zone: p.get('zone') || '',
+                locationIndex: p.get('locationIndex') || ''
+            };
+        }
+
+        // Keep zone/location in the address bar so "Back to training" lands on the same picks
+        function updateUrl() {
+            try {
+                const url = new URL(window.location.href);
+                url.searchParams.set('event', currentEvent);
+                if (zoneSelect.value) url.searchParams.set('zone', zoneSelect.value); else url.searchParams.delete('zone');
+                if (locationSelect.value !== '') url.searchParams.set('locationIndex', locationSelect.value); else url.searchParams.delete('locationIndex');
+                window.history.replaceState({}, '', url.toString());
+            } catch (e) { /* ignore */ }
+        }
+
+        window.addEventListener('load', async function() {
+            const params = getParams();
+            currentEvent = params.event;
+            eventInfo.textContent = `Event: ${EVENT_NAMES[currentEvent] || currentEvent}`;
+
+            await loadZones();
+
+            // Coming back from a preview? Restore the same zone + location (no photo pop-up)
+            if (params.zone && [...zoneSelect.options].some(o => o.value === params.zone)) {
+                zoneSelect.value = params.zone;
+                await loadLocations(params.zone);
+                if (params.locationIndex !== '' && currentLocations[params.locationIndex]) {
+                    locationSelect.value = params.locationIndex;
+                }
+                onLocationChanged(false);
+            }
+        });
+
+        async function loadZones() {
+            try {
+                showLoading('Loading zones...');
+                const response = await fetch(`${API_BASE_URL}?event=${encodeURIComponent(currentEvent)}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+
+                zoneSelect.innerHTML = '<option value="">-- Choose a Zone --</option>';
+                (data.zones || [])
+                    .filter(zone => String(zone).trim().toUpperCase() !== 'Z') // Zone Z is retired
+                    .forEach(zone => {
+                        const option = document.createElement('option');
+                        option.value = zone;
+                        option.textContent = `Zone ${zone}`;
+                        zoneSelect.appendChild(option);
+                    });
+                hideLoading();
+            } catch (error) {
+                console.error('Error loading zones:', error);
+                showError('Failed to load zones. Please refresh the page.');
+                zoneSelect.innerHTML = '<option value="">Error loading zones</option>';
+            }
+        }
+
+        async function loadLocations(zone) {
+            locationSelect.innerHTML = '<option value="">-- Choose a Location --</option>';
+            locationSelect.disabled = true;
+            currentLocations = {};
+            updateButtonState();
+            if (!zone) return;
+
+            try {
+                showLoading('Loading locations...');
+                const response = await fetch(`${API_BASE_URL}?event=${encodeURIComponent(currentEvent)}&zone=${encodeURIComponent(zone)}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+
+                (data.locations || []).forEach((location, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = location.label;
+                    locationSelect.appendChild(option);
+
+                    currentLocations[index] = {
+                        label: location.label,
+                        parkingPhoto: location.parkingPhoto || '',
+                        zone: zone,
+                        locationIndex: index,
+                        hasOutbound: !!location.routeGeometry,
+                        hasReturn: !!location.returnRouteGeometry
+                    };
+                });
+
+                locationSelect.disabled = false;
+                hideLoading();
+            } catch (error) {
+                console.error('Error loading locations:', error);
+                showError('Failed to load locations for this zone.');
+            }
+        }
+
+        zoneSelect.addEventListener('change', async function() {
+            await loadLocations(this.value);
+            updateUrl();
+        });
+
+        locationSelect.addEventListener('change', function() { onLocationChanged(true); });
+
+        function onLocationChanged(allowPopup) {
+            updateButtonState();
+            updateUrl();
+            const idx = locationSelect.value;
+            const hasPhoto = idx !== '' && hasValidParkingPhoto(idx);
+            photoLink.style.display = hasPhoto ? 'inline-block' : 'none';
+            if (allowPopup && hasPhoto) showParkingPhoto(idx);
+        }
+
+        // Only a location is required. Buttons are disabled if that direction has no saved route line.
+        function updateButtonState() {
+            const loc = currentLocations[locationSelect.value];
+            goButton.disabled = !(loc && loc.hasOutbound);
+            returnButton.disabled = !(loc && loc.hasReturn);
+
+            if (loc && (!loc.hasOutbound || !loc.hasReturn)) {
+                const missing = !loc.hasOutbound && !loc.hasReturn ? 'either direction'
+                              : !loc.hasOutbound ? 'the outbound trip' : 'the return trip';
+                showError(`No preview is available yet for ${missing} at this location.`);
+            } else {
+                errorMessage.style.display = 'none';
+            }
+        }
+
+        function hasValidParkingPhoto(locationIndex) {
+            const location = currentLocations[locationIndex];
+            return !!(location && location.parkingPhoto && location.parkingPhoto.trim().length > 0);
+        }
+
+        function showParkingPhoto(locationIndex) {
+            const location = currentLocations[locationIndex];
+            const photoUrl = location.parkingPhoto.trim();
+            if (!photoUrl) return;
+
+            modalImage.src = photoUrl.startsWith('http') ? photoUrl : `${PHOTO_BASE_URL}${photoUrl}`;
+            modalTitle.textContent = `Parking: ${location.label}`;
+            modalImage.alt = `Parking location for ${location.label}`;
+
+            const label = location.label.toLowerCase();
+            parkingInstructionText.innerHTML = (label.includes('caesar') || label.includes('harrah'))
+                ? '<strong>Proceed inside garage to Nobu Rideshare Valet area</strong>'
+                : '<strong>Follow the arrow in the image to find your parking spot</strong>';
+
+            modalImage.onerror = function() { photoModal.style.display = 'none'; };
+            photoModal.style.display = 'block';
+        }
+
+        photoLink.addEventListener('click', function() {
+            if (locationSelect.value !== '') showParkingPhoto(locationSelect.value);
+        });
+        closeModal.addEventListener('click', function() { photoModal.style.display = 'none'; });
+        window.addEventListener('click', function(e) { if (e.target === photoModal) photoModal.style.display = 'none'; });
+
+        function openPreview(dir) {
+            const loc = currentLocations[locationSelect.value];
+            if (!loc) { showError('Please select a zone and location.'); return; }
+            window.location.href =
+                `${PREVIEW_PAGE}?event=${encodeURIComponent(currentEvent)}` +
+                `&zone=${encodeURIComponent(loc.zone)}` +
+                `&locationIndex=${encodeURIComponent(loc.locationIndex)}` +
+                `&dir=${dir}`;
+        }
+
+        goButton.addEventListener('click', function() { openPreview('outbound'); });
+        returnButton.addEventListener('click', function() { openPreview('return'); });
+
+        function showLoading(message) {
+            loadingMessage.textContent = message;
+            loadingMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+        }
+        function hideLoading() { loadingMessage.style.display = 'none'; }
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            loadingMessage.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
