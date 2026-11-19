@@ -674,6 +674,9 @@
                 // Check if this is Caesar's/Harrah's location
                 if (locationLabel.includes('caesar') || locationLabel.includes('harrah')) {
                     parkingInstructionText.innerHTML = '<strong>📍 Proceed inside garage to Nobu Rideshare Valet area</strong>';
+                } else if (currentEvent === 'Formula1' && locationLabel.includes('fashion show')) {
+                    // F1 Fashion Show Mall: drivers stop at the Saks turnabout curb
+                    parkingInstructionText.innerHTML = '<strong>📍 Park against the curb in the Saks Fifth Avenue turnabout</strong>';
                 } else {
                     parkingInstructionText.innerHTML = '<strong>📍 Follow the arrow in the image to find your parking spot</strong>';
                 }

@@ -403,9 +403,14 @@
             modalImage.alt = `Parking location for ${location.label}`;
 
             const label = location.label.toLowerCase();
-            parkingInstructionText.innerHTML = (label.includes('caesar') || label.includes('harrah'))
-                ? '<strong>Proceed inside garage to Nobu Rideshare Valet area</strong>'
-                : '<strong>Follow the arrow in the image to find your parking spot</strong>';
+            if (label.includes('caesar') || label.includes('harrah')) {
+                parkingInstructionText.innerHTML = '<strong>Proceed inside garage to Nobu Rideshare Valet area</strong>';
+            } else if (currentEvent === 'Formula1' && label.includes('fashion show')) {
+                // F1 Fashion Show Mall: drivers stop at the Saks turnabout curb
+                parkingInstructionText.innerHTML = '<strong>Park against the curb in the Saks Fifth Avenue turnabout</strong>';
+            } else {
+                parkingInstructionText.innerHTML = '<strong>Follow the arrow in the image to find your parking spot</strong>';
+            }
 
             modalImage.onerror = function() { photoModal.style.display = 'none'; };
             photoModal.style.display = 'block';
