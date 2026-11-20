@@ -1,9 +1,9 @@
-﻿    "returnRouteInstructions": {
+    "returnRouteInstructions": {
         "L": [
             {
                 "M": {
                     "instruction": {
-                        "S": "Drive out of the Harmon Crossings Apartments parking lot."
+                        "S": "Drive out of the Harmon Crossing pick-up area."
                     },
                     "maneuver": {
                         "M": {
@@ -13,10 +13,10 @@
                             "location": {
                                 "L": [
                                     {
-                                        "N": "-115.158707"
+                                        "N": "-115.158543"
                                     },
                                     {
-                                        "N": "36.107088"
+                                        "N": "36.106336"
                                     }
                                 ]
                             },
@@ -24,7 +24,7 @@
                                 "N": "0"
                             },
                             "bearing_after": {
-                                "N": "138"
+                                "N": "65"
                             }
                         }
                     },
@@ -32,10 +32,10 @@
                         "S": ""
                     },
                     "distance": {
-                        "N": "26.4"
+                        "N": "16.9"
                     },
                     "duration": {
-                        "N": "2.2"
+                        "N": "1.4"
                     }
                 }
             },
@@ -52,18 +52,18 @@
                             "location": {
                                 "L": [
                                     {
-                                        "N": "-115.158414"
+                                        "N": "-115.158373"
                                     },
                                     {
-                                        "N": "36.107068"
+                                        "N": "36.106401"
                                     }
                                 ]
                             },
                             "bearing_before": {
-                                "N": "95"
+                                "N": "65"
                             },
                             "bearing_after": {
-                                "N": "178"
+                                "N": "162"
                             },
                             "modifier": {
                                 "S": "right"
@@ -74,10 +74,10 @@
                         "S": "Lamar Circle"
                     },
                     "distance": {
-                        "N": "62.4"
+                        "N": "10.7"
                     },
                     "duration": {
-                        "N": "5.2"
+                        "N": "0.9"
                     }
                 }
             },
@@ -94,18 +94,18 @@
                             "location": {
                                 "L": [
                                     {
-                                        "N": "-115.158384"
+                                        "N": "-115.158337"
                                     },
                                     {
-                                        "N": "36.106507"
+                                        "N": "36.106309"
                                     }
                                 ]
                             },
                             "bearing_before": {
-                                "N": "177"
+                                "N": "162"
                             },
                             "bearing_after": {
-                                "N": "165"
+                                "N": "155"
                             }
                         }
                     },
@@ -113,10 +113,10 @@
                         "S": "Lamar Circle"
                     },
                     "distance": {
-                        "N": "698.0"
+                        "N": "675.5"
                     },
                     "duration": {
-                        "N": "58.2"
+                        "N": "56.3"
                     }
                 }
             },

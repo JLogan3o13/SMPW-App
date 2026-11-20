@@ -1,4 +1,4 @@
-﻿    "routeInstructions": {
+    "routeInstructions": {
         "L": [
             {
                 "M": {
@@ -651,7 +651,7 @@
             {
                 "M": {
                     "instruction": {
-                        "S": "Drive north on Kelch Drive (becomes Lamar Circle) toward East Harmon Avenue."
+                        "S": "Drive north on Kelch Drive (becomes Lamar Circle) toward the Harmon Crossing drop-off."
                     },
                     "maneuver": {
                         "M": {
@@ -680,17 +680,17 @@
                         "S": "Kelch Drive"
                     },
                     "distance": {
-                        "N": "719.2"
+                        "N": "637.5"
                     },
                     "duration": {
-                        "N": "59.9"
+                        "N": "53.1"
                     }
                 }
             },
             {
                 "M": {
                     "instruction": {
-                        "S": "Turn left into the Harmon Crossings Apartments parking lot."
+                        "S": "Turn left into the Harmon Crossing drop-off and pick-up area."
                     },
                     "maneuver": {
                         "M": {
@@ -700,18 +700,18 @@
                             "location": {
                                 "L": [
                                     {
-                                        "N": "-115.158331"
+                                        "N": "-115.158282"
                                     },
                                     {
-                                        "N": "36.107071"
+                                        "N": "36.106343"
                                     }
                                 ]
                             },
                             "bearing_before": {
-                                "N": "1"
+                                "N": "329"
                             },
                             "bearing_after": {
-                                "N": "274"
+                                "N": "268"
                             },
                             "modifier": {
                                 "S": "left"
@@ -722,17 +722,17 @@
                         "S": ""
                     },
                     "distance": {
-                        "N": "44.3"
+                        "N": "23.5"
                     },
                     "duration": {
-                        "N": "3.7"
+                        "N": "2.0"
                     }
                 }
             },
             {
                 "M": {
                     "instruction": {
-                        "S": "You have arrived at your destination."
+                        "S": "You have arrived at the Harmon Crossing drop-off."
                     },
                     "maneuver": {
                         "M": {
@@ -742,15 +742,15 @@
                             "location": {
                                 "L": [
                                     {
-                                        "N": "-115.158822"
+                                        "N": "-115.158543"
                                     },
                                     {
-                                        "N": "36.107099"
+                                        "N": "36.106336"
                                     }
                                 ]
                             },
                             "bearing_before": {
-                                "N": "273"
+                                "N": "268"
                             },
                             "bearing_after": {
                                 "N": "0"
