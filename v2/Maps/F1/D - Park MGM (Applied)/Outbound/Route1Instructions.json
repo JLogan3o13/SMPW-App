@@ -1,0 +1,487 @@
+"Route1Instructions": {
+    "L": [
+      {
+        "M": {
+          "distance": {
+            "N": "563"
+          },
+          "duration": {
+            "N": "46.9"
+          },
+          "instruction": {
+            "S": "Drive EAST on W. Patrick Ln."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "61"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.239943"
+                  },
+                  {
+                    "N": "36.077793"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Patrick Ln."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "20"
+          },
+          "duration": {
+            "N": "1.7"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "358"
+              },
+              "bearing_before": {
+                "N": "85"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.23371"
+                  },
+                  {
+                    "N": "36.078012"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "776.5"
+          },
+          "duration": {
+            "N": "64.7"
+          },
+          "instruction": {
+            "S": "Drive NORTH on S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "356"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233702"
+                  },
+                  {
+                    "N": "36.07819"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "20"
+          },
+          "duration": {
+            "N": "1.7"
+          },
+          "instruction": {
+            "S": "Turn RIGHT onto W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "85"
+              },
+              "bearing_before": {
+                "N": "357"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233975"
+                  },
+                  {
+                    "N": "36.085164"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "5209.5"
+          },
+          "duration": {
+            "N": "434.1"
+          },
+          "instruction": {
+            "S": "Drive EAST on W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "88"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233765"
+                  },
+                  {
+                    "N": "36.085194"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "20"
+          },
+          "duration": {
+            "N": "1.7"
+          },
+          "instruction": {
+            "S": "Bear RIGHT onto Frank Sinatra Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "158"
+              },
+              "bearing_before": {
+                "N": "90"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.1759"
+                  },
+                  {
+                    "N": "36.085862"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "slight right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "Frank Sinatra Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "2748.5"
+          },
+          "duration": {
+            "N": "229"
+          },
+          "instruction": {
+            "S": "Drive north on Frank Sinatra Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "178"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.175778"
+                  },
+                  {
+                    "N": "36.085716"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "Frank Sinatra Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "20"
+          },
+          "duration": {
+            "N": "1.7"
+          },
+          "instruction": {
+            "S": "Turn RIGHT onto Bruno Mars Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "89"
+              },
+              "bearing_before": {
+                "N": "348"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.179773"
+                  },
+                  {
+                    "N": "36.103712"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "Bruno Mars Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "312.3"
+          },
+          "duration": {
+            "N": "26"
+          },
+          "instruction": {
+            "S": "Drive EAST on Bruno Mars Dr. to the stop sign at New York-New York."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "89"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17955"
+                  },
+                  {
+                    "N": "36.103716"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "Bruno Mars Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "20"
+          },
+          "duration": {
+            "N": "1.7"
+          },
+          "instruction": {
+            "S": "Turn LEFT at the New York New York stop sign into the Park MGM valet and drop-off."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "345"
+              },
+              "bearing_before": {
+                "N": "88"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.176169"
+                  },
+                  {
+                    "N": "36.103999"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "116.2"
+          },
+          "duration": {
+            "N": "9.7"
+          },
+          "instruction": {
+            "S": "Follow the through lane past the valet canopy to the sidewalk just before the crosswalk."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "332"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17619"
+                  },
+                  {
+                    "N": "36.104164"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "0"
+          },
+          "duration": {
+            "N": "0"
+          },
+          "instruction": {
+            "S": "You have arrived at the Park MGM drop-off."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "0"
+              },
+              "bearing_before": {
+                "N": "272"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.177281"
+                  },
+                  {
+                    "N": "36.104538"
+                  }
+                ]
+              },
+              "type": {
+                "S": "arrive"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      }
+    ]
+  }

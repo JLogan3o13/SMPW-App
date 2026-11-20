@@ -1,0 +1,529 @@
+"Route1Instructions": {
+    "L": [
+      {
+        "M": {
+          "distance": {
+            "N": "561.2"
+          },
+          "duration": {
+            "N": "46.8"
+          },
+          "instruction": {
+            "S": "Drive EAST on W. Patrick Ln."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "77"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.239938"
+                  },
+                  {
+                    "N": "36.077801"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Patrick Ln."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "30.4"
+          },
+          "duration": {
+            "N": "2.5"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "359"
+              },
+              "bearing_before": {
+                "N": "89"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.23371"
+                  },
+                  {
+                    "N": "36.077984"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "771.4"
+          },
+          "duration": {
+            "N": "64.3"
+          },
+          "instruction": {
+            "S": "Drive NORTH on S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "357"
+              },
+              "bearing_before": {
+                "N": "359"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233713"
+                  },
+                  {
+                    "N": "36.078256"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "51.7"
+          },
+          "duration": {
+            "N": "4.3"
+          },
+          "instruction": {
+            "S": "Turn RIGHT onto W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "88"
+              },
+              "bearing_before": {
+                "N": "4"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233959"
+                  },
+                  {
+                    "N": "36.085184"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "3905.1"
+          },
+          "duration": {
+            "N": "325.4"
+          },
+          "instruction": {
+            "S": "Drive EAST on W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "89"
+              },
+              "bearing_before": {
+                "N": "88"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233384"
+                  },
+                  {
+                    "N": "36.085202"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "45.5"
+          },
+          "duration": {
+            "N": "3.8"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto S. Valley View Blvd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "61"
+              },
+              "bearing_before": {
+                "N": "90"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.189995"
+                  },
+                  {
+                    "N": "36.08631"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Valley View Blvd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "2462.6"
+          },
+          "duration": {
+            "N": "205.2"
+          },
+          "instruction": {
+            "S": "Drive NORTH on S. Valley View Blvd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "360"
+              },
+              "bearing_before": {
+                "N": "3"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.189766"
+                  },
+                  {
+                    "N": "36.086571"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Valley View Blvd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "32.6"
+          },
+          "duration": {
+            "N": "2.7"
+          },
+          "instruction": {
+            "S": "Stay in the far right lane to take the EAST ramp onto Harmon Ave."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "73"
+              },
+              "bearing_before": {
+                "N": "50"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.188201"
+                  },
+                  {
+                    "N": "36.108347"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "slight right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Harmon Ave."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "888.4"
+          },
+          "duration": {
+            "N": "74"
+          },
+          "instruction": {
+            "S": "Drive EAST on Harmon Ave. toward the Vdara hotel."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "94"
+              },
+              "bearing_before": {
+                "N": "81"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.18785"
+                  },
+                  {
+                    "N": "36.108412"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Harmon Ave."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "16"
+          },
+          "duration": {
+            "N": "1.3"
+          },
+          "instruction": {
+            "S": "Bear RIGHT onto the Aria/Vdara hotel ramp."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "96"
+              },
+              "bearing_before": {
+                "N": "71"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.178034"
+                  },
+                  {
+                    "N": "36.108134"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "slight right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "46.7"
+          },
+          "duration": {
+            "N": "3.9"
+          },
+          "instruction": {
+            "S": "Follow the ramp toward Vdara Valet Parking."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "98"
+              },
+              "bearing_before": {
+                "N": "92"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17786"
+                  },
+                  {
+                    "N": "36.108104"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "102.5"
+          },
+          "duration": {
+            "N": "8.5"
+          },
+          "instruction": {
+            "S": "Follow the ramp as it curves left toward Vdara Valet Parking."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "52"
+              },
+              "bearing_before": {
+                "N": "92"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17735"
+                  },
+                  {
+                    "N": "36.10809"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "slight left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "0"
+          },
+          "duration": {
+            "N": "0"
+          },
+          "instruction": {
+            "S": "You have arrived at Vdara Valet Parking."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "0"
+              },
+              "bearing_before": {
+                "N": "338"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.177123"
+                  },
+                  {
+                    "N": "36.108864"
+                  }
+                ]
+              },
+              "type": {
+                "S": "arrive"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      }
+    ]
+  }

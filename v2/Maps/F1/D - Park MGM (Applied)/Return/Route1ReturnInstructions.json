@@ -1,0 +1,490 @@
+"Route1ReturnInstructions": {
+    "L": [
+      {
+        "M": {
+          "distance": {
+            "N": "185.3"
+          },
+          "duration": {
+            "N": "15.4"
+          },
+          "instruction": {
+            "S": "Drive SOUTH from the Park MGM Rideshare area."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "186"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17746"
+                  },
+                  {
+                    "N": "36.10538"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "31.3"
+          },
+          "duration": {
+            "N": "2.6"
+          },
+          "instruction": {
+            "S": "Turn RIGHT onto Bruno Mars Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "259"
+              },
+              "bearing_before": {
+                "N": "166"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17736"
+                  },
+                  {
+                    "N": "36.10381"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "Bruno Mars Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "210.6"
+          },
+          "duration": {
+            "N": "17.6"
+          },
+          "instruction": {
+            "S": "Drive WEST on Bruno Mars Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "269"
+              },
+              "bearing_before": {
+                "N": "264"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.1777"
+                  },
+                  {
+                    "N": "36.10377"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "Bruno Mars Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "34"
+          },
+          "duration": {
+            "N": "2.8"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto Frank Sinatra Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "171"
+              },
+              "bearing_before": {
+                "N": "270"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.18004"
+                  },
+                  {
+                    "N": "36.10374"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "Frank Sinatra Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "2803.9"
+          },
+          "duration": {
+            "N": "233.7"
+          },
+          "instruction": {
+            "S": "Drive SOUTH on Frank Sinatra Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "165"
+              },
+              "bearing_before": {
+                "N": "169"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17997"
+                  },
+                  {
+                    "N": "36.10344"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "Frank Sinatra Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "31.6"
+          },
+          "duration": {
+            "N": "2.6"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "266"
+              },
+              "bearing_before": {
+                "N": "2"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17562"
+                  },
+                  {
+                    "N": "36.08617"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "5243"
+          },
+          "duration": {
+            "N": "436.9"
+          },
+          "instruction": {
+            "S": "Drive WEST on W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "264"
+              },
+              "bearing_before": {
+                "N": "265"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.17597"
+                  },
+                  {
+                    "N": "36.08615"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "44.6"
+          },
+          "duration": {
+            "N": "3.7"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "177"
+              },
+              "bearing_before": {
+                "N": "269"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.23406"
+                  },
+                  {
+                    "N": "36.08526"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "762.3"
+          },
+          "duration": {
+            "N": "63.5"
+          },
+          "instruction": {
+            "S": "Drive SOUTH on S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "182"
+              },
+              "bearing_before": {
+                "N": "177"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.23403"
+                  },
+                  {
+                    "N": "36.08486"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "71.9"
+          },
+          "duration": {
+            "N": "6"
+          },
+          "instruction": {
+            "S": "Turn RIGHT onto W. Patrick Ln."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "268"
+              },
+              "bearing_before": {
+                "N": "177"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.23371"
+                  },
+                  {
+                    "N": "36.07801"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Patrick Ln."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "487.3"
+          },
+          "duration": {
+            "N": "40.6"
+          },
+          "instruction": {
+            "S": "Drive WEST on W. Patrick Ln."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "269"
+              },
+              "bearing_before": {
+                "N": "268"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.23451"
+                  },
+                  {
+                    "N": "36.07799"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Patrick Ln."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "0"
+          },
+          "duration": {
+            "N": "0"
+          },
+          "instruction": {
+            "S": "Your destination is on the left."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "0"
+              },
+              "bearing_before": {
+                "N": "178"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.23961"
+                  },
+                  {
+                    "N": "36.07766"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "arrive"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      }
+    ]
+  }

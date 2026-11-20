@@ -1,0 +1,772 @@
+"Route1Instructions": {
+    "L": [
+      {
+        "M": {
+          "distance": {
+            "N": "561.4"
+          },
+          "duration": {
+            "N": "46.8"
+          },
+          "instruction": {
+            "S": "Drive EAST on W. Patrick Ln."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "82"
+              },
+              "bearing_before": {
+                "N": "0"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.239936"
+                  },
+                  {
+                    "N": "36.077817"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Patrick Ln"
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "60.5"
+          },
+          "duration": {
+            "N": "5"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "358"
+              },
+              "bearing_before": {
+                "N": "89"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233697"
+                  },
+                  {
+                    "N": "36.077995"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "744.2"
+          },
+          "duration": {
+            "N": "62"
+          },
+          "instruction": {
+            "S": "Drive NORTH on S. Torrey Pines Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "358"
+              },
+              "bearing_before": {
+                "N": "356"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233733"
+                  },
+                  {
+                    "N": "36.078538"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Torrey Pines Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "92.4"
+          },
+          "duration": {
+            "N": "7.7"
+          },
+          "instruction": {
+            "S": "Turn RIGHT onto W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "89"
+              },
+              "bearing_before": {
+                "N": "2"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.233973"
+                  },
+                  {
+                    "N": "36.085223"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "3868.9"
+          },
+          "duration": {
+            "N": "322.4"
+          },
+          "instruction": {
+            "S": "Drive EAST on W. Russell Rd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "89"
+              },
+              "bearing_before": {
+                "N": "89"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.232945"
+                  },
+                  {
+                    "N": "36.085236"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Russell Rd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "34.7"
+          },
+          "duration": {
+            "N": "2.9"
+          },
+          "instruction": {
+            "S": "Turn LEFT onto S. Valley View Blvd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "67"
+              },
+              "bearing_before": {
+                "N": "91"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.189965"
+                  },
+                  {
+                    "N": "36.086308"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Valley View Blvd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "2471.9"
+          },
+          "duration": {
+            "N": "206"
+          },
+          "instruction": {
+            "S": "Drive NORTH on S. Valley View Blvd."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "359"
+              },
+              "bearing_before": {
+                "N": "51"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.18972"
+                  },
+                  {
+                    "N": "36.086466"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "S. Valley View Blvd."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "41.9"
+          },
+          "duration": {
+            "N": "3.5"
+          },
+          "instruction": {
+            "S": "Stay in the far right lane to take the EAST ramp onto Harmon Ave."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "69"
+              },
+              "bearing_before": {
+                "N": "47"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.188268"
+                  },
+                  {
+                    "N": "36.108321"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "slight right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Harmon Ave."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "402.1"
+          },
+          "duration": {
+            "N": "33.5"
+          },
+          "instruction": {
+            "S": "Drive EAST on Harmon Ave."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "90"
+              },
+              "bearing_before": {
+                "N": "81"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.187823"
+                  },
+                  {
+                    "N": "36.108413"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "W. Harmon Ave."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "53.4"
+          },
+          "duration": {
+            "N": "4.5"
+          },
+          "instruction": {
+            "S": "At the light, turn LEFT onto Aldebaran Ave."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "12"
+              },
+              "bearing_before": {
+                "N": "92"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.183383"
+                  },
+                  {
+                    "N": "36.108152"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "Aldebaran Ave."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "31.7"
+          },
+          "duration": {
+            "N": "2.6"
+          },
+          "instruction": {
+            "S": "Drive NORTH on Aldebaran Ave."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "27"
+              },
+              "bearing_before": {
+                "N": "9"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.183263"
+                  },
+                  {
+                    "N": "36.108621"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "Aldebaran Ave."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "34.4"
+          },
+          "duration": {
+            "N": "2.9"
+          },
+          "instruction": {
+            "S": "Bear RIGHT onto Jerry Lewis Way."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "82"
+              },
+              "bearing_before": {
+                "N": "27"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.183103"
+                  },
+                  {
+                    "N": "36.108873"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "Jerry Lewis Way"
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "138.9"
+          },
+          "duration": {
+            "N": "11.6"
+          },
+          "instruction": {
+            "S": "Drive EAST on Jerry Lewis Way."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "92"
+              },
+              "bearing_before": {
+                "N": "84"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.182727"
+                  },
+                  {
+                    "N": "36.108913"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "Jerry Lewis Way"
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "53"
+          },
+          "duration": {
+            "N": "4.4"
+          },
+          "instruction": {
+            "S": "At the light, turn LEFT onto Dean Martin Dr."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "5"
+              },
+              "bearing_before": {
+                "N": "84"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.181189"
+                  },
+                  {
+                    "N": "36.10888"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": "Dean Martin Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "2321.9"
+          },
+          "duration": {
+            "N": "193.5"
+          },
+          "instruction": {
+            "S": "Drive NORTH on Dean Martin Dr. (becomes Sammy Davis Jr. Dr.)."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "1"
+              },
+              "bearing_before": {
+                "N": "1"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.181139"
+                  },
+                  {
+                    "N": "36.109353"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": "Dean Martin Dr."
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "31.4"
+          },
+          "duration": {
+            "N": "2.6"
+          },
+          "instruction": {
+            "S": "Turn right into Dillard's just past parking garage, then right at stop sign."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "107"
+              },
+              "bearing_before": {
+                "N": "38"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.175325"
+                  },
+                  {
+                    "N": "36.127757"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "right"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "374"
+          },
+          "duration": {
+            "N": "31.2"
+          },
+          "instruction": {
+            "S": "Follow the service road toward the Saks Fifth Ave. turnabout."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "188"
+              },
+              "bearing_before": {
+                "N": "107"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.174993"
+                  },
+                  {
+                    "N": "36.127673"
+                  }
+                ]
+              },
+              "type": {
+                "S": "depart"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "33.6"
+          },
+          "duration": {
+            "N": "2.8"
+          },
+          "instruction": {
+            "S": "Follow service road, then turn left into the Saks Fifth Ave. turnabout."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "356"
+              },
+              "bearing_before": {
+                "N": "110"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.172316"
+                  },
+                  {
+                    "N": "36.126042"
+                  }
+                ]
+              },
+              "modifier": {
+                "S": "left"
+              },
+              "type": {
+                "S": "turn"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      },
+      {
+        "M": {
+          "distance": {
+            "N": "0"
+          },
+          "duration": {
+            "N": "0"
+          },
+          "instruction": {
+            "S": "You have arrived at the Saks Fifth Ave. drop-off."
+          },
+          "maneuver": {
+            "M": {
+              "bearing_after": {
+                "N": "0"
+              },
+              "bearing_before": {
+                "N": "327"
+              },
+              "location": {
+                "L": [
+                  {
+                    "N": "-115.172411"
+                  },
+                  {
+                    "N": "36.126235"
+                  }
+                ]
+              },
+              "type": {
+                "S": "arrive"
+              }
+            }
+          },
+          "name": {
+            "S": ""
+          }
+        }
+      }
+    ]
+  }
