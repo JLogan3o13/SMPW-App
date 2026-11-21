@@ -33,7 +33,6 @@
             gap: 16px;
             flex-wrap: wrap;
         }
-
         .header h1 { font-size: 28px; font-weight: 600; }
         .header-sub { font-size: 13px; opacity: 0.85; margin-top: 4px; }
         .header-actions { display: flex; gap: 12px; flex-wrap: wrap; }
@@ -48,12 +47,19 @@
             transition: all 0.2s;
             font-family: inherit;
         }
+        .btn:disabled { opacity: 0.5; cursor: default; }
         .btn-primary { background-color: white; color: #667eea; }
         .btn-primary:hover { background-color: #f0f0f0; }
         .btn-secondary { background-color: rgba(255,255,255,0.2); color: white; border: 1px solid white; }
         .btn-secondary:hover { background-color: rgba(255,255,255,0.3); }
         .btn-outline { background: white; color: #667eea; border: 1px solid #667eea; padding: 6px 14px; font-size: 13px; }
         .btn-outline:hover { background: #f5f7ff; }
+        .btn-submit { background-color: #667eea; color: white; }
+        .btn-submit:hover:not(:disabled) { background-color: #5568d3; }
+        .btn-cancel { background-color: #6c757d; color: white; }
+        .btn-cancel:hover { background-color: #5a6268; }
+        .btn-danger-outline { background: white; color: #b02a37; border: 1px solid #dc3545; }
+        .btn-danger-outline:hover:not(:disabled) { background: #fff5f5; }
 
         .stats-bar {
             display: flex;
@@ -67,6 +73,7 @@
         .stat-label { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
         .stat-value { font-size: 24px; font-weight: 600; color: #333; }
         .stat-value.warn { color: #b02a37; }
+        .stat-value.good { color: #1e7e34; }
 
         .alert-banner {
             border-radius: 6px;
@@ -81,6 +88,7 @@
         }
         .alert-banner.danger { background-color: #f8d7da; border-color: #dc3545; }
         .alert-banner.info { background-color: #e7f0ff; border-color: #9db4f5; }
+        .alert-banner.success { background-color: #d4edda; border-color: #28a745; }
         .alert-icon { font-size: 18px; line-height: 1.2; }
 
         .section { padding: 24px 30px; border-bottom: 2px solid #e0e0e0; }
@@ -93,7 +101,9 @@
             align-items: center;
             gap: 10px;
             margin-bottom: 16px;
+            flex-wrap: wrap;
         }
+        .section-title .spacer { flex: 1; }
         .section-badge {
             background-color: #667eea;
             color: white;
@@ -105,16 +115,8 @@
         .section-note { font-size: 13px; color: #777; margin: -8px 0 16px; }
 
         /* ── Settings ── */
-        .settings-grid {
-            display: grid;
-            grid-template-columns: 1.3fr 1fr;
-            gap: 24px;
-        }
-        .panel {
-            border: 1px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 16px 18px;
-        }
+        .settings-grid { display: grid; grid-template-columns: 1.2fr 1fr 1fr; gap: 20px; }
+        .panel { border: 1px solid #e0e0e0; border-radius: 8px; padding: 16px 18px; }
         .panel-title {
             font-size: 12px;
             font-weight: 600;
@@ -125,27 +127,47 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
         }
-        .zone-inputs {
-            display: grid;
-            grid-template-columns: repeat(6, 1fr);
+
+        /* Rollout order editor */
+        .order-list { list-style: none; }
+        .order-item {
+            display: flex;
+            align-items: center;
             gap: 10px;
-        }
-        .zone-input label {
-            display: block;
-            font-size: 13px;
-            font-weight: 700;
-            color: #667eea;
-            margin-bottom: 4px;
-        }
-        .zone-input input {
-            width: 100%;
             padding: 8px 10px;
-            border: 1px solid #ddd;
+            border: 1px solid #e0e0e0;
             border-radius: 6px;
-            font-size: 18px;
-            font-weight: 600;
-            font-family: inherit;
+            margin-bottom: 6px;
+            background: white;
+            cursor: grab;
+        }
+        .order-item.dragging { opacity: 0.4; }
+        .order-item.drag-over { border-color: #667eea; box-shadow: 0 0 0 2px rgba(102,126,234,0.25); }
+        .order-pos {
+            width: 26px; height: 26px; border-radius: 50%;
+            background: #667eea; color: white; font-weight: 700; font-size: 13px;
+            display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0;
+        }
+        .order-item.empty .order-pos { background: #adb5bd; }
+        .order-zone { font-size: 18px; font-weight: 700; color: #667eea; width: 36px; }
+        .order-info { flex: 1; font-size: 12px; color: #666; line-height: 1.35; }
+        .order-info strong { color: #333; }
+        .order-btns { display: flex; gap: 4px; }
+        .icon-btn {
+            width: 28px; height: 28px; border: 1px solid #ddd; background: white; border-radius: 5px;
+            cursor: pointer; font-size: 12px; color: #555; font-family: inherit;
+        }
+        .icon-btn:hover:not(:disabled) { border-color: #667eea; color: #667eea; }
+        .icon-btn:disabled { opacity: 0.3; cursor: default; }
+        .order-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+
+        .zone-inputs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .zone-input label { display: block; font-size: 13px; font-weight: 700; color: #667eea; margin-bottom: 4px; }
+        .zone-input input {
+            width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 6px;
+            font-size: 18px; font-weight: 600; font-family: inherit;
         }
         .zone-input input.overridden { border-color: #ffc107; background: #fffbf0; }
         .zone-input .live-hint { font-size: 11px; color: #999; margin-top: 3px; min-height: 14px; }
@@ -153,43 +175,34 @@
         .setting-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 7px 0; font-size: 14px; }
         .setting-row + .setting-row { border-top: 1px solid #f0f0f0; }
         .setting-row .hint { font-size: 12px; color: #888; }
-        .setting-row input[type="number"] {
-            width: 70px; padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit;
-        }
         .setting-row select { padding: 6px 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; font-family: inherit; }
-        .check-group { display: flex; gap: 14px; flex-wrap: wrap; }
+        .check-group { display: flex; gap: 12px; flex-wrap: wrap; justify-content: flex-end; }
         .check-group label { display: flex; align-items: center; gap: 5px; cursor: pointer; font-size: 14px; }
 
         /* ── Zone plan cards ── */
-        .zone-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 14px;
-        }
-        .zone-card {
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 16px;
-        }
+        .zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(205px, 1fr)); gap: 14px; }
+        .zone-card { border: 2px solid #e0e0e0; border-radius: 8px; padding: 14px 16px; }
         .zone-card.ok { border-color: #28a745; background-color: #f0fff4; }
-        .zone-card.short { border-color: #dc3545; background-color: #fff5f5; }
+        .zone-card.partial { border-color: #ffc107; background-color: #fffbf0; }
+        .zone-card.waiting { border-color: #dc3545; background-color: #fff5f5; }
         .zone-card.empty { background-color: #fafafa; opacity: 0.7; }
         .zone-header {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; padding-bottom: 10px; border-bottom: 2px solid #e0e0e0;
+            margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid #e0e0e0;
         }
-        .zone-name { font-size: 24px; font-weight: 700; color: #667eea; }
+        .zone-name { font-size: 22px; font-weight: 700; color: #667eea; }
+        .zone-name small { font-size: 12px; color: #999; font-weight: 600; margin-right: 4px; }
         .zone-status-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; color: white; }
-        .zone-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        .metric { display: flex; flex-direction: column; }
-        .metric-label { font-size: 11px; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 2px; }
-        .metric-value { font-size: 24px; font-weight: 700; color: #333; }
-        .metric-value small { font-size: 13px; color: #888; font-weight: 500; }
-        .capacity-bar { height: 10px; background-color: #e9ecef; border-radius: 5px; overflow: hidden; display: flex; margin: 6px 0 10px; }
-        .capacity-fill.w1 { background-color: #667eea; }
-        .capacity-fill.w2 { background-color: #b39ddb; }
+        .zone-lines { font-size: 13px; color: #555; line-height: 1.7; }
+        .zone-lines .row { display: flex; justify-content: space-between; }
+        .zone-lines .row strong { color: #333; }
+        .zone-lines .row.total { border-top: 1px solid #e0e0e0; margin-top: 4px; padding-top: 4px; font-weight: 600; }
+        .capacity-bar { height: 10px; background-color: #e9ecef; border-radius: 5px; overflow: hidden; display: flex; margin: 8px 0; }
+        .fill-staged { background-color: #9b59b6; }
+        .fill-locked { background-color: #5a6fd6; }
+        .fill-w1 { background-color: #8fa2f0; }
         .zone-mix { font-size: 12px; color: #555; display: flex; gap: 6px; flex-wrap: wrap; }
-        .zone-detail { font-size: 12px; color: #666; margin-top: 8px; line-height: 1.5; }
+        .zone-detail { font-size: 12px; color: #666; margin-top: 6px; line-height: 1.5; }
 
         .size-chip { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
         .size-L { background: #e0d7ff; color: #4b2aa8; }
@@ -200,47 +213,31 @@
         .legend span { display: inline-flex; align-items: center; gap: 6px; }
         .legend i { display: inline-block; width: 14px; height: 10px; border-radius: 3px; }
 
-        /* ── Rollout table ── */
+        /* ── Tables ── */
         .table-container { overflow-x: auto; }
         table { width: 100%; border-collapse: collapse; }
         th {
             background-color: #f8f9fa; padding: 10px 12px; text-align: left; font-weight: 600; font-size: 12px;
             color: #555; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e0e0e0;
         }
-        td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: #333; }
-        tr.wave-row td {
+        td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; font-size: 14px; color: #333; }
+        tr.zone-sub td {
             background: linear-gradient(90deg, #f5f7ff 0%, #fafbff 100%);
             border-left: 3px solid #667eea;
-            font-weight: 600;
-            color: #4b3fb0;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        tr.wave-row.second td { border-left-color: #b39ddb; }
-        tr.zone-sub td {
-            background: #fafafa;
             font-size: 12px;
             font-weight: 600;
-            color: #555;
-            padding: 6px 12px;
-            border-left: 3px solid #e0e0e0;
+            color: #4b3fb0;
+            padding: 7px 12px;
         }
-        tr.zone-sub td .zone-cell { font-size: 14px; margin-right: 6px; }
+        tr.zone-sub td .zone-cell { font-size: 15px; margin-right: 8px; }
+        tr.staged-row td { background: #faf6ff; }
+        tr.done td { opacity: 0.45; text-decoration: line-through; }
+        tr.done td.no-strike { text-decoration: none; }
 
-        .rollout-controls {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 14px;
-        }
+        .rollout-controls { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; margin-bottom: 14px; }
         .control-label { font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 8px; }
         .seg { display: inline-flex; border: 1px solid #667eea; border-radius: 6px; overflow: hidden; vertical-align: middle; }
-        .seg button {
-            border: none; background: white; color: #667eea; padding: 6px 14px; font-size: 13px;
-            font-family: inherit; cursor: pointer; font-weight: 500;
-        }
+        .seg button { border: none; background: white; color: #667eea; padding: 6px 14px; font-size: 13px; font-family: inherit; cursor: pointer; font-weight: 500; }
         .seg button + button { border-left: 1px solid #667eea; }
         .seg button.on { background: #667eea; color: white; }
         .zone-chip {
@@ -251,27 +248,52 @@
         .zone-chip.all { font-weight: 500; }
         .zone-chip:disabled { opacity: 0.35; cursor: default; }
         .print-only { display: none; }
-        tr.done td { opacity: 0.45; text-decoration: line-through; }
-        tr.done td.no-strike { text-decoration: none; }
+
         .order-num { font-weight: 700; color: #667eea; font-size: 16px; }
         .zone-cell { font-weight: 700; color: #667eea; }
-        .run-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
-        .run-1 { background-color: #d4edda; color: #155724; }
-        .run-2 { background-color: #fff3cd; color: #856404; }
-        .run-3 { background-color: #f8d7da; color: #721c24; }
         .muted { color: #999; font-size: 12px; }
-        .empty-state { text-align: center; padding: 40px; color: #999; font-style: italic; }
+        .empty-state { text-align: center; padding: 30px; color: #999; font-style: italic; }
 
-        .type-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
+        .act { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+        .act-assign { background: #d4edda; color: #155724; }
+        .act-set { background: #cfe2ff; color: #084298; }
+        .act-onway { background: #fff3cd; color: #856404; }
+        .act-back { background: #e2e3e5; color: #383d41; }
+        .act-skip { background: #f8d7da; color: #721c24; }
+        .act-staged { background: #f0e6ff; color: #6600cc; }
+
+        .type-badge, .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
         .type-normal { background-color: #e7f3ff; color: #0066cc; }
         .type-reserved { background-color: #fff4e6; color: #cc6600; }
         .type-staged { background-color: #f0e6ff; color: #6600cc; }
-        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 500; }
         .status-available { background-color: #d4edda; color: #155724; }
         .status-in-transit { background-color: #fff3cd; color: #856404; }
         .status-dropped-off { background-color: #d1ecf1; color: #0c5460; }
         .status-picked-up { background-color: #e2e3e5; color: #383d41; }
         .status-assigned { background-color: #cfe2ff; color: #084298; }
+
+        /* Assign bar */
+        .assign-bar {
+            display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+            padding: 14px 16px; border: 2px solid #667eea; border-radius: 8px; background: #f5f7ff; margin-bottom: 16px;
+        }
+        .assign-bar .assign-text { flex: 1; font-size: 14px; min-width: 260px; }
+        .assign-bar .assign-text strong { color: #4b3fb0; }
+
+        /* Live queue */
+        .queue-next {
+            display: flex; align-items: center; gap: 16px; padding: 16px 20px; border-radius: 8px; margin-bottom: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; flex-wrap: wrap;
+        }
+        .queue-next.done { background: #28a745; }
+        .queue-next .big { font-size: 34px; font-weight: 700; }
+        .queue-next .label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.85; }
+        .queue-next .detail { font-size: 15px; }
+        .queue-next .ready { margin-left: auto; text-align: right; font-size: 13px; }
+        .queue-next .ready strong { font-size: 20px; display: block; }
+        tr.q-next td { background: #f5f7ff; font-weight: 600; }
+        tr.q-closed td { color: #999; }
+        .q-flag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 700; background: #667eea; color: white; margin-left: 6px; }
 
         details.pool summary { cursor: pointer; font-size: 20px; font-weight: 600; list-style: none; display: flex; align-items: center; gap: 10px; }
         details.pool summary::-webkit-details-marker { display: none; }
@@ -279,19 +301,35 @@
         details.pool[open] summary::before { transform: rotate(90deg); }
         details.pool .table-container { margin-top: 16px; max-height: 450px; overflow-y: auto; }
 
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center; }
+        .modal.active { display: flex; }
+        .modal-content { background: white; border-radius: 8px; width: 92%; max-width: 640px; max-height: 88vh; display: flex; flex-direction: column; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .modal-header {
+            padding: 18px 26px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;
+            border-radius: 8px 8px 0 0; font-size: 19px; font-weight: 600;
+        }
+        .modal-body { padding: 20px 26px; overflow-y: auto; font-size: 14px; line-height: 1.5; }
+        .modal-body h4 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; color: #667eea; margin: 14px 0 6px; }
+        .modal-body h4:first-child { margin-top: 0; }
+        .modal-body ul { list-style: none; }
+        .modal-body li { padding: 4px 0; border-bottom: 1px solid #f3f3f3; }
+        .modal-footer { padding: 14px 26px; border-top: 1px solid #e0e0e0; display: flex; justify-content: flex-end; gap: 10px; align-items: center; }
+        .modal-footer .progress { margin-right: auto; font-size: 13px; color: #666; }
+
         .last-updated { text-align: center; padding: 12px; font-size: 12px; color: #999; border-top: 1px solid #f0f0f0; }
 
-        @media (max-width: 900px) {
+        @media (max-width: 1100px) { .settings-grid { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 760px) {
             .settings-grid { grid-template-columns: 1fr; }
-            .zone-inputs { grid-template-columns: repeat(3, 1fr); }
             .section { padding: 16px; }
-            th, td { padding: 8px; font-size: 12px; }
+            th, td { padding: 7px; font-size: 12px; }
         }
 
         @media print {
             body { padding: 0; background: white; }
             .container { box-shadow: none; }
-            .header-actions, .settings-section, details.pool, .no-print { display: none !important; }
+            .header-actions, .settings-section, details.pool, .no-print, .assign-bar, .queue-section { display: none !important; }
             .header { background: white; color: #333; border-bottom: 2px solid #333; padding: 10px 0; }
             .section { padding: 12px 0; }
             tr { page-break-inside: avoid; }
@@ -304,7 +342,7 @@
         <div class="header">
             <div>
                 <h1>🌙 End-of-Night Pickup Planner</h1>
-                <div class="header-sub">Suggested rollout to bring every volunteer back from A1–F1</div>
+                <div class="header-sub">Close each zone in your rollout order. Wave 1 sends every car; later cars go to whatever is still open.</div>
             </div>
             <div class="header-actions">
                 <button class="btn btn-secondary" onclick="window.location.href='zone-summary.html'">📊 Zone Summary</button>
@@ -316,12 +354,12 @@
 
         <div class="stats-bar">
             <div class="stat"><span class="stat-label">Volunteers to Pick Up</span><span class="stat-value" id="s-volunteers">0</span></div>
-            <div class="stat"><span class="stat-label">Seats Needed (w/ extra)</span><span class="stat-value" id="s-needed">0</span></div>
-            <div class="stat"><span class="stat-label">Drivers in Plan</span><span class="stat-value" id="s-drivers">0</span></div>
-            <div class="stat"><span class="stat-label">Seats per Full Wave</span><span class="stat-value" id="s-wave-seats">0</span></div>
-            <div class="stat"><span class="stat-label">Waves</span><span class="stat-value" id="s-waves">0</span></div>
-            <div class="stat"><span class="stat-label">Drivers Going Twice</span><span class="stat-value" id="s-repeat">0</span></div>
-            <div class="stat"><span class="stat-label">Total Trips</span><span class="stat-value" id="s-trips">0</span></div>
+            <div class="stat"><span class="stat-label">Seats Needed</span><span class="stat-value" id="s-needed">0</span></div>
+            <div class="stat"><span class="stat-label">Staged Seats</span><span class="stat-value" id="s-staged">0</span></div>
+            <div class="stat"><span class="stat-label">Hub Fleet Seats</span><span class="stat-value" id="s-fleet">0</span></div>
+            <div class="stat"><span class="stat-label">Zones Closed by Wave 1</span><span class="stat-value" id="s-closed">0</span></div>
+            <div class="stat"><span class="stat-label">Still Needed After Wave 1</span><span class="stat-value" id="s-after">0</span></div>
+            <div class="stat"><span class="stat-label">Ready to Assign</span><span class="stat-value" id="s-assignable">0</span></div>
         </div>
 
         <div id="alert-container"></div>
@@ -331,28 +369,40 @@
             <div class="section-title">⚙️ Plan Inputs</div>
             <div class="settings-grid">
                 <div class="panel">
+                    <div class="panel-title"><span>Rollout order</span><span class="muted" style="text-transform:none;letter-spacing:0;font-weight:400;">Drag or use arrows</span></div>
+                    <ol class="order-list" id="order-list"></ol>
+                    <div class="order-actions">
+                        <button class="btn btn-outline" onclick="setOrderPreset('az')">A → F</button>
+                        <button class="btn btn-outline" onclick="setOrderPreset('most')">Most volunteers first</button>
+                        <button class="btn btn-outline" onclick="setOrderPreset('least')">Fewest first</button>
+                    </div>
+                </div>
+                <div class="panel">
                     <div class="panel-title">
                         <span>Volunteers in each zone</span>
-                        <button class="btn btn-outline" onclick="resetZoneOverrides()">Reset to live counts</button>
+                        <button class="btn btn-outline" onclick="resetZoneOverrides()">Reset to live</button>
                     </div>
                     <div class="zone-inputs" id="zone-inputs"></div>
-                    <div class="muted" style="margin-top:10px;">Pre-filled from Zone Summary "Current". Change a number to plan for a different count; changed zones are highlighted.</div>
+                    <div class="muted" style="margin-top:10px;">From Zone Summary "Current". Type a number to plan for a different count; changed zones are highlighted.</div>
                 </div>
                 <div class="panel">
                     <div class="panel-title"><span>Rules</span></div>
                     <div class="setting-row">
                         <div>Extra seats per zone<div class="hint">Cushion on top of the volunteer count</div></div>
-                        <input type="number" id="opt-buffer" min="0" max="20" value="3">
+                        <select id="opt-buffer">
+                            <option value="0">0</option><option value="1">1</option><option value="2">2</option>
+                            <option value="3" selected>3</option><option value="4">4</option><option value="5">5</option>
+                        </select>
                     </div>
                     <div class="setting-row">
-                        <div>Driver lists to use</div>
+                        <div>Driver lists</div>
                         <div class="check-group">
                             <label><input type="checkbox" id="opt-list-active" checked> Active</label>
                             <label><input type="checkbox" id="opt-list-assigned" checked> Assigned</label>
                         </div>
                     </div>
                     <div class="setting-row">
-                        <div>Driver types to use</div>
+                        <div>Driver types<div class="hint">Staged drivers already in a pickup zone always count there</div></div>
                         <div class="check-group">
                             <label><input type="checkbox" id="opt-type-normal" checked> Normal</label>
                             <label><input type="checkbox" id="opt-type-staged" checked> Staged</label>
@@ -360,10 +410,10 @@
                         </div>
                     </div>
                     <div class="setting-row">
-                        <div>If there are more seats than needed</div>
+                        <div>Cars left after every zone is closed</div>
                         <select id="opt-surplus">
-                            <option value="send">Still send every driver once</option>
-                            <option value="hold">Hold extra drivers at the Hub</option>
+                            <option value="hold">Hold at the Hub</option>
+                            <option value="send">Spread across zones</option>
                         </select>
                     </div>
                     <div class="setting-row">
@@ -376,10 +426,11 @@
 
         <!-- Zone plan -->
         <div class="section">
-            <div class="section-title">🎯 Plan by Zone</div>
+            <div class="section-title">🎯 Plan by Zone <span class="muted" style="font-weight:400;font-size:13px;">in rollout order</span></div>
             <div class="legend">
-                <span><i style="background:#667eea"></i>First-run seats</span>
-                <span><i style="background:#b39ddb"></i>Second-run seats</span>
+                <span><i style="background:#9b59b6"></i>Staged in zone</span>
+                <span><i style="background:#5a6fd6"></i>Zone already set</span>
+                <span><i style="background:#8fa2f0"></i>Wave 1 plan</span>
                 <span><span class="size-chip size-L">L</span> 7+ seats</span>
                 <span><span class="size-chip size-M">M</span> 5–6 seats</span>
                 <span><span class="size-chip size-S">S</span> 4 or fewer</span>
@@ -387,16 +438,22 @@
             <div class="zone-grid" id="zone-grid"></div>
         </div>
 
-        <!-- Rollout order -->
+        <!-- Wave 1 -->
         <div class="section">
-            <div class="section-title">🚦 Suggested Rollout Order <span class="section-badge" id="rollout-count">0</span></div>
-            <div class="section-note no-print">Send cars in this order. Wave 2 cars are drivers coming back from Wave 1. Tick a row as each car leaves. This is a plan only; nothing here changes driver statuses.</div>
+            <div class="section-title">🚦 Wave 1 Rollout <span class="section-badge" id="rollout-count">0</span></div>
+
+            <div class="assign-bar no-print">
+                <div class="assign-text" id="assign-text"></div>
+                <button class="btn btn-danger-outline" id="undo-btn" onclick="startUndo()">↩ Clear Wave 1</button>
+                <button class="btn btn-submit" id="assign-btn" onclick="startAssign()">✅ Assign Wave 1</button>
+            </div>
+
             <div class="rollout-controls no-print">
                 <div>
                     <span class="control-label">Sort</span>
                     <div class="seg">
                         <button id="sort-order" class="on" onclick="setRolloutSort('order')">Rollout order</button>
-                        <button id="sort-zone" onclick="setRolloutSort('zone')">By zone</button>
+                        <button id="sort-zone" onclick="setRolloutSort('zone')">By zone (A → F)</button>
                     </div>
                 </div>
                 <div>
@@ -417,13 +474,36 @@
                             <th>Phone</th>
                             <th>Vehicle</th>
                             <th>Seats</th>
-                            <th>Run</th>
-                            <th>Zone Seats So Far</th>
+                            <th>Status</th>
+                            <th>Assign</th>
+                            <th>Zone Seats</th>
                         </tr>
                     </thead>
                     <tbody id="rollout-tbody"></tbody>
                 </table>
                 <div id="rollout-empty" class="empty-state" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Live queue -->
+        <div class="section queue-section">
+            <div class="section-title">🔁 Next Car Back Goes To… <span class="spacer"></span><span class="muted" style="font-weight:400;font-size:12px;" id="queue-updated"></span></div>
+            <div class="section-note">Live, every 5 seconds. "On the way" counts cars that have this zone set and haven't picked up yet, plus staged cars there. Set each returning car's Zone on Driver Tracking.</div>
+            <div id="queue-next"></div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width:50px;">Order</th>
+                            <th>Zone</th>
+                            <th>Volunteers Now</th>
+                            <th>Seats Needed</th>
+                            <th>Seats On the Way</th>
+                            <th>Still Needed</th>
+                        </tr>
+                    </thead>
+                    <tbody id="queue-tbody"></tbody>
+                </table>
             </div>
         </div>
 
@@ -443,7 +523,8 @@
                                 <th>Seats</th>
                                 <th>Type</th>
                                 <th>Status</th>
-                                <th>Runs in Plan</th>
+                                <th>Zone</th>
+                                <th>In Plan</th>
                             </tr>
                         </thead>
                         <tbody id="pool-tbody"></tbody>
@@ -453,7 +534,20 @@
         </div>
 
         <div class="last-updated">
-            Data loaded: <span id="last-updated-time">--</span> · The plan doesn't auto-refresh, so it won't reshuffle while you're dispatching. Press Refresh &amp; Re-plan for new counts.
+            Plan built from data loaded at <span id="last-updated-time">--</span>. The plan only changes when you press Refresh &amp; Re-plan; the "Next car back" list updates on its own.
+        </div>
+    </div>
+
+    <!-- Confirm / progress dialog -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <div class="modal-header" id="modal-title"></div>
+            <div class="modal-body" id="modal-body"></div>
+            <div class="modal-footer">
+                <span class="progress" id="modal-progress"></span>
+                <button class="btn btn-cancel" id="modal-cancel">Cancel</button>
+                <button class="btn btn-submit" id="modal-ok">OK</button>
+            </div>
         </div>
     </div>
 
@@ -466,59 +560,105 @@
         };
         const EVENT_DATE = getLocalDate();
 
-        // Pickup zones used at the end of the night
-        const PICKUP_ZONES = ['A1', 'B1', 'C1', 'D1', 'E1', 'F1'];
-        // Statuses that make up each list on driver-tracking.html
+        // Zone structure (same as driver-tracking.html / zone-summary.html).
+        const ZONE_GROUPS = [
+            { letter: 'A', subzones: ['A1', 'A2', 'A3'] },
+            { letter: 'B', subzones: ['B1', 'B2', 'B3', 'B4', 'B5', 'B1Z'] },
+            { letter: 'C', subzones: ['C1', 'C2', 'C3', 'C4', 'C2Z', 'C4Z'] },
+            { letter: 'D', subzones: ['D1', 'D2', 'D3', 'D4', 'D5', 'D3Z'] },
+            { letter: 'E', subzones: ['E1', 'E2', 'E3', 'E4', 'E5Z', 'E6Z', 'E7Z'] },
+            { letter: 'F', subzones: ['F1', 'F2', 'F3', 'F4', 'F5Z'] },
+        ];
+        // One pickup zone per letter. For now the #1 sub-zone is used for each letter; this is the value
+        // written to the driver's Zone field. When the app moves to plain A–F zones, change `zone` here.
+        const PICKUP = ZONE_GROUPS.map(g => ({ zone: `${g.letter}1`, letter: g.letter, subzones: g.subzones }));
+        const PICKUP_ZONES = PICKUP.map(p => p.zone);
+        const PICKUP_OF = {};   // any sub-zone -> its pickup zone (e.g. 'B3' -> 'B1')
+        PICKUP.forEach(p => p.subzones.forEach(s => { PICKUP_OF[s] = p.zone; }));
+
         const ACTIVE_STATUSES = ['Available', 'In Transit', 'Dropped Off', 'Picked Up'];
         const ASSIGNED_STATUSES = ['Assigned'];
-        const MAX_WAVES = 6;
+        // A non-staged car with a pickup zone and one of these statuses is treated as heading to that zone.
+        const HEADING_STATUSES = ['Available', 'Assigned', 'In Transit'];
+        const POLL_MS = 5000;
+
+        const STORE_ORDER = 'pickupPlanner.order';
+        const STORE_WAVE1 = `pickupPlanner.wave1.${EVENT_DATE}`;
 
         // ── State ──
-        let source = 'live';          // 'live' | 'sample'
-        let liveZoneCounts = {};      // zone -> netPassengers (all zones returned)
-        let liveDrivers = [];         // merged operations + master driver info
-        let zoneOverrides = {};       // zone -> number typed by the admin
+        let source = 'live';
+        let sourceReason = '';
+        let snapshot = { zoneCounts: {}, drivers: [] };   // what the plan is built from
+        let liveNow = { zoneCounts: {}, drivers: [] };    // latest poll, for the live queue
+        let rolloutOrder = [...PICKUP_ZONES];   // replaced by the saved order at start-up
+        let zoneOverrides = {};
         let excludedDrivers = new Set();
-        let sentTrips = new Set();    // trip keys ticked as sent
+        let sentTrips = new Set();
         let lastPlan = null;
-        let rolloutSort = 'order';    // 'order' | 'zone'
-        let zoneFilter = new Set();   // empty = show all zones
+        let rolloutSort = 'order';
+        let zoneFilter = new Set();
+        let busy = false;
 
-        // ── Sample data (used when live data can't be reached or is empty) ──
-        const SAMPLE_ZONES = { A1: 32, B1: 18, C1: 27, D1: 12, E1: 22, F1: 9, C2: 0 };
-        const SAMPLE_DRIVERS = [
-            ['Washington', 'Lawrence', 7, 'Jeep', 'Wagoneer', 'Normal', 'Available', 101],
-            ['Nguyen', 'Tina', 7, 'Honda', 'Odyssey', 'Normal', 'Available', 102],
-            ['Ramirez', 'Carlos', 8, 'Toyota', 'Sienna', 'Staged', 'Available', 103],
-            ['Patel', 'Anika', 7, 'Chrysler', 'Pacifica', 'Normal', 'Assigned', 104],
-            ['Brooks', 'Dana', 6, 'Chevrolet', 'Traverse', 'Normal', 'Available', 105],
-            ['Kim', 'Joon', 6, 'Kia', 'Telluride', 'Reserved', 'Available', 106],
-            ['Olsen', 'Mark', 5, 'Toyota', 'RAV4', 'Normal', 'In Transit', 107],
-            ['Fischer', 'Laura', 5, 'Subaru', 'Outback', 'Normal', 'Available', 108],
-            ['Haddad', 'Sami', 5, 'Ford', 'Explorer', 'Staged', 'Available', 109],
-            ['Lopez', 'Maria', 4, 'Honda', 'Civic', 'Normal', 'Available', 110],
-            ['Turner', 'Greg', 4, 'Toyota', 'Camry', 'Normal', 'Dropped Off', 111],
-            ['Yamada', 'Ken', 4, 'Mazda', 'CX-5', 'Normal', 'Available', 112],
-            ['Bennett', 'Ruth', 4, 'Hyundai', 'Sonata', 'Reserved', 'Available', 113],
-            ['Okafor', 'Chidi', 7, 'GMC', 'Yukon', 'Normal', 'Assigned', 114],
-            ['Silva', 'Ana', 5, 'Nissan', 'Rogue', 'Normal', 'Available', 115],
-            ['Murphy', 'Sean', 4, 'Honda', 'Accord', 'Normal', 'Available', 116],
-            ['Chen', 'Wei', 6, 'Toyota', 'Highlander', 'Normal', 'Available', 117],
-            ['Grant', 'Alicia', 4, 'Ford', 'Escape', 'Normal', 'Picked Up', 118],
-            ['Novak', 'Peter', 5, 'Subaru', 'Forester', 'Normal', 'Available', 119],
-            ['Ali', 'Fatima', 7, 'Dodge', 'Grand Caravan', 'Normal', 'Available', 120],
-        ].map(([lastName, firstName, seatCapacity, make, model, driverType, status, carNumber], i) => ({
-            driverId: `sample-${i}`, lastName, firstName, seatCapacity, make, model, driverType, status,
-            carNumber: String(carNumber), phoneNumber: `555-01${String(i).padStart(2, '0')}`,
-            copilotFirstName: i % 6 === 0 ? 'Co' : '', copilotLastName: ''
+        // ── Sample data: matches the worked example (150 Hub seats; A30 B35 C25 D40 E40 F30; car 26 staged at E1) ──
+        const SAMPLE_ZONES = { A1: 30, B1: 35, C1: 25, D1: 40, E1: 40, F1: 30 };
+        const SAMPLE_SEED = [
+            // last, first, seats, make, model, type, status, car, zone
+            ['Washington', 'Lawrence', 8, 'Toyota', 'Sienna', 'Normal', 'Available', 101, ''],
+            ['Nguyen', 'Tina', 8, 'Honda', 'Odyssey', 'Normal', 'Available', 102, ''],
+            ['Ramirez', 'Carlos', 7, 'Chrysler', 'Pacifica', 'Normal', 'Available', 103, ''],
+            ['Patel', 'Anika', 7, 'GMC', 'Yukon', 'Normal', 'Assigned', 104, ''],
+            ['Okafor', 'Chidi', 7, 'Chevrolet', 'Suburban', 'Normal', 'Available', 105, ''],
+            ['Ali', 'Fatima', 7, 'Dodge', 'Grand Caravan', 'Normal', 'In Transit', 106, ''],
+            ['Kim', 'Joon', 7, 'Kia', 'Carnival', 'Reserved', 'Available', 107, ''],
+            ['Brooks', 'Dana', 6, 'Chevrolet', 'Traverse', 'Normal', 'Available', 108, ''],
+            ['Chen', 'Wei', 6, 'Toyota', 'Highlander', 'Normal', 'Available', 109, ''],
+            ['Morales', 'Rosa', 6, 'Kia', 'Telluride', 'Normal', 'Dropped Off', 110, ''],
+            ['Olsen', 'Mark', 5, 'Toyota', 'RAV4', 'Normal', 'Available', 111, ''],
+            ['Fischer', 'Laura', 5, 'Subaru', 'Outback', 'Normal', 'Available', 112, ''],
+            ['Haddad', 'Sami', 5, 'Ford', 'Explorer', 'Normal', 'Available', 113, 'D1'],
+            ['Silva', 'Ana', 5, 'Nissan', 'Rogue', 'Normal', 'Available', 114, ''],
+            ['Novak', 'Peter', 5, 'Subaru', 'Forester', 'Normal', 'Picked Up', 115, ''],
+            ['Lopez', 'Maria', 4, 'Honda', 'Civic', 'Normal', 'Available', 116, ''],
+            ['Turner', 'Greg', 4, 'Toyota', 'Camry', 'Normal', 'Available', 117, ''],
+            ['Yamada', 'Ken', 4, 'Mazda', 'CX-5', 'Normal', 'Available', 118, ''],
+            ['Bennett', 'Ruth', 4, 'Hyundai', 'Sonata', 'Reserved', 'Available', 119, ''],
+            ['Murphy', 'Sean', 4, 'Honda', 'Accord', 'Normal', 'Available', 120, ''],
+            ['Grant', 'Alicia', 4, 'Ford', 'Escape', 'Normal', 'Available', 121, ''],
+            ['Ito', 'Hana', 4, 'Toyota', 'Corolla', 'Normal', 'Available', 122, ''],
+            ['Diaz', 'Luis', 4, 'Nissan', 'Altima', 'Normal', 'Available', 123, ''],
+            ['Kowalski', 'Jan', 4, 'VW', 'Jetta', 'Normal', 'In Transit', 124, ''],
+            ['Rossi', 'Gina', 4, 'Hyundai', 'Elantra', 'Normal', 'Available', 125, ''],
+            ['Abebe', 'Sara', 4, 'Kia', 'Forte', 'Normal', 'Available', 127, ''],
+            ['Larsen', 'Erik', 4, 'Mazda', 'Mazda3', 'Normal', 'Available', 128, ''],
+            ['Singh', 'Raj', 4, 'Honda', 'CR-V', 'Normal', 'Available', 129, ''],
+            ['Moore', 'Kate', 4, 'Toyota', 'Prius', 'Normal', 'Available', 130, ''],
+            // Staged at E1 – picks up 10 of E's volunteers
+            ['Hughes', 'Tom', 10, 'Ford', 'Transit Van', 'Staged', 'Available', 26, 'E1'],
+        ];
+        const makeSampleDrivers = () => SAMPLE_SEED.map(([lastName, firstName, seatCapacity, make, model, driverType, status, carNumber, zone], i) => ({
+            driverId: `sample-${i}`, lastName, firstName, name: `${firstName} ${lastName}`, seatCapacity, make, model,
+            driverType, status, carNumber: String(carNumber), zone, passengers: 0,
+            phoneNumber: `555-01${String(i).padStart(2, '0')}`,
+            copilotFirstName: i % 7 === 0 ? 'Co' : '', copilotLastName: ''
         }));
+        let sampleDrivers = makeSampleDrivers();
 
         // ── Helpers ──
         const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
         const sizeClass = seats => seats >= 7 ? 'L' : seats >= 5 ? 'M' : 'S';
-        const fullName = d => `${d.firstName || ''} ${d.lastName || ''}`.trim() || 'Unknown driver';
-        const maxBy = (arr, f) => arr.reduce((best, x) => (best === null || f(x) > f(best) ? x : best), null);
-        const minBy = (arr, f) => arr.reduce((best, x) => (best === null || f(x) < f(best) ? x : best), null);
+        const fullName = d => `${d.firstName || ''} ${d.lastName || ''}`.trim() || d.name || 'Unknown driver';
+        const carLabel = d => d.carNumber ? `Car ${d.carNumber}` : 'No car #';
+        const statusClass = s => `status-${(s || '').toLowerCase().replace(/ /g, '-')}`;
+        const store = {
+            get(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } },
+            set(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) { /* storage unavailable */ } }
+        };
+
+        function loadOrder() {
+            const saved = store.get(STORE_ORDER, null);
+            if (Array.isArray(saved) && saved.length === PICKUP_ZONES.length && PICKUP_ZONES.every(z => saved.includes(z))) return saved;
+            return [...PICKUP_ZONES];
+        }
 
         async function fetchJson(url, ms = 8000) {
             const ctrl = new AbortController();
@@ -530,79 +670,105 @@
             } finally { clearTimeout(t); }
         }
 
-        // ── Data loading ──
-        async function loadLive() {
-            const [zoneTotals, operations, masters] = await Promise.all([
-                fetchJson(`${API_BASE_URL}/zone-totals?eventDate=${EVENT_DATE}`),
-                fetchJson(`${API_BASE_URL}/operations?eventDate=${EVENT_DATE}`),
-                fetchJson(`${API_BASE_URL}/drivers`).catch(() => [])
-            ]);
-            const masterMap = {};
-            (masters || []).forEach(m => { masterMap[m.driverId] = m; });
-
-            liveZoneCounts = {};
-            (zoneTotals || []).forEach(z => { liveZoneCounts[z.zone] = Number(z.netPassengers) || 0; });
-
-            liveDrivers = (operations || []).map(d => {
-                const m = masterMap[d.driverId] || {};
-                return {
-                    ...d,
-                    seatCapacity: Number(d.seatCapacity ?? m.seatCapacity) || 0,
-                    make: d.make || m.make || '',
-                    model: d.model || m.model || '',
-                    firstName: m.firstName || '',
-                    lastName: m.lastName || '',
-                    phoneNumber: m.phoneNumber || '',
-                    copilotFirstName: m.copilotFirstName || '',
-                    copilotLastName: m.copilotLastName || ''
-                };
-            });
-        }
-
-        async function refreshData() {
-            if (source === 'live') {
-                try {
-                    await loadLive();
-                    const anyDrivers = liveDrivers.some(d => d.status !== 'Checked Out');
-                    const anyPeople = PICKUP_ZONES.some(z => (liveZoneCounts[z] || 0) > 0);
-                    if (!anyDrivers && !anyPeople) {
-                        setSource('sample', `No drivers or volunteers are recorded for ${EVENT_DATE} yet, so sample data is shown.`);
-                        return;
-                    }
-                    document.getElementById('last-updated-time').textContent = new Date().toLocaleTimeString();
-                } catch (e) {
-                    console.error('Live data unavailable:', e);
-                    setSource('sample', 'Live data could not be reached from here, so sample data is shown.');
+        // ── Data access (live API, or the in-memory sample so the buttons can be tried safely) ──
+        let masterMap = null;
+        const api = {
+            async load() {
+                if (source === 'sample') {
+                    return { zoneCounts: { ...SAMPLE_ZONES }, drivers: sampleDrivers.map(d => ({ ...d })) };
+                }
+                const [zoneTotals, operations] = await Promise.all([
+                    fetchJson(`${API_BASE_URL}/zone-totals?eventDate=${EVENT_DATE}`),
+                    fetchJson(`${API_BASE_URL}/operations?eventDate=${EVENT_DATE}`)
+                ]);
+                if (!masterMap) {
+                    const masters = await fetchJson(`${API_BASE_URL}/drivers`).catch(() => []);
+                    masterMap = {};
+                    (masters || []).forEach(m => { masterMap[m.driverId] = m; });
+                }
+                const zoneCounts = {};
+                (zoneTotals || []).forEach(z => { zoneCounts[z.zone] = Number(z.netPassengers) || 0; });
+                const drivers = (operations || []).map(d => {
+                    const m = masterMap[d.driverId] || {};
+                    return {
+                        ...d,
+                        seatCapacity: Number(d.seatCapacity ?? m.seatCapacity) || 0,
+                        firstName: m.firstName || '',
+                        lastName: m.lastName || '',
+                        phoneNumber: m.phoneNumber || '',
+                        copilotFirstName: m.copilotFirstName || '',
+                        copilotLastName: m.copilotLastName || ''
+                    };
+                });
+                return { zoneCounts, drivers };
+            },
+            // Writes ONLY the Zone field (same request driver-tracking.html sends when the Zone cell is edited).
+            async setZone(driverId, zone) {
+                if (source === 'sample') {
+                    const d = sampleDrivers.find(x => x.driverId === driverId);
+                    if (d) d.zone = zone;
+                    await new Promise(r => setTimeout(r, 60));
                     return;
                 }
-            } else {
-                document.getElementById('last-updated-time').textContent = new Date().toLocaleTimeString() + ' (sample)';
+                const r = await fetch(`${API_BASE_URL}/operations`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ driverId, eventDate: EVENT_DATE, zone })
+                });
+                if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            }
+        };
+
+        async function refreshData() {
+            try {
+                const data = await api.load();
+                if (source === 'live') {
+                    const anyDrivers = data.drivers.some(d => d.status !== 'Checked Out');
+                    const anyPeople = Object.values(data.zoneCounts).some(n => n > 0);
+                    if (!anyDrivers && !anyPeople) {
+                        switchSource('sample', `No drivers or volunteers are recorded for ${EVENT_DATE} yet, so sample data is shown.`);
+                        return;
+                    }
+                }
+                snapshot = data;
+                liveNow = data;
+                document.getElementById('last-updated-time').textContent =
+                    new Date().toLocaleTimeString() + (source === 'sample' ? ' (sample)' : '');
+            } catch (e) {
+                console.error('Live data unavailable:', e);
+                switchSource('sample', 'Live data could not be reached from here, so sample data is shown. The Assign buttons only change the sample.');
+                return;
             }
             sentTrips.clear();
             render();
         }
 
-        function setSource(next, reason) {
+        function switchSource(next, reason) {
             source = next;
+            sourceReason = reason || '';
             zoneOverrides = {};
             excludedDrivers.clear();
             sentTrips.clear();
-            sourceReason = reason || '';
+            if (next === 'sample') sampleDrivers = makeSampleDrivers();
             refreshData();
         }
-        let sourceReason = '';
 
         function toggleSource() {
-            setSource(source === 'live' ? 'sample' : 'live', source === 'live' ? 'Sample data selected.' : '');
+            switchSource(source === 'live' ? 'sample' : 'live', source === 'live' ? 'Sample data selected. The Assign buttons only change the sample.' : '');
         }
 
-        const currentZoneCounts = () => source === 'live' ? liveZoneCounts : SAMPLE_ZONES;
-        const currentDrivers = () => source === 'live' ? liveDrivers : SAMPLE_DRIVERS;
+        async function pollLive() {
+            if (busy) return;
+            try {
+                liveNow = await api.load();
+                renderQueue();
+            } catch (e) { /* keep last good data */ }
+        }
 
         // ── Inputs ──
         function readOptions() {
             return {
-                buffer: Math.max(0, parseInt(document.getElementById('opt-buffer').value) || 0),
+                buffer: parseInt(document.getElementById('opt-buffer').value) || 0,
                 useActive: document.getElementById('opt-list-active').checked,
                 useAssigned: document.getElementById('opt-list-assigned').checked,
                 types: {
@@ -614,142 +780,263 @@
             };
         }
 
-        function zoneDemand() {
-            const counts = currentZoneCounts();
-            return PICKUP_ZONES.map(zone => {
-                const live = Math.max(0, counts[zone] || 0);
-                const count = zone in zoneOverrides ? zoneOverrides[zone] : live;
-                return { zone, live, count };
+        // Volunteers per pickup zone = sum of the letter's sub-zones (normally all in X1 right now).
+        function groupCounts(zoneCounts) {
+            const out = {};
+            PICKUP.forEach(p => {
+                let total = 0;
+                const others = [];
+                p.subzones.forEach(s => {
+                    const n = Math.max(0, zoneCounts[s] || 0);
+                    total += n;
+                    if (n > 0 && s !== p.zone) others.push(`${s}: ${n}`);
+                });
+                out[p.zone] = { live: total, others };
             });
+            return out;
         }
 
-        function eligibleDrivers(opts) {
-            return currentDrivers().filter(d => {
-                const inList = (opts.useActive && ACTIVE_STATUSES.includes(d.status)) ||
-                               (opts.useAssigned && ASSIGNED_STATUSES.includes(d.status));
-                return inList && opts.types[d.driverType || 'Normal'];
-            }).map(d => {
-                // seatCapacity is volunteer seats only (driver and copilot already excluded)
-                const hasCopilot = !!(d.copilotFirstName || d.copilotLastName);
-                const seats = Math.max(0, Number(d.seatCapacity) || 0);
-                return { ...d, seats, hasCopilot };
+        function zoneDemand() {
+            const counts = groupCounts(snapshot.zoneCounts);
+            return PICKUP_ZONES.map(zone => {
+                const live = counts[zone].live;
+                const count = zone in zoneOverrides ? zoneOverrides[zone] : live;
+                return { zone, live, count, others: counts[zone].others };
             });
         }
 
         // ── Planning ──
-        // Wave 1: every driver goes once. Largest vehicles are placed first, each into the zone
-        // with the biggest share of its seats still unfilled. That spreads big and small cars
-        // evenly, in proportion to each zone's size.
-        // Wave 2+: only zones still short. Drivers with the fewest runs go first; the smallest car
-        // that covers the gap is picked, otherwise the largest available.
-        function buildPlan(demand, pool, opts) {
-            const zones = demand.filter(z => z.count > 0).map(z => ({
-                zone: z.zone, count: z.count, target: z.count + opts.buffer, planned: 0, plannedW1: 0, trips: []
-            }));
-            const runs = {};
-            pool.forEach(d => { runs[d.driverId] = 0; });
-            const trips = [];
-            const held = [];
-            const remaining = z => z.target - z.planned;
+        // 1. Staged drivers whose Zone is in a pickup zone count for that zone (their seats come off its need).
+        // 2. Non-staged cars that already have a pickup zone and haven't picked up yet are kept in that zone.
+        // 3. Everyone else in the plan is the Hub fleet. Zones are filled in rollout order until the fleet
+        //    runs out, so the last zone reached may be only partly covered; the rest waits for returning cars.
+        //    Inside each zone, cars are picked so the mix of large/medium/small seats matches the whole
+        //    fleet. When the gap left is smaller than the biggest car, the smallest car that closes it is used.
+        function buildPlan(opts) {
+            const demand = zoneDemand();
+            const byZone = {};
+            const zones = rolloutOrder.map((zone, idx) => {
+                const d = demand.find(x => x.zone === zone);
+                const z = {
+                    zone, position: idx + 1, count: d.count, live: d.live, others: d.others,
+                    target: d.count > 0 ? d.count + opts.buffer : 0,
+                    staged: [], locked: [], planned: [],
+                    stagedSeats: 0, lockedSeats: 0, plannedSeats: 0
+                };
+                byZone[zone] = z;
+                return z;
+            });
 
-            const assign = (d, z, wave) => {
-                runs[d.driverId]++;
-                z.planned += d.seats;
-                if (wave === 1) z.plannedW1 += d.seats;
-                const trip = { driver: d, zone: z.zone, wave, run: runs[d.driverId], seats: d.seats };
-                z.trips.push(trip);
-                trips.push(trip);
-            };
-
-            if (zones.length && pool.length) {
-                // Wave 1
-                const bySize = [...pool].filter(d => d.seats > 0)
-                    .sort((a, b) => b.seats - a.seats || (parseInt(a.carNumber) || 0) - (parseInt(b.carNumber) || 0));
-                for (const d of bySize) {
-                    const open = zones.filter(z => remaining(z) > 0);
-                    if (open.length) {
-                        assign(d, maxBy(open, z => remaining(z) / z.target), 1);
-                    } else if (opts.surplus === 'send') {
-                        assign(d, minBy(zones, z => z.planned / z.target), 1);
-                    } else {
-                        held.push(d);
-                    }
+            const fleet = [];
+            const notUsed = [];
+            snapshot.drivers.filter(d => d.status && d.status !== 'Checked Out').forEach(raw => {
+                const d = { ...raw, seats: Math.max(0, Number(raw.seatCapacity) || 0), hasCopilot: !!(raw.copilotFirstName || raw.copilotLastName) };
+                const pz = PICKUP_OF[d.zone];
+                if (d.driverType === 'Staged' && pz) {
+                    byZone[pz].staged.push(d);
+                    byZone[pz].stagedSeats += d.seats;
+                    return;
                 }
+                const inList = (opts.useActive && ACTIVE_STATUSES.includes(d.status)) ||
+                               (opts.useAssigned && ASSIGNED_STATUSES.includes(d.status));
+                if (!inList || !opts.types[d.driverType || 'Normal']) { notUsed.push({ d, why: 'filtered' }); return; }
+                if (excludedDrivers.has(d.driverId)) { notUsed.push({ d, why: 'excluded' }); return; }
+                if (pz && HEADING_STATUSES.includes(d.status)) {
+                    byZone[pz].locked.push(d);
+                    byZone[pz].lockedSeats += d.seats;
+                    return;
+                }
+                if (d.seats > 0) fleet.push(d);
+            });
 
-                // Wave 2+
-                const usable = pool.filter(d => d.seats > 0);
-                for (let wave = 2; wave <= MAX_WAVES && zones.some(z => remaining(z) > 0); wave++) {
-                    const used = new Set();
-                    while (true) {
-                        const open = zones.filter(z => remaining(z) > 0);
-                        const avail = usable.filter(d => !used.has(d.driverId));
-                        if (!open.length || !avail.length) break;
-                        const z = maxBy(open, remaining);
-                        const minRuns = Math.min(...avail.map(d => runs[d.driverId]));
-                        const cands = avail.filter(d => runs[d.driverId] === minRuns);
-                        const need = remaining(z);
-                        const fits = cands.filter(d => d.seats >= need);
-                        const d = fits.length ? minBy(fits, d => d.seats) : maxBy(cands, d => d.seats);
-                        used.add(d.driverId);
-                        assign(d, z, wave);
+            zones.forEach(z => { z.need = Math.max(0, z.target - z.stagedSeats - z.lockedSeats); });
+
+            // Fleet mix (share of seats in each size class)
+            const fleetSeats = fleet.reduce((s, d) => s + d.seats, 0);
+            const share = { L: 0, M: 0, S: 0 };
+            fleet.forEach(d => { share[sizeClass(d.seats)] += d.seats; });
+            Object.keys(share).forEach(c => { share[c] = fleetSeats ? share[c] / fleetSeats : 0; });
+
+            // Within a size class, take bigger cars first; at equal size, cars ready at the Hub first.
+            const readyRank = d => (d.status === 'Available' && !d.zone) ? 0 : 1;
+            const remaining = [...fleet].sort((a, b) => b.seats - a.seats || readyRank(a) - readyRank(b) ||
+                (parseInt(a.carNumber) || 0) - (parseInt(b.carNumber) || 0));
+            const take = d => remaining.splice(remaining.indexOf(d), 1)[0];
+
+            zones.forEach(z => {
+                const mix = { L: 0, M: 0, S: 0 };
+                let gap = z.need;
+                while (gap > 0 && remaining.length) {
+                    const biggest = remaining[0].seats;
+                    let pick;
+                    if (gap <= biggest) {
+                        // Close the zone with the smallest car that covers the gap
+                        const fits = remaining.filter(d => d.seats >= gap);
+                        const smallest = Math.min(...fits.map(d => d.seats));
+                        pick = fits.filter(d => d.seats === smallest).sort((a, b) => readyRank(a) - readyRank(b))[0];
+                    } else {
+                        // Pick the size class this zone is furthest behind on, compared with the fleet mix
+                        const assigned = mix.L + mix.M + mix.S;
+                        let best = null, bestDeficit = -Infinity;
+                        ['L', 'M', 'S'].forEach(c => {
+                            const first = remaining.find(d => sizeClass(d.seats) === c);
+                            if (!first) return;
+                            const deficit = share[c] * (assigned + first.seats) - mix[c];
+                            if (deficit > bestDeficit) { bestDeficit = deficit; best = first; }
+                        });
+                        pick = best;
                     }
+                    take(pick);
+                    mix[sizeClass(pick.seats)] += pick.seats;
+                    z.planned.push(pick);
+                    z.plannedSeats += pick.seats;
+                    gap -= pick.seats;
+                }
+            });
+
+            // Cars left once every zone is closed
+            const held = [];
+            if (remaining.length) {
+                const open = zones.filter(z => z.count > 0);
+                if (opts.surplus === 'send' && open.length) {
+                    let i = 0;
+                    [...remaining].sort((a, b) => b.seats - a.seats).forEach(d => {
+                        const z = open[i++ % open.length];
+                        z.planned.push(d);
+                        z.plannedSeats += d.seats;
+                    });
+                } else {
+                    held.push(...remaining);
                 }
             }
 
-            // Rollout order: within each wave, rotate across zones (busiest zone first),
-            // largest car first inside each zone, so every zone gets cars moving right away.
-            const zoneRank = [...zones].sort((a, b) => b.count - a.count).map(z => z.zone);
-            const ordered = [];
-            const waves = [...new Set(trips.map(t => t.wave))].sort((a, b) => a - b);
-            waves.forEach(w => {
-                const queues = zoneRank.map(zn => trips.filter(t => t.wave === w && t.zone === zn).sort((a, b) => b.seats - a.seats));
-                let added = true;
-                while (added) {
-                    added = false;
-                    queues.forEach(q => { if (q.length) { ordered.push(q.shift()); added = true; } });
-                }
+            // Trip rows, in rollout order: staged, then cars already set, then new Wave 1 cars.
+            const trips = [];
+            let order = 0;
+            zones.forEach(z => {
+                let running = 0;
+                z.staged.forEach(d => { running += d.seats; trips.push({ d, zone: z.zone, kind: 'staged', running }); });
+                z.locked.forEach(d => { running += d.seats; trips.push({ d, zone: z.zone, kind: 'locked', running, order: ++order }); });
+                z.planned.forEach(d => { running += d.seats; trips.push({ d, zone: z.zone, kind: 'planned', running, order: ++order }); });
+                z.afterWave1 = Math.max(0, z.need - z.plannedSeats);
             });
-            const running = {};
-            ordered.forEach((t, i) => {
-                running[t.zone] = (running[t.zone] || 0) + t.seats;
-                t.order = i + 1;
-                t.runningSeats = running[t.zone];
-                t.key = `${t.driver.driverId}|${t.wave}`;
+            trips.forEach(t => {
+                t.key = `${t.d.driverId}|${t.zone}`;
+                t.action = actionFor(t);
             });
 
-            return { zones, trips: ordered, runs, held, waves: waves.length };
+            return { zones, trips, held, fleet, fleetSeats, notUsed };
+        }
+
+        // What "Assign Wave 1" will do with each row
+        function actionFor(t) {
+            const d = t.d;
+            if (t.kind === 'staged') return { code: 'staged', label: 'Staged here', cls: 'act-staged' };
+            if (t.kind === 'locked') {
+                return d.status === 'In Transit'
+                    ? { code: 'onway', label: 'On the way', cls: 'act-onway' }
+                    : { code: 'set', label: `Zone set (${d.zone})`, cls: 'act-set' };
+            }
+            if (d.driverType === 'Staged') return { code: 'skip', label: 'Staged, set by hand', cls: 'act-skip' };
+            if (d.status === 'Available' && !d.zone) return { code: 'assign', label: 'Will assign', cls: 'act-assign' };
+            if (d.status === 'Available' && d.zone) return { code: 'skip', label: `Has zone ${d.zone}`, cls: 'act-skip' };
+            if (d.status === 'Assigned') return { code: 'skip', label: 'Status Assigned, set by hand', cls: 'act-skip' };
+            return { code: 'back', label: 'Assign when back', cls: 'act-back' };
         }
 
         // ── Rendering ──
         function render() {
             const opts = readOptions();
-            const demand = zoneDemand();
-            const allEligible = eligibleDrivers(opts);
-            const pool = allEligible.filter(d => !excludedDrivers.has(d.driverId));
-            const plan = buildPlan(demand, pool, opts);
+            const plan = buildPlan(opts);
             lastPlan = plan;
 
-            renderZoneInputs(demand);
-            renderStats(demand, pool, plan, opts);
-            renderAlerts(demand, pool, plan);
-            renderZoneCards(demand, plan, opts);
+            renderOrderList(plan);
+            renderZoneInputs(plan);
+            renderStats(plan);
+            renderAlerts(plan);
+            renderZoneCards(plan);
+            renderAssignBar(plan);
             renderRollout(plan);
-            renderPool(allEligible, plan);
+            renderQueue();
+            renderPool(plan);
 
             document.getElementById('source-hint').textContent = source === 'live' ? `Live · ${EVENT_DATE}` : 'Sample data';
             document.getElementById('source-toggle').textContent = source === 'live' ? 'Use sample data' : 'Use live data';
         }
 
-        function renderZoneInputs(demand) {
+        function renderOrderList(plan) {
+            const el = document.getElementById('order-list');
+            el.innerHTML = plan.zones.map((z, i) => {
+                const info = z.count > 0
+                    ? `<strong>${z.count}</strong> volunteers · needs <strong>${z.need}</strong>${z.stagedSeats ? ` (staged ${z.stagedSeats})` : ''}`
+                    : 'No volunteers';
+                return `<li class="order-item ${z.count > 0 ? '' : 'empty'}" draggable="true" data-zone="${z.zone}">
+                    <span class="order-pos">${i + 1}</span>
+                    <span class="order-zone">${z.zone}</span>
+                    <span class="order-info">${info}</span>
+                    <span class="order-btns">
+                        <button class="icon-btn" title="Move up" ${i === 0 ? 'disabled' : ''} onclick="moveZone('${z.zone}', -1)">▲</button>
+                        <button class="icon-btn" title="Move down" ${i === plan.zones.length - 1 ? 'disabled' : ''} onclick="moveZone('${z.zone}', 1)">▼</button>
+                    </span>
+                </li>`;
+            }).join('');
+            wireDrag(el);
+        }
+
+        function setOrder(order) {
+            rolloutOrder = order;
+            store.set(STORE_ORDER, order);
+            sentTrips.clear();
+            render();
+        }
+
+        function moveZone(zone, dir) {
+            const o = [...rolloutOrder];
+            const i = o.indexOf(zone), j = i + dir;
+            if (j < 0 || j >= o.length) return;
+            [o[i], o[j]] = [o[j], o[i]];
+            setOrder(o);
+        }
+
+        function setOrderPreset(kind) {
+            const counts = {};
+            zoneDemand().forEach(z => { counts[z.zone] = z.count; });
+            const o = [...PICKUP_ZONES];
+            if (kind === 'most') o.sort((a, b) => counts[b] - counts[a]);
+            if (kind === 'least') o.sort((a, b) => (counts[a] || 1e9) - (counts[b] || 1e9));
+            setOrder(o);
+        }
+
+        function wireDrag(list) {
+            let dragged = null;
+            list.querySelectorAll('.order-item').forEach(item => {
+                item.addEventListener('dragstart', e => { dragged = item; item.classList.add('dragging'); e.dataTransfer.effectAllowed = 'move'; });
+                item.addEventListener('dragend', () => { item.classList.remove('dragging'); list.querySelectorAll('.drag-over').forEach(x => x.classList.remove('drag-over')); });
+                item.addEventListener('dragover', e => { e.preventDefault(); if (item !== dragged) item.classList.add('drag-over'); });
+                item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+                item.addEventListener('drop', e => {
+                    e.preventDefault();
+                    if (!dragged || dragged === item) return;
+                    const o = rolloutOrder.filter(z => z !== dragged.dataset.zone);
+                    o.splice(o.indexOf(item.dataset.zone) + (rolloutOrder.indexOf(dragged.dataset.zone) < rolloutOrder.indexOf(item.dataset.zone) ? 1 : 0), 0, dragged.dataset.zone);
+                    setOrder(o);
+                });
+            });
+        }
+
+        function renderZoneInputs(plan) {
             const el = document.getElementById('zone-inputs');
             const focused = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.zone : null;
-            el.innerHTML = demand.map(z => `
-                <div class="zone-input">
-                    <label for="zi-${z.zone}">${z.zone}</label>
-                    <input id="zi-${z.zone}" data-zone="${z.zone}" type="number" min="0" value="${z.count}"
-                        class="${z.zone in zoneOverrides ? 'overridden' : ''}" oninput="onZoneInput(this)">
-                    <div class="live-hint">${z.zone in zoneOverrides ? `Live: ${z.live}` : ''}</div>
-                </div>`).join('');
+            el.innerHTML = PICKUP_ZONES.map(zone => {
+                const z = plan.zones.find(x => x.zone === zone);
+                const hint = zone in zoneOverrides ? `Live: ${z.live}` : (z.others.length ? `incl. ${z.others.join(', ')}` : '');
+                return `<div class="zone-input">
+                    <label for="zi-${zone}">${zone}</label>
+                    <input id="zi-${zone}" data-zone="${zone}" type="number" min="0" value="${z.count}"
+                        class="${zone in zoneOverrides ? 'overridden' : ''}" oninput="onZoneInput(this)">
+                    <div class="live-hint">${esc(hint)}</div>
+                </div>`;
+            }).join('');
             if (focused) {
                 const input = document.getElementById(`zi-${focused}`);
                 if (input) { input.focus(); const v = input.value; input.value = ''; input.value = v; }
@@ -759,7 +1046,7 @@
         function onZoneInput(input) {
             const zone = input.dataset.zone;
             const v = input.value === '' ? 0 : Math.max(0, parseInt(input.value) || 0);
-            const live = Math.max(0, currentZoneCounts()[zone] || 0);
+            const live = groupCounts(snapshot.zoneCounts)[zone].live;
             if (v === live) delete zoneOverrides[zone]; else zoneOverrides[zone] = v;
             sentTrips.clear();
             render();
@@ -771,89 +1058,116 @@
             render();
         }
 
-        function renderStats(demand, pool, plan, opts) {
-            const volunteers = demand.reduce((s, z) => s + z.count, 0);
+        function renderStats(plan) {
+            const volunteers = plan.zones.reduce((s, z) => s + z.count, 0);
             const needed = plan.zones.reduce((s, z) => s + z.target, 0);
-            const usedDrivers = new Set(plan.trips.map(t => t.driver.driverId));
-            const waveSeats = pool.reduce((s, d) => s + d.seats, 0);
-            const repeat = Object.values(plan.runs).filter(r => r >= 2).length;
-            const short = plan.zones.some(z => z.planned < z.count);
+            const staged = plan.zones.reduce((s, z) => s + z.stagedSeats, 0);
+            const withVolunteers = plan.zones.filter(z => z.count > 0);
+            const closed = withVolunteers.filter(z => z.afterWave1 === 0).length;
+            const after = plan.zones.reduce((s, z) => s + z.afterWave1, 0);
+            const assignable = plan.trips.filter(t => t.action.code === 'assign').length;
             document.getElementById('s-volunteers').textContent = volunteers;
             document.getElementById('s-needed').textContent = needed;
-            document.getElementById('s-drivers').textContent = usedDrivers.size;
-            document.getElementById('s-wave-seats').textContent = waveSeats;
-            document.getElementById('s-waves').textContent = plan.waves;
-            document.getElementById('s-waves').className = 'stat-value' + (short ? ' warn' : '');
-            document.getElementById('s-repeat').textContent = repeat;
-            document.getElementById('s-trips').textContent = plan.trips.length;
+            document.getElementById('s-staged').textContent = staged;
+            document.getElementById('s-fleet').textContent = plan.fleetSeats + plan.zones.reduce((s, z) => s + z.lockedSeats, 0);
+            document.getElementById('s-closed').textContent = `${closed} of ${withVolunteers.length}`;
+            const afterEl = document.getElementById('s-after');
+            afterEl.textContent = after;
+            afterEl.className = 'stat-value' + (after > 0 ? ' warn' : ' good');
+            document.getElementById('s-assignable').textContent = assignable;
         }
 
-        function renderAlerts(demand, pool, plan) {
+        function renderAlerts(plan) {
             const alerts = [];
-            if (sourceReason && source === 'sample') alerts.push(['info', 'ℹ️', sourceReason]);
+            if (sourceReason && source === 'sample') alerts.push(['info', 'ℹ️', esc(sourceReason)]);
 
-            const counts = currentZoneCounts();
-            const others = Object.keys(counts).filter(z => !PICKUP_ZONES.includes(z) && counts[z] > 0);
-            if (others.length) {
-                alerts.push(['', '⚠️', `Volunteers are still recorded in zones outside the pickup plan: ${others.map(z => `<strong>${esc(z)}</strong> (${counts[z]})`).join(', ')}. Add them to the nearest A1–F1 count above if they'll walk to a pickup zone.`]);
+            const lockedCount = plan.zones.reduce((s, z) => s + z.locked.length, 0);
+            const record = store.get(STORE_WAVE1, []);
+            if (lockedCount) {
+                alerts.push(['success', '📌', `<strong>${lockedCount} car${lockedCount === 1 ? '' : 's'} already ${lockedCount === 1 ? 'has' : 'have'} a pickup zone</strong>${record.length ? ' (Wave 1 was assigned from this browser)' : ' (set on Driver Tracking or by another Key Team member)'}. They're kept in those zones, and Assign Wave 1 only fills drivers who don't have a zone yet.`]);
             }
-            const shortZones = plan.zones.filter(z => z.planned < z.count);
-            if (shortZones.length) {
-                alerts.push(['danger', '🚨', `Not enough seats even after ${MAX_WAVES} waves for: ${shortZones.map(z => `<strong>${z.zone}</strong> (${z.count - z.planned} short)`).join(', ')}. Add drivers or include more driver types.`]);
+            const inTransitLocked = plan.zones.flatMap(z => z.locked).filter(d => d.status === 'In Transit');
+            if (inTransitLocked.length) {
+                alerts.push(['', '⚠️', `${inTransitLocked.length} In Transit car(s) have a pickup zone and are counted as going to pick up: ${inTransitLocked.map(d => `${esc(carLabel(d))} → ${esc(d.zone)}`).join(', ')}. If any are still delivering volunteers, the plan is counting their seats too early.`]);
             }
-            if (!pool.length && demand.some(z => z.count > 0)) {
-                alerts.push(['danger', '🚨', 'No drivers match the current rules. Check the driver lists and types under Plan Inputs.']);
+            const shortAll = plan.zones.filter(z => z.afterWave1 > 0);
+            if (shortAll.length && !plan.fleet.length) {
+                alerts.push(['danger', '🚨', 'No Hub cars match the current rules. Check the driver lists and types under Plan Inputs.']);
             }
             if (plan.held.length) {
-                alerts.push(['info', '🅿️', `${plan.held.length} driver(s) aren't needed and are held at the Hub: ${plan.held.map(d => esc(fullName(d))).join(', ')}.`]);
+                alerts.push(['info', '🅿️', `${plan.held.length} car(s) aren't needed in Wave 1 and stay at the Hub: ${plan.held.map(d => esc(carLabel(d))).join(', ')}.`]);
             }
-            const noCar = pool.filter(d => !d.carNumber);
+            const noCar = plan.trips.filter(t => t.kind !== 'staged' && !t.d.carNumber);
             if (noCar.length) {
-                alerts.push(['', '⚠️', `${noCar.length} driver(s) in the plan have no car number: ${noCar.map(d => esc(fullName(d))).join(', ')}.`]);
+                alerts.push(['', '⚠️', `${noCar.length} driver(s) in the plan have no car number: ${noCar.map(t => esc(fullName(t.d))).join(', ')}.`]);
+            }
+            const strayZones = Object.keys(snapshot.zoneCounts).filter(z => !PICKUP_OF[z] && snapshot.zoneCounts[z] > 0);
+            if (strayZones.length) {
+                alerts.push(['', '⚠️', `Volunteers are recorded in zones this page doesn't know: ${strayZones.map(z => `<strong>${esc(z)}</strong> (${snapshot.zoneCounts[z]})`).join(', ')}.`]);
             }
             document.getElementById('alert-container').innerHTML = alerts.map(([cls, icon, text]) =>
                 `<div class="alert-banner ${cls}"><span class="alert-icon">${icon}</span><span>${text}</span></div>`).join('');
         }
 
-        function renderZoneCards(demand, plan, opts) {
-            const byZone = {};
-            plan.zones.forEach(z => { byZone[z.zone] = z; });
-            document.getElementById('zone-grid').innerHTML = demand.map(d => {
-                const z = byZone[d.zone];
-                if (!z) {
+        function renderZoneCards(plan) {
+            document.getElementById('zone-grid').innerHTML = plan.zones.map(z => {
+                if (z.count === 0) {
                     return `<div class="zone-card empty">
-                        <div class="zone-header"><div class="zone-name">${d.zone}</div>
+                        <div class="zone-header"><div class="zone-name"><small>#${z.position}</small>${z.zone}</div>
                         <span class="zone-status-badge" style="background:#6c757d;">Empty</span></div>
                         <div class="muted">No volunteers to pick up.</div></div>`;
                 }
-                const ok = z.planned >= z.target;
-                const covered = z.planned >= z.count;
-                const status = ok ? ['ok', '#28a745', 'Covered'] : covered ? ['ok', '#e0a800', 'No extra seats'] : ['short', '#dc3545', 'Short'];
-                const scale = Math.max(z.planned, z.target);
-                const w1 = z.plannedW1, w2 = z.planned - z.plannedW1;
+                const covered = z.stagedSeats + z.lockedSeats + z.plannedSeats;
+                const status = z.afterWave1 === 0
+                    ? ['ok', '#28a745', 'Closed in Wave 1']
+                    : (z.plannedSeats + z.lockedSeats > 0 ? ['partial', '#e0a800', 'Partly in Wave 1'] : ['waiting', '#dc3545', 'Waits for Wave 2']);
+                const scale = Math.max(covered, z.target) || 1;
+                const pct = n => `${(n / scale) * 100}%`;
                 const mix = { L: 0, M: 0, S: 0 };
-                z.trips.forEach(t => mix[sizeClass(t.seats)]++);
-                const carsW1 = z.trips.filter(t => t.wave === 1).length;
-                const carsLater = z.trips.length - carsW1;
+                [...z.locked, ...z.planned].forEach(d => mix[sizeClass(d.seats)]++);
+                const cars = z.locked.length + z.planned.length;
                 return `<div class="zone-card ${status[0]}">
-                    <div class="zone-header"><div class="zone-name">${z.zone}</div>
+                    <div class="zone-header"><div class="zone-name"><small>#${z.position}</small>${z.zone}</div>
                     <span class="zone-status-badge" style="background:${status[1]};">${status[2]}</span></div>
-                    <div class="zone-metrics">
-                        <div class="metric"><span class="metric-label">Volunteers</span><span class="metric-value">${z.count}</span></div>
-                        <div class="metric"><span class="metric-label">Seats Sent</span><span class="metric-value">${z.planned}<small> / ${z.target}</small></span></div>
+                    <div class="zone-lines">
+                        <div class="row"><span>Volunteers</span><strong>${z.count}</strong></div>
+                        <div class="row"><span>+ extra seats</span><strong>${z.target - z.count}</strong></div>
+                        ${z.stagedSeats ? `<div class="row"><span>− staged here</span><strong>${z.stagedSeats}</strong></div>` : ''}
+                        ${z.lockedSeats ? `<div class="row"><span>− zone already set</span><strong>${z.lockedSeats}</strong></div>` : ''}
+                        <div class="row"><span>Wave 1 seats</span><strong>${z.plannedSeats}</strong></div>
+                        <div class="row total"><span>Still needed after</span><strong style="color:${z.afterWave1 ? '#b02a37' : '#1e7e34'}">${z.afterWave1}</strong></div>
                     </div>
-                    <div class="capacity-bar" title="${w1} first-run seats, ${w2} second-run seats">
-                        <div class="capacity-fill w1" style="width:${(w1 / scale) * 100}%"></div>
-                        <div class="capacity-fill w2" style="width:${(w2 / scale) * 100}%"></div>
+                    <div class="capacity-bar" title="Staged ${z.stagedSeats} · already set ${z.lockedSeats} · Wave 1 ${z.plannedSeats} of ${z.target}">
+                        <div class="fill-staged" style="width:${pct(z.stagedSeats)}"></div>
+                        <div class="fill-locked" style="width:${pct(z.lockedSeats)}"></div>
+                        <div class="fill-w1" style="width:${pct(z.plannedSeats)}"></div>
                     </div>
                     <div class="zone-mix">
                         ${mix.L ? `<span class="size-chip size-L">${mix.L} L</span>` : ''}
                         ${mix.M ? `<span class="size-chip size-M">${mix.M} M</span>` : ''}
                         ${mix.S ? `<span class="size-chip size-S">${mix.S} S</span>` : ''}
                     </div>
-                    <div class="zone-detail">${carsW1} car${carsW1 === 1 ? '' : 's'} first run${carsLater ? ` · ${carsLater} return trip${carsLater === 1 ? '' : 's'}` : ''}</div>
+                    <div class="zone-detail">${cars} car${cars === 1 ? '' : 's'} in Wave 1${z.staged.length ? ` · staged: ${z.staged.map(d => esc(carLabel(d))).join(', ')}` : ''}</div>
                 </div>`;
             }).join('');
+        }
+
+        function renderAssignBar(plan) {
+            const toAssign = plan.trips.filter(t => t.action.code === 'assign');
+            const back = plan.trips.filter(t => t.action.code === 'back').length;
+            const skip = plan.trips.filter(t => t.action.code === 'skip').length;
+            const record = store.get(STORE_WAVE1, []);
+            const zonesHit = [...new Set(toAssign.map(t => t.zone))];
+            let text = toAssign.length
+                ? `<strong>${toAssign.length} car${toAssign.length === 1 ? '' : 's'} at the Hub</strong> will get a Zone: ${zonesHit.map(z => `${z} (${toAssign.filter(t => t.zone === z).length})`).join(', ')}.`
+                : '<strong>No cars to assign right now.</strong>';
+            if (back) text += ` ${back} car${back === 1 ? ' is' : 's are'} still out; set ${back === 1 ? 'its' : 'their'} zone when ${back === 1 ? 'it gets' : 'they get'} back.`;
+            if (skip) text += ` ${skip} skipped (see the Assign column).`;
+            text += ' Only the Zone field changes; statuses stay the same.';
+            document.getElementById('assign-text').innerHTML = text;
+            document.getElementById('assign-btn').disabled = busy || toAssign.length === 0;
+            const lockedAvail = plan.zones.flatMap(z => z.locked).filter(d => d.status === 'Available');
+            document.getElementById('undo-btn').disabled = busy || (record.length === 0 && lockedAvail.length === 0);
         }
 
         function setRolloutSort(mode) {
@@ -871,17 +1185,15 @@
         }
 
         function renderZoneFilter(plan) {
-            const active = new Set(plan.zones.map(z => z.zone));
-            // Drop filters for zones that no longer have trips
+            const active = new Set(plan.trips.map(t => t.zone));
             [...zoneFilter].forEach(z => { if (!active.has(z)) zoneFilter.delete(z); });
             document.getElementById('zone-filter').innerHTML =
                 `<button class="zone-chip all ${zoneFilter.size === 0 ? 'on' : ''}" onclick="toggleZoneFilter('ALL')">All</button>` +
                 PICKUP_ZONES.map(z => `<button class="zone-chip ${zoneFilter.has(z) ? 'on' : ''}" ${active.has(z) ? '' : 'disabled'}
                     onclick="toggleZoneFilter('${z}')">${z}</button>`).join('');
-            const note = document.getElementById('print-filter-note');
-            note.textContent = zoneFilter.size
-                ? `Zones: ${PICKUP_ZONES.filter(z => zoneFilter.has(z)).join(', ')}${rolloutSort === 'zone' ? ' · sorted by zone' : ''}`
-                : (rolloutSort === 'zone' ? 'All zones · sorted by zone' : 'All zones');
+            const zonesTxt = zoneFilter.size ? `Zones: ${PICKUP_ZONES.filter(z => zoneFilter.has(z)).join(', ')}` : 'All zones';
+            document.getElementById('print-filter-note').textContent =
+                `Wave 1 · ${zonesTxt} · rollout order ${rolloutOrder.join(' → ')}`;
         }
 
         function renderRollout(plan) {
@@ -890,62 +1202,53 @@
             renderZoneFilter(plan);
 
             const shown = plan.trips.filter(t => zoneFilter.size === 0 || zoneFilter.has(t.zone));
+            const numbered = plan.trips.filter(t => t.kind !== 'staged').length;
+            const shownNumbered = shown.filter(t => t.kind !== 'staged').length;
             document.getElementById('rollout-count').textContent =
-                shown.length === plan.trips.length ? plan.trips.length : `${shown.length} of ${plan.trips.length}`;
+                shownNumbered === numbered ? `${numbered} cars` : `${shownNumbered} of ${numbered} cars`;
             if (!shown.length) {
                 tbody.innerHTML = '';
                 document.getElementById('rollout-table').style.display = 'none';
                 empty.style.display = 'block';
                 empty.textContent = !plan.trips.length
-                    ? (plan.zones.length ? 'No drivers available to plan with.' : 'No volunteers waiting in A1–F1. Nothing to plan.')
+                    ? (plan.zones.some(z => z.count > 0) ? 'No cars available to plan with.' : 'No volunteers waiting. Nothing to plan.')
                     : 'No cars for the selected zones.';
                 return;
             }
             document.getElementById('rollout-table').style.display = 'table';
             empty.style.display = 'none';
 
-            const targets = {};
-            plan.zones.forEach(z => { targets[z.zone] = z.target; });
-
-            // Keep waves in order; inside each wave, either rollout order or grouped by zone (A1→F1).
-            const rows = [...shown].sort((a, b) => a.wave - b.wave || (rolloutSort === 'zone'
-                ? PICKUP_ZONES.indexOf(a.zone) - PICKUP_ZONES.indexOf(b.zone) || a.order - b.order
-                : a.order - b.order));
+            const zoneIdx = z => rolloutSort === 'zone' ? PICKUP_ZONES.indexOf(z) : rolloutOrder.indexOf(z);
+            const kindIdx = { staged: 0, locked: 1, planned: 2 };
+            const rows = [...shown].sort((a, b) => zoneIdx(a.zone) - zoneIdx(b.zone) || kindIdx[a.kind] - kindIdx[b.kind] || (a.order || 0) - (b.order || 0));
 
             let html = '';
-            let lastWave = 0;
             let lastZone = null;
             rows.forEach(t => {
-                if (t.wave !== lastWave) {
-                    lastWave = t.wave;
-                    lastZone = null;
-                    const inWave = rows.filter(x => x.wave === t.wave);
-                    const seats = inWave.reduce((s, x) => s + x.seats, 0);
-                    const label = t.wave === 1 ? 'Wave 1: everyone goes out' : `Wave ${t.wave}: return trips as cars get back`;
-                    html += `<tr class="wave-row ${t.wave > 1 ? 'second' : ''}"><td colspan="10">${label} · ${inWave.length} car${inWave.length === 1 ? '' : 's'} · ${seats} seats</td></tr>`;
-                }
-                if (rolloutSort === 'zone' && t.zone !== lastZone) {
+                if (t.zone !== lastZone) {
                     lastZone = t.zone;
-                    const inZone = rows.filter(x => x.wave === t.wave && x.zone === t.zone);
-                    const seats = inZone.reduce((s, x) => s + x.seats, 0);
                     const z = plan.zones.find(x => x.zone === t.zone);
-                    html += `<tr class="zone-sub"><td colspan="10"><span class="zone-cell">${t.zone}</span>
-                        ${inZone.length} car${inZone.length === 1 ? '' : 's'} · ${seats} seats this wave · ${z.count} volunteers, ${z.target} seats needed</td></tr>`;
+                    const cars = z.locked.length + z.planned.length;
+                    const note = z.afterWave1
+                        ? `<span style="color:#b02a37;">${z.afterWave1} still needed after Wave 1</span>`
+                        : '<span style="color:#1e7e34;">closed in Wave 1</span>';
+                    html += `<tr class="zone-sub"><td colspan="11"><span class="zone-cell">#${z.position} · ${z.zone}</span>
+                        ${z.count} volunteers · ${z.target} seats needed${z.stagedSeats ? ` · ${z.stagedSeats} staged` : ''} · ${cars} car${cars === 1 ? '' : 's'} · ${note}</td></tr>`;
                 }
-                const d = t.driver;
+                const d = t.d;
                 const sent = sentTrips.has(t.key);
-                const runLabel = t.run === 1 ? '1st run' : t.run === 2 ? '2nd run' : `${t.run}th run`;
-                html += `<tr class="${sent ? 'done' : ''}">
-                    <td class="no-print no-strike"><input type="checkbox" ${sent ? 'checked' : ''} onchange="toggleSent('${esc(t.key)}', this.checked)"></td>
-                    <td><span class="order-num">${t.order}</span></td>
+                html += `<tr class="${sent ? 'done' : ''} ${t.kind === 'staged' ? 'staged-row' : ''}">
+                    <td class="no-print no-strike">${t.kind === 'staged' ? '' : `<input type="checkbox" ${sent ? 'checked' : ''} onchange="toggleSent('${esc(t.key)}', this.checked)">`}</td>
+                    <td>${t.order ? `<span class="order-num">${t.order}</span>` : '<span class="muted">—</span>'}</td>
                     <td class="zone-cell">${t.zone}</td>
                     <td>${d.carNumber ? esc(d.carNumber) : '<span class="muted">none</span>'}</td>
                     <td>${esc(fullName(d))}${d.hasCopilot ? ' <span class="muted">+ copilot</span>' : ''}</td>
                     <td>${esc(d.phoneNumber || '')}</td>
                     <td>${esc(`${d.make || ''} ${d.model || ''}`.trim())}</td>
-                    <td><span class="size-chip size-${sizeClass(t.seats)}">${t.seats}</span></td>
-                    <td><span class="run-badge run-${Math.min(t.run, 3)}">${runLabel}</span></td>
-                    <td>${t.runningSeats} / ${targets[t.zone]}</td>
+                    <td><span class="size-chip size-${sizeClass(d.seats)}">${d.seats}</span></td>
+                    <td><span class="status-badge ${statusClass(d.status)}">${esc(d.status)}</span></td>
+                    <td><span class="act ${t.action.cls}">${esc(t.action.label)}</span></td>
+                    <td>${t.running} / ${plan.zones.find(z => z.zone === t.zone).target}</td>
                 </tr>`;
             });
             tbody.innerHTML = html;
@@ -956,22 +1259,83 @@
             renderRollout(lastPlan);
         }
 
-        function renderPool(eligible, plan) {
-            const sorted = [...eligible].sort((a, b) => b.seats - a.seats || (parseInt(a.carNumber) || 0) - (parseInt(b.carNumber) || 0));
-            document.getElementById('pool-count').textContent = eligible.filter(d => !excludedDrivers.has(d.driverId)).length;
-            document.getElementById('pool-tbody').innerHTML = sorted.map(d => {
+        // ── Live "next car back" queue ──
+        function renderQueue() {
+            const buffer = readOptions().buffer;
+            const counts = groupCounts(liveNow.zoneCounts);
+            const rows = rolloutOrder.map((zone, i) => {
+                const volunteers = counts[zone].live;
+                const target = volunteers > 0 ? volunteers + buffer : 0;
+                let onWay = 0;
+                liveNow.drivers.forEach(d => {
+                    if (PICKUP_OF[d.zone] !== zone || !d.status || d.status === 'Checked Out') return;
+                    const seats = Number(d.seatCapacity) || 0;
+                    if (d.driverType === 'Staged') { if (d.status === 'Available' || d.status === 'In Transit') onWay += seats; }
+                    else if (HEADING_STATUSES.includes(d.status)) onWay += seats;
+                });
+                return { zone, pos: i + 1, volunteers, target, onWay, still: Math.max(0, target - onWay) };
+            });
+            const next = rows.find(r => r.still > 0);
+            const ready = liveNow.drivers.filter(d => d.status === 'Available' && !d.zone && d.driverType !== 'Staged');
+            const readySeats = ready.reduce((s, d) => s + (Number(d.seatCapacity) || 0), 0);
+
+            document.getElementById('queue-next').innerHTML = next
+                ? `<div class="queue-next">
+                       <div><div class="label">Next car back goes to</div><div class="big">${next.zone}</div></div>
+                       <div class="detail">${next.still} more seat${next.still === 1 ? '' : 's'} needed<br><span style="opacity:.85;font-size:13px;">${next.volunteers} volunteers · ${next.onWay} seats on the way</span></div>
+                       <div class="ready">Ready at the Hub, no zone<strong>${ready.length} car${ready.length === 1 ? '' : 's'} · ${readySeats} seats</strong></div>
+                   </div>`
+                : `<div class="queue-next done">
+                       <div><div class="label">All zones</div><div class="big">Covered ✓</div></div>
+                       <div class="detail">Every zone with volunteers has enough seats on the way.</div>
+                       <div class="ready">Ready at the Hub, no zone<strong>${ready.length} car${ready.length === 1 ? '' : 's'} · ${readySeats} seats</strong></div>
+                   </div>`;
+
+            document.getElementById('queue-tbody').innerHTML = rows.map(r => {
+                const isNext = next && r.zone === next.zone;
+                const closed = r.volunteers === 0;
+                return `<tr class="${isNext ? 'q-next' : ''} ${closed ? 'q-closed' : ''}">
+                    <td>${r.pos}</td>
+                    <td class="zone-cell">${r.zone}${isNext ? '<span class="q-flag">NEXT</span>' : ''}</td>
+                    <td>${r.volunteers}</td>
+                    <td>${closed ? '—' : r.target}</td>
+                    <td>${r.onWay}</td>
+                    <td>${closed ? '<span style="color:#1e7e34;font-weight:600;">Empty ✓</span>'
+                        : r.still ? `<strong style="color:#b02a37;">${r.still}</strong>` : '<span style="color:#1e7e34;font-weight:600;">Covered ✓</span>'}</td>
+                </tr>`;
+            }).join('');
+            document.getElementById('queue-updated').textContent =
+                `Checked ${new Date().toLocaleTimeString()}${source === 'sample' ? ' (sample)' : ''}`;
+        }
+
+        function renderPool(plan) {
+            const inPlan = {};
+            plan.trips.forEach(t => { inPlan[t.d.driverId] = t; });
+            const all = snapshot.drivers.filter(d => d.status && d.status !== 'Checked Out')
+                .map(d => ({ ...d, seats: Math.max(0, Number(d.seatCapacity) || 0) }))
+                .sort((a, b) => b.seats - a.seats || (parseInt(a.carNumber) || 0) - (parseInt(b.carNumber) || 0));
+            document.getElementById('pool-count').textContent = Object.keys(inPlan).length;
+            document.getElementById('pool-tbody').innerHTML = all.map(d => {
                 const excluded = excludedDrivers.has(d.driverId);
-                const runs = plan.runs[d.driverId] || 0;
+                const t = inPlan[d.driverId];
+                const isStaged = t && t.kind === 'staged';
+                const held = lastPlan.held.some(h => h.driverId === d.driverId);
+                const filtered = lastPlan.notUsed.some(n => n.d.driverId === d.driverId && n.why === 'filtered');
                 const type = d.driverType || 'Normal';
+                const planCell = excluded ? '<span class="muted">not used</span>'
+                    : t ? `<span class="zone-cell">${t.zone}</span> <span class="act ${t.action.cls}">${esc(t.action.label)}</span>`
+                    : held ? '<span class="muted">held at Hub</span>'
+                    : filtered ? '<span class="muted">filtered out by rules</span>' : '<span class="muted">—</span>';
                 return `<tr style="${excluded ? 'opacity:0.45;' : ''}">
-                    <td><input type="checkbox" ${excluded ? '' : 'checked'} onchange="toggleDriver('${esc(d.driverId)}', this.checked)"></td>
+                    <td>${isStaged ? '' : `<input type="checkbox" ${excluded ? '' : 'checked'} onchange="toggleDriver('${esc(d.driverId)}', this.checked)">`}</td>
                     <td>${esc(d.carNumber || '')}</td>
-                    <td>${esc(fullName(d))}${d.hasCopilot ? ' <span class="muted">+ copilot</span>' : ''}</td>
+                    <td>${esc(fullName(d))}</td>
                     <td>${esc(`${d.make || ''} ${d.model || ''}`.trim())}</td>
                     <td><span class="size-chip size-${sizeClass(d.seats)}">${d.seats}</span></td>
-                    <td><span class="type-badge type-${type.toLowerCase()}">${esc(type)}</span></td>
-                    <td><span class="status-badge status-${esc((d.status || '').toLowerCase().replace(' ', '-'))}">${esc(d.status)}</span></td>
-                    <td>${excluded ? '<span class="muted">not used</span>' : runs || '<span class="muted">held</span>'}</td>
+                    <td><span class="type-badge type-${esc(type.toLowerCase())}">${esc(type)}</span></td>
+                    <td><span class="status-badge ${statusClass(d.status)}">${esc(d.status)}</span></td>
+                    <td>${esc(d.zone || '')}</td>
+                    <td>${planCell}</td>
                 </tr>`;
             }).join('');
         }
@@ -982,13 +1346,168 @@
             render();
         }
 
+        // ── Dialog ──
+        function openModal({ title, body, okText, okClass = 'btn-submit', cancelText = 'Cancel', onOk }) {
+            const modal = document.getElementById('modal');
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = body;
+            document.getElementById('modal-progress').textContent = '';
+            const ok = document.getElementById('modal-ok');
+            const cancel = document.getElementById('modal-cancel');
+            ok.textContent = okText;
+            ok.className = `btn ${okClass}`;
+            ok.style.display = okText ? '' : 'none';
+            ok.disabled = false;
+            cancel.textContent = cancelText;
+            cancel.disabled = false;
+            ok.onclick = () => onOk && onOk();
+            cancel.onclick = () => { if (!busy) closeModal(); };
+            modal.classList.add('active');
+        }
+        function closeModal() { document.getElementById('modal').classList.remove('active'); }
+        function setProgress(text) { document.getElementById('modal-progress').textContent = text; }
+        function finishModal(title, body) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = body;
+            document.getElementById('modal-ok').style.display = 'none';
+            const cancel = document.getElementById('modal-cancel');
+            cancel.textContent = 'Close';
+            cancel.disabled = false;
+        }
+        const listItem = (d, extra) => `<li><strong>${esc(carLabel(d))}</strong> · ${esc(fullName(d))} · ${d.seats ?? d.seatCapacity} seats${extra ? ` · ${extra}` : ''}</li>`;
+
+        // ── Assign Wave 1 ──
+        async function startAssign() {
+            if (busy || !lastPlan) return;
+            const planned = lastPlan.trips.filter(t => t.action.code === 'assign');
+            if (!planned.length) return;
+
+            // Re-check against the latest data so two Key Team members can't double-assign.
+            let fresh;
+            try { fresh = await api.load(); } catch (e) {
+                openModal({ title: 'Could not check drivers', body: 'The latest driver data could not be loaded, so nothing was changed. Try again in a moment.', okText: '', cancelText: 'Close' });
+                return;
+            }
+            const now = {};
+            fresh.drivers.forEach(d => { now[d.driverId] = d; });
+            const go = [], skipped = [];
+            planned.forEach(t => {
+                const cur = now[t.d.driverId];
+                if (!cur) skipped.push([t, 'not found']);
+                else if (cur.status !== 'Available') skipped.push([t, `status is now ${cur.status}`]);
+                else if (cur.zone) skipped.push([t, `already has zone ${cur.zone}`]);
+                else if (cur.driverType === 'Staged') skipped.push([t, 'now Staged']);
+                else go.push(t);
+            });
+
+            const byZone = rolloutOrder.map(z => [z, go.filter(t => t.zone === z)]).filter(([, ts]) => ts.length);
+            let body = byZone.map(([z, ts]) => `<h4>${z} · ${ts.length} car${ts.length === 1 ? '' : 's'} · ${ts.reduce((s, t) => s + t.d.seats, 0)} seats</h4>
+                <ul>${ts.map(t => listItem(t.d)).join('')}</ul>`).join('');
+            if (!go.length) body = '<p>None of the planned cars can be assigned any more. Someone may have just assigned them. Press Refresh &amp; Re-plan.</p>';
+            if (skipped.length) {
+                body += `<h4 style="color:#b02a37;">Skipped (${skipped.length})</h4><ul>${skipped.map(([t, why]) => listItem(t.d, esc(why))).join('')}</ul>`;
+            }
+            body += '<p class="muted" style="margin-top:12px;">Only the Zone field is changed. Statuses are not touched.</p>';
+
+            openModal({
+                title: `Assign Wave 1: set Zone for ${go.length} car${go.length === 1 ? '' : 's'}?`,
+                body,
+                okText: go.length ? `Set ${go.length} zone${go.length === 1 ? '' : 's'}` : '',
+                onOk: () => runWrites(go.map(t => ({ d: t.d, zone: t.zone })), 'assign')
+            });
+        }
+
+        // ── Clear Wave 1 (undo) ──
+        async function startUndo() {
+            if (busy) return;
+            let fresh;
+            try { fresh = await api.load(); } catch (e) {
+                openModal({ title: 'Could not check drivers', body: 'The latest driver data could not be loaded, so nothing was changed.', okText: '', cancelText: 'Close' });
+                return;
+            }
+            const record = store.get(STORE_WAVE1, []);
+            const now = {};
+            fresh.drivers.forEach(d => { now[d.driverId] = d; });
+
+            // Prefer this browser's record of what it set; otherwise offer every Available, non-staged car
+            // that has a pickup zone (that's what an assignment looks like).
+            const candidates = record.length
+                ? record.map(r => ({ d: now[r.driverId], zone: r.zone })).filter(x => x.d)
+                : fresh.drivers.filter(d => d.driverType !== 'Staged' && d.status === 'Available' && PICKUP_OF[d.zone])
+                    .map(d => ({ d, zone: d.zone }));
+            const clear = [], keep = [];
+            candidates.forEach(c => {
+                c.d = { ...c.d, seats: Number(c.d.seatCapacity) || 0 };
+                if (c.d.status !== 'Available') keep.push([c, `already left (${c.d.status})`]);
+                else if (c.d.zone !== c.zone) keep.push([c, c.d.zone ? `zone changed to ${c.d.zone}` : 'zone already cleared']);
+                else clear.push(c);
+            });
+
+            let body = record.length
+                ? '<p>These are the zones this browser set for Wave 1.</p>'
+                : '<p>This browser has no record of a Wave 1 assignment, so this lists every car at the Hub that has a pickup zone, including any set by hand. Check the list carefully.</p>';
+            body += clear.length ? `<h4>Clear Zone (${clear.length})</h4><ul>${clear.map(c => listItem(c.d, `${esc(c.zone)} → none`)).join('')}</ul>`
+                : '<p><strong>Nothing to clear.</strong></p>';
+            if (keep.length) body += `<h4 style="color:#b02a37;">Left alone (${keep.length})</h4><ul>${keep.map(([c, why]) => listItem(c.d, esc(why))).join('')}</ul>`;
+            body += '<p class="muted" style="margin-top:12px;">Cars that have already left keep their zone, so their pickup is still counted in the right zone.</p>';
+
+            openModal({
+                title: 'Clear Wave 1 zones?',
+                body,
+                okText: clear.length ? `Clear ${clear.length} zone${clear.length === 1 ? '' : 's'}` : '',
+                okClass: 'btn-cancel',
+                onOk: () => runWrites(clear.map(c => ({ d: c.d, zone: '' , was: c.zone })), 'undo')
+            });
+        }
+
+        async function runWrites(items, mode) {
+            busy = true;
+            document.getElementById('modal-ok').disabled = true;
+            document.getElementById('modal-cancel').disabled = true;
+            const ok = [], failed = [];
+            for (let i = 0; i < items.length; i++) {
+                const it = items[i];
+                setProgress(`Saving ${i + 1} of ${items.length}…`);
+                try {
+                    await api.setZone(it.d.driverId, it.zone);
+                    ok.push(it);
+                } catch (e) {
+                    console.error('Zone update failed', it, e);
+                    failed.push(it);
+                }
+            }
+
+            let record = store.get(STORE_WAVE1, []);
+            if (mode === 'assign') {
+                ok.forEach(it => { record = record.filter(r => r.driverId !== it.d.driverId); record.push({ driverId: it.d.driverId, zone: it.zone }); });
+            } else {
+                const cleared = new Set(ok.map(it => it.d.driverId));
+                record = record.filter(r => !cleared.has(r.driverId));
+            }
+            store.set(STORE_WAVE1, record);
+            busy = false;
+
+            const verb = mode === 'assign' ? 'set' : 'cleared';
+            let body = `<p><strong>${ok.length} zone${ok.length === 1 ? '' : 's'} ${verb}.</strong></p>`;
+            if (failed.length) {
+                body += `<h4 style="color:#b02a37;">Failed (${failed.length})</h4><ul>${failed.map(it => listItem(it.d)).join('')}</ul>
+                    <p>Set these by hand on Driver Tracking, or press the button again.</p>`;
+            }
+            if (mode === 'assign' && ok.length) body += '<p class="muted">Review them on Driver Tracking before cars leave.</p>';
+            finishModal(failed.length ? 'Finished with errors' : 'Done', body);
+            setProgress('');
+            await refreshData();
+        }
+
         // Re-plan whenever a rule changes
         ['opt-buffer', 'opt-list-active', 'opt-list-assigned', 'opt-type-normal', 'opt-type-staged',
          'opt-type-reserved', 'opt-surplus'].forEach(id => {
-            document.getElementById(id).addEventListener(id === 'opt-buffer' ? 'input' : 'change', () => { sentTrips.clear(); render(); });
+            document.getElementById(id).addEventListener('change', () => { sentTrips.clear(); render(); });
         });
 
+        rolloutOrder = loadOrder();
         refreshData();
+        setInterval(pollLive, POLL_MS);
     </script>
 </body>
 </html>
