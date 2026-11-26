@@ -1,0 +1,47 @@
+name: Deploy site to S3
+
+on:
+  # Automatic: any push to main that changes something in site/
+  push:
+    branches: [main]
+    paths: ['site/**']
+  # By hand: Actions tab -> Deploy site to S3 -> Run workflow
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "dry-run = list files only (no AWS). all = upload every site file and clear the cache."
+        type: choice
+        options: [dry-run, all]
+        default: dry-run
+
+permissions:
+  id-token: write   # lets GitHub prove to AWS which repo and branch is asking
+  contents: read
+
+concurrency:
+  group: deploy-site   # one deploy at a time; a second push waits its turn
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history, so the script can see what changed
+
+      - name: Sign in to AWS
+        if: ${{ github.event_name == 'push' || inputs.mode == 'all' }}
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Deploy
+        env:
+          MODE: ${{ github.event_name == 'push' && 'changed' || inputs.mode }}
+          BEFORE_SHA: ${{ github.event.before }}
+          S3_BUCKET: ${{ vars.S3_BUCKET }}
+          CF_SITE_DIST: ${{ vars.CF_SITE_DIST }}
+          CF_PHOTO_DIST: ${{ vars.CF_PHOTO_DIST }}
+        run: bash .github/scripts/deploy-site.sh
