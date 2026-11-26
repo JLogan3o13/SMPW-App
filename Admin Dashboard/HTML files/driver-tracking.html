@@ -191,8 +191,72 @@
         }
 
         .table-section.collapsed .zone-capacity-container,
+        .table-section.collapsed .zone-filter-bar,
         .table-section.collapsed .table-container {
             display: none;
+        }
+
+        /* ── Zone filter chips (Active Drivers) — same style as the Pickup Planner ── */
+        .zone-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            margin-bottom: 12px;
+        }
+
+        .control-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-right: 6px;
+        }
+
+        .zone-chip {
+            border: 1px solid #ccc;
+            background: white;
+            color: #555;
+            border-radius: 14px;
+            padding: 5px 12px;
+            font-size: 13px;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        .zone-chip:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .zone-chip.on,
+        .zone-chip.on:hover {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .zone-chip.all {
+            font-weight: 500;
+        }
+
+        .zone-chip .chip-count {
+            font-weight: 500;
+            opacity: 0.7;
+            margin-left: 4px;
+        }
+
+        .zone-chip.none-in-zone:not(.on) {
+            opacity: 0.45;
+        }
+
+        .filter-note {
+            font-size: 12px;
+            color: #999;
+            margin-left: 6px;
         }
 
         .collapsed-hint {
@@ -310,17 +374,18 @@
                 padding: 8px;
             }
 
-            /* Open tables keep a minimum height: ~2 rows for Assigned/Master,
-               ~4 rows for Active, which takes priority. */
+            /* Open tables keep a minimum height: ~4 rows for Assigned/Master,
+               ~8 rows for Active, which takes priority. On shorter screens the
+               page scrolls rather than squeezing the tables below this. */
             .table-section .table-container {
                 flex: 1 1 0;
                 height: 0;          /* size from the flex layout, not the row count */
-                min-height: 130px;
+                min-height: 270px;
                 max-height: none;
             }
 
             #active-section .table-container {
-                min-height: 240px;
+                min-height: 495px;
             }
         }
 
@@ -824,6 +889,11 @@
                     <span class="collapsed-hint">Minimized</span>
                 </button>
             </div>
+            <div class="zone-filter-bar">
+                <span class="control-label">Show zones</span>
+                <span id="active-zone-filter"></span>
+                <span class="filter-note" id="active-filter-note"></span>
+            </div>
             <div class="table-container">
                 <table id="active-table">
                     <thead>
@@ -1074,6 +1144,9 @@
             renderTables();
         }
 
+        // Status sort order = the order cars move through the process
+        const STATUS_ORDER = ['Assigned', 'Available', 'In Transit', 'Dropped Off', 'Picked Up', 'Checked Out'];
+
         function compareValues(a, b, column, direction) {
             let valueA = a[column];
             let valueB = b[column];
@@ -1085,6 +1158,13 @@
                 return direction === 'asc' ? valueA - valueB : valueB - valueA;
             }
             
+            // Handle status column: follow the order cars move through the night
+            if (column === 'status') {
+                const ra = STATUS_ORDER.indexOf(valueA), rb = STATUS_ORDER.indexOf(valueB);
+                const diff = (ra === -1 ? STATUS_ORDER.length : ra) - (rb === -1 ? STATUS_ORDER.length : rb);
+                return direction === 'asc' ? diff : -diff;
+            }
+
             // Handle zone column (overflow zones last within each zone)
             if (column === 'zone') {
                 return direction === 'asc' ? compareZones(valueA, valueB) : compareZones(valueB, valueA);
@@ -1248,14 +1328,23 @@
             }
 
             // Render Active Drivers table
-            if (activeDrivers.length === 0) {
+            // Zone filter (Active table only). Chips are by zone letter, so "B" shows B1–B5 and B1Z.
+            renderActiveZoneFilter(activeDrivers);
+            const shownActive = activeZoneFilter.size === 0
+                ? activeDrivers
+                : activeDrivers.filter(d => activeZoneFilter.has(zoneLetter(d.zone)));
+
+            if (shownActive.length === 0) {
+                activeEmpty.textContent = activeDrivers.length === 0
+                    ? ACTIVE_EMPTY_TEXT
+                    : `No active drivers in ${filterLabel()} right now.`;
                 activeEmpty.style.display = 'block';
                 document.getElementById('active-table').style.display = 'none';
             } else {
                 activeEmpty.style.display = 'none';
                 document.getElementById('active-table').style.display = 'table';
                 
-                activeDrivers.forEach(driver => {
+                shownActive.forEach(driver => {
                     const hasCopilot = driver.copilotFirstName || driver.copilotLastName;
                     const copilotRowId = `cp-${driver.driverId}`;
                     const row = document.createElement('tr');
@@ -1373,6 +1462,10 @@
             });
 
             updateStats();
+            // When filtered, the badge shows "shown of total" (stats bar still counts everyone)
+            if (activeZoneFilter.size) {
+                document.getElementById('active-count').textContent = `${shownActive.length} of ${activeDrivers.length}`;
+            }
             updateLastUpdatedTime();
             restoreExpandedCopilots();
         }
@@ -1623,6 +1716,53 @@
             const now = new Date();
             const timeStr = now.toLocaleTimeString();
             document.getElementById('last-updated-time').textContent = timeStr;
+        }
+
+        // ── Active Drivers zone filter ──
+        // Remembered per browser, so each Key Team member keeps their zone after a reload.
+        const ACTIVE_FILTER_KEY = 'driverTracking.activeZoneFilter';
+        const ZONE_LETTERS = ZONE_GROUPS.map(g => g.letter);
+        const ACTIVE_EMPTY_TEXT = document.getElementById('active-empty').textContent.trim();
+        const zoneLetter = z => (z || '').toString().trim().charAt(0).toUpperCase();
+
+        let activeZoneFilter = new Set();
+        try {
+            const saved = JSON.parse(localStorage.getItem(ACTIVE_FILTER_KEY));
+            if (Array.isArray(saved)) saved.filter(l => ZONE_LETTERS.includes(l)).forEach(l => activeZoneFilter.add(l));
+        } catch (e) { /* storage unavailable — start with All */ }
+
+        function filterLabel() {
+            const letters = ZONE_LETTERS.filter(l => activeZoneFilter.has(l));
+            return letters.length === 1 ? `Zone ${letters[0]}` : `Zones ${letters.join(', ')}`;
+        }
+
+        function toggleActiveZoneFilter(letter) {
+            if (letter === 'ALL') activeZoneFilter.clear();
+            else if (activeZoneFilter.has(letter)) activeZoneFilter.delete(letter);
+            else activeZoneFilter.add(letter);
+            try {
+                localStorage.setItem(ACTIVE_FILTER_KEY, JSON.stringify([...activeZoneFilter]));
+            } catch (e) { /* ignore — filter just won't persist */ }
+            renderTables();
+        }
+
+        function renderActiveZoneFilter(activeDrivers) {
+            const counts = {};
+            activeDrivers.forEach(d => {
+                const l = zoneLetter(d.zone);
+                counts[l] = (counts[l] || 0) + 1;
+            });
+            document.getElementById('active-zone-filter').innerHTML =
+                `<button type="button" class="zone-chip all ${activeZoneFilter.size === 0 ? 'on' : ''}" onclick="toggleActiveZoneFilter('ALL')">All</button> ` +
+                ZONE_LETTERS.map(l => {
+                    const n = counts[l] || 0;
+                    return `<button type="button" class="zone-chip ${activeZoneFilter.has(l) ? 'on' : ''} ${n ? '' : 'none-in-zone'}"
+                        onclick="toggleActiveZoneFilter('${l}')" title="${n} active driver${n === 1 ? '' : 's'} in Zone ${l}">${l}<span class="chip-count">${n}</span></button>`;
+                }).join(' ');
+            const noZone = counts[''] || 0;
+            document.getElementById('active-filter-note').textContent = activeZoneFilter.size
+                ? `${noZone ? `${noZone} driver${noZone === 1 ? '' : 's'} with no zone hidden · ` : ''}Sort still works on the filtered list`
+                : '';
         }
 
         // ── Collapsible sections ──
