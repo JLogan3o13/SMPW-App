@@ -143,6 +143,187 @@
             overflow-y: auto;
         }
 
+        /* ── Collapsible sections ── */
+        .section-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: none;
+            border: none;
+            padding: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .section-toggle:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .section-chevron {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: #e9ecef;
+            color: #555;
+            font-size: 12px;
+            transition: transform 0.2s, background-color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .section-toggle:hover .section-chevron {
+            background: #667eea;
+            color: white;
+        }
+
+        .table-section.collapsed .section-chevron {
+            transform: rotate(-90deg);
+        }
+
+        .table-section.collapsed .section-header {
+            margin-bottom: 0;
+        }
+
+        .table-section.collapsed .zone-capacity-container,
+        .table-section.collapsed .table-container {
+            display: none;
+        }
+
+        .collapsed-hint {
+            display: none;
+            font-size: 12px;
+            font-weight: 500;
+            color: #999;
+        }
+
+        .table-section.collapsed .collapsed-hint {
+            display: inline;
+        }
+
+        /* ── Fill-the-screen layout (desktop / tablet) ──
+           The three sections share the space under the stats bar.
+           Active gets twice the share of the others; a collapsed
+           section shrinks to its header and gives its space away. */
+        @media (min-width: 769px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .container {
+                display: flex;
+                flex-direction: column;
+                height: calc(100vh - 40px);
+            }
+
+            .header,
+            .stats-bar,
+            .last-updated {
+                flex: 0 0 auto;
+            }
+
+            .sections {
+                flex: 1 1 auto;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+                overflow-y: auto; /* fallback if the window is very short */
+            }
+
+            .table-section {
+                display: flex;
+                flex-direction: column;
+                flex: 1 1 0;
+                min-height: auto; /* never smaller than header + zone cards + table minimum */
+                padding: 20px 30px;
+            }
+
+            /* Active Drivers gets double the share of the others */
+            #active-section:not(.collapsed) {
+                flex-grow: 2;
+            }
+
+            .table-section.collapsed {
+                flex: 0 0 auto;
+                min-height: 0;
+                padding-top: 14px;
+                padding-bottom: 14px;
+            }
+
+            .section-header {
+                margin-bottom: 14px;
+            }
+
+            /* Compact zone capacity cards so Assigned keeps room for its table */
+            .table-section .zone-capacity-container {
+                flex: 0 0 auto;
+                padding: 10px 16px;
+                margin-bottom: 12px;
+            }
+
+            .table-section .zone-capacity-title {
+                margin-bottom: 8px;
+                font-size: 12px;
+            }
+
+            .table-section .zone-capacity-grid {
+                grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+                gap: 8px;
+            }
+
+            .table-section .zone-capacity-item {
+                padding: 6px 12px;
+            }
+
+            .table-section .zone-capacity-value {
+                font-size: 20px;
+            }
+
+            .table-section .zone-capacity-label {
+                display: none;
+            }
+
+            /* Slightly slimmer header and stats bar to free up table space */
+            .container .header {
+                padding: 16px 30px;
+            }
+
+            .container .header h1 {
+                font-size: 24px;
+            }
+
+            .container .stats-bar {
+                padding: 12px 30px;
+            }
+
+            .container .stat-value {
+                font-size: 22px;
+            }
+
+            .container .last-updated {
+                padding: 8px;
+            }
+
+            /* Open tables keep a minimum height: ~2 rows for Assigned/Master,
+               ~4 rows for Active, which takes priority. */
+            .table-section .table-container {
+                flex: 1 1 0;
+                height: 0;          /* size from the flex layout, not the row count */
+                min-height: 130px;
+                max-height: none;
+            }
+
+            #active-section .table-container {
+                min-height: 240px;
+            }
+        }
+
         thead th {
             position: sticky;
             top: 0;
@@ -585,13 +766,16 @@
             </div>
         </div>
 
+        <div class="sections">
         <!-- Assigned Drivers Table -->
-        <div class="table-section">
+        <div class="table-section" id="assigned-section">
             <div class="section-header">
-                <div class="section-title">
+                <button type="button" class="section-toggle section-title" onclick="toggleSection('assigned')" aria-expanded="true" aria-controls="assigned-section">
+                    <span class="section-chevron">▼</span>
                     📌 Assigned Drivers
                     <span class="section-badge" id="assigned-count">0</span>
-                </div>
+                    <span class="collapsed-hint">Minimized</span>
+                </button>
             </div>
             
             <!-- Zone Capacity Counter -->
@@ -631,12 +815,14 @@
         </div>
 
         <!-- Active Drivers Table -->
-        <div class="table-section">
+        <div class="table-section" id="active-section">
             <div class="section-header">
-                <div class="section-title">
+                <button type="button" class="section-toggle section-title" onclick="toggleSection('active')" aria-expanded="true" aria-controls="active-section">
+                    <span class="section-chevron">▼</span>
                     ⚡ Active Drivers
                     <span class="section-badge" id="active-count">0</span>
-                </div>
+                    <span class="collapsed-hint">Minimized</span>
+                </button>
             </div>
             <div class="table-container">
                 <table id="active-table">
@@ -667,12 +853,14 @@
         </div>
 
         <!-- Master Driver List Table -->
-        <div class="table-section">
+        <div class="table-section" id="master-section">
             <div class="section-header">
-                <div class="section-title">
+                <button type="button" class="section-toggle section-title" onclick="toggleSection('master')" aria-expanded="true" aria-controls="master-section">
+                    <span class="section-chevron">▼</span>
                     📋 Master Driver List (Checked Out)
                     <span class="section-badge" id="master-count">0</span>
-                </div>
+                    <span class="collapsed-hint">Minimized</span>
+                </button>
             </div>
             <div class="table-container">
                 <table id="master-table">
@@ -696,6 +884,7 @@
                 </table>
             </div>
         </div>
+        </div><!-- /.sections -->
 
         <div class="last-updated">
             Last updated: <span id="last-updated-time">--</span>
@@ -1435,6 +1624,46 @@
             const timeStr = now.toLocaleTimeString();
             document.getElementById('last-updated-time').textContent = timeStr;
         }
+
+        // ── Collapsible sections ──
+        // State is remembered per browser. On first visit the Master list
+        // starts minimized so Active Drivers gets the most room.
+        const SECTION_STATE_KEY = 'driverTracking.collapsedSections';
+        const DEFAULT_COLLAPSED = { assigned: false, active: false, master: true };
+
+        function loadSectionState() {
+            try {
+                const saved = JSON.parse(localStorage.getItem(SECTION_STATE_KEY));
+                if (saved && typeof saved === 'object') {
+                    return { ...DEFAULT_COLLAPSED, ...saved };
+                }
+            } catch (e) { /* storage unavailable or bad JSON — use defaults */ }
+            return { ...DEFAULT_COLLAPSED };
+        }
+
+        let collapsedSections = loadSectionState();
+
+        function applySectionState(name) {
+            const section = document.getElementById(`${name}-section`);
+            if (!section) return;
+            const isCollapsed = !!collapsedSections[name];
+            section.classList.toggle('collapsed', isCollapsed);
+            const btn = section.querySelector('.section-toggle');
+            if (btn) {
+                btn.setAttribute('aria-expanded', String(!isCollapsed));
+                btn.title = isCollapsed ? 'Expand section' : 'Minimize section';
+            }
+        }
+
+        function toggleSection(name) {
+            collapsedSections[name] = !collapsedSections[name];
+            applySectionState(name);
+            try {
+                localStorage.setItem(SECTION_STATE_KEY, JSON.stringify(collapsedSections));
+            } catch (e) { /* ignore — state just won't persist */ }
+        }
+
+        ['assigned', 'active', 'master'].forEach(applySectionState);
 
         function refreshData() {
             fetchData();
