@@ -76,6 +76,8 @@ The Lambda answers CORS preflight (OPTIONS) requests itself, so you don't need t
 - **Status** changes save as soon as you pick a new value in the table's dropdown.
 - **Completed date** fills in automatically the first time an item is set to Completed. If the item is later moved back to another status, the date clears. If it's completed again, it gets a new date.
 - **The default view is Open**, meaning everything except Completed and Not Planned. The status chips across the top double as filters: click Completed to review finished work, or All items to see everything. The page remembers the filters you last used in each browser.
+- **Rank** sets the order devs work in, with 1 first. Pick a number from the Rank dropdown and the other items shift to make room, so ranks always stay 1, 2, 3… with no gaps or duplicates. Completing an item, marking it Not Planned, or deleting it closes the gap, and a reopened item comes back unranked. Choose **—** to take an item out of the ranking. Ranks are shared across all apps and events, and the page sorts by rank by default.
+- **Next up** marks the highest-ranked item on screen that isn't In Development, so a dev can grab it. It respects the filters, so a dev filtered to the Map app sees the next Map item.
 - **Long descriptions and notes** show three lines in the table. Click the text to expand it, or open Edit to see and change everything.
 - **Created and last-updated times** are stored for every item and shown in the Edit window.
 
@@ -84,12 +86,12 @@ The Lambda answers CORS preflight (OPTIONS) requests itself, so you don't need t
 | Method | Path | Body | Result |
 |---|---|---|---|
 | GET | `/backlog` | | All items |
-| POST | `/backlog` | `app` (MAP, ADMIN, or BOTH), `name` (required), `description`, `status`, `priority`, `event`, `notes` | The new item, with its ID |
+| POST | `/backlog` | `app` (MAP, ADMIN, or BOTH), `name` (required), `description`, `status`, `priority`, `event`, `notes`, `rank` | The new item, with its ID |
 | GET | `/backlog/{itemId}` | | One item |
-| PUT | `/backlog/{itemId}` | Any of: `name`, `description`, `status`, `priority`, `event`, `notes` | The updated item |
+| PUT | `/backlog/{itemId}` | Any of: `name`, `description`, `status`, `priority`, `event`, `notes`, `rank` | The updated item |
 | DELETE | `/backlog/{itemId}` | | `{"deleted": "MAP-001"}` |
 
-Allowed status values are `Under Review`, `In Development`, `Completed`, `Delayed`, `Future Enhancement`, and `Not Planned`. Allowed priority values are `High`, `Medium`, and `Low`. Allowed event values are `Raiders Games`, `Formula 1`, and `General`. New items default to Under Review, Medium, and General.
+Allowed status values are `Under Review`, `In Development`, `Completed`, `Delayed`, `Future Enhancement`, and `Not Planned`. Allowed priority values are `High`, `Medium`, and `Low`. Allowed event values are `Raiders Games`, `Formula 1`, and `General`. New items default to Under Review, Medium, and General, and start unranked. `rank` is a whole number 1 or higher, or `null` to unrank. POST, PUT, and DELETE responses include `rankChanges`, a map of every item whose rank moved.
 
 ## Optional: require an API key
 

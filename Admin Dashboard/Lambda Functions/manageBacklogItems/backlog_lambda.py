@@ -5,12 +5,18 @@ Routes (API Gateway REST API, Lambda proxy integration):
     GET    /backlog              -> list all backlog items
     POST   /backlog              -> create an item (ID is generated: MAP-001, ADMIN-001, BOTH-001, ...)
     GET    /backlog/{itemId}     -> get one item
-    PUT    /backlog/{itemId}     -> update name/description/status/priority/event/notes
+    PUT    /backlog/{itemId}     -> update name/description/status/priority/event/notes/rank
     DELETE /backlog/{itemId}     -> delete an item
 
 DynamoDB table: BacklogItems (partition key: itemId, String)
     Counter records "COUNTER#MAP", "COUNTER#ADMIN" and "COUNTER#BOTH" live in the same table
     and hold the last number issued for each app. They are hidden from the list.
+
+Rank: open items can have a rank (1 = work on first). Ranks are kept consecutive
+(1, 2, 3, ... with no gaps or duplicates): placing an item at rank 3 moves the old
+#3 and below down one, and completing, closing or deleting a ranked item closes
+the gap. Responses include "rankChanges": {itemId: newRank or null} so the page
+can update every row that moved.
 """
 
 import json
@@ -32,6 +38,8 @@ PRIORITIES = ('High', 'Medium', 'Low')
 EVENTS = ('Raiders Games', 'Formula 1', 'General')
 DEFAULT_EVENT = 'General'
 COMPLETED = 'Completed'
+# Closed items drop out of the ranking
+CLOSED_STATUSES = ('Completed', 'Not Planned')
 COUNTER_PREFIX = 'COUNTER#'
 
 EDITABLE_FIELDS = ('name', 'description', 'status', 'priority', 'event', 'notes')
@@ -135,6 +143,21 @@ def with_defaults(item):
     return item
 
 
+def parse_rank(value):
+    """None or '' clears the rank; otherwise a whole number, 1 or higher."""
+    if value is None or value == '':
+        return None
+    if isinstance(value, bool):
+        raise ValidationError('rank must be a whole number, 1 or higher')
+    try:
+        number = Decimal(str(value).strip())
+    except Exception:
+        raise ValidationError('rank must be a whole number, 1 or higher')
+    if not number.is_finite() or number != number.to_integral_value() or number < 1:
+        raise ValidationError('rank must be a whole number, 1 or higher')
+    return int(number)
+
+
 def sort_key(item):
     app = item.get('app', '')
     return (APPS.index(app) if app in APPS else 99, int(item.get('itemNumber', 0)))
@@ -144,16 +167,79 @@ def sort_key(item):
 # Operations
 # ---------------------------------------------------------------------------
 
-def list_items():
+def scan_all():
     items = []
     scan_kwargs = {}
     while True:
         resp = table.scan(**scan_kwargs)
-        items.extend(with_defaults(i) for i in resp.get('Items', [])
+        items.extend(i for i in resp.get('Items', [])
                      if not i.get('itemId', '').startswith(COUNTER_PREFIX))
         if 'LastEvaluatedKey' not in resp:
             break
         scan_kwargs['ExclusiveStartKey'] = resp['LastEvaluatedKey']
+    return items
+
+
+def set_rank(item_id, rank):
+    """Set (rank=int) or clear (rank=None) one item's rank. Skips items deleted meanwhile."""
+    kwargs = {
+        'Key': {'itemId': item_id},
+        'ConditionExpression': 'attribute_exists(itemId)',
+        'ExpressionAttributeNames': {'#rank': 'rank'},
+    }
+    if rank is None:
+        kwargs['UpdateExpression'] = 'REMOVE #rank'
+    else:
+        kwargs['UpdateExpression'] = 'SET #rank = :rank'
+        kwargs['ExpressionAttributeValues'] = {':rank': rank}
+    try:
+        table.update_item(**kwargs)
+    except ClientError as e:
+        if e.response['Error']['Code'] != 'ConditionalCheckFailedException':
+            raise
+
+
+def rerank(item_id, desired, write_self=True):
+    """Place item_id at rank `desired` (None = unranked) and renumber every other
+    ranked open item 1..n. Returns {itemId: rank or None} for each item that changed."""
+    others = sorted(
+        (i for i in scan_all()
+         if 'rank' in i and i['itemId'] != item_id and i.get('status') not in CLOSED_STATUSES),
+        key=lambda i: (int(i['rank']), sort_key(i)),
+    )
+    current = {i['itemId']: int(i['rank']) for i in others}
+    order = [i['itemId'] for i in others]
+    if desired is not None:
+        order.insert(min(desired, len(order) + 1) - 1, item_id)
+
+    changes = {}
+    for position, iid in enumerate(order, start=1):
+        if iid == item_id:
+            if write_self:
+                set_rank(iid, position)
+            changes[iid] = position
+        elif current.get(iid) != position:
+            set_rank(iid, position)
+            changes[iid] = position
+    if desired is None:
+        if write_self:
+            set_rank(item_id, None)
+        changes[item_id] = None
+    print(f'Reranked around {item_id}: {changes}')
+    return changes
+
+
+def apply_own_rank(item, changes):
+    if item['itemId'] in changes:
+        if changes[item['itemId']] is None:
+            item.pop('rank', None)
+        else:
+            item['rank'] = changes[item['itemId']]
+    return item
+
+
+def list_items():
+    items = [with_defaults(i) for i in scan_all()]
     items.sort(key=sort_key)
     return respond(200, {'items': items, 'count': len(items)})
 
@@ -183,6 +269,7 @@ def create_item(data):
         raise ValidationError(f'app must be one of: {", ".join(APPS)}')
 
     fields = clean_fields(data, creating=True)
+    desired_rank = parse_rank(data.get('rank'))
     timestamp = now_iso()
     item = {
         'app': app,
@@ -206,7 +293,11 @@ def create_item(data):
         try:
             table.put_item(Item=item, ConditionExpression='attribute_not_exists(itemId)')
             print(f'Created {item["itemId"]}')
-            return respond(201, {'item': item})
+            changes = {}
+            if desired_rank is not None and item['status'] not in CLOSED_STATUSES:
+                changes = rerank(item['itemId'], desired_rank)
+                apply_own_rank(item, changes)
+            return respond(201, {'item': item, 'rankChanges': changes})
         except ClientError as e:
             if e.response['Error']['Code'] != 'ConditionalCheckFailedException':
                 raise
@@ -216,9 +307,33 @@ def create_item(data):
 def update_item(item_id, data):
     item_id = normalize_id(item_id)
     fields = clean_fields(data, creating=False)
-    if not fields:
-        raise ValidationError(f'Provide at least one of: {", ".join(EDITABLE_FIELDS)}')
+    rank_given = 'rank' in data
+    desired_rank = parse_rank(data.get('rank')) if rank_given else None
+    if not fields and not rank_given:
+        raise ValidationError(f'Provide at least one of: {", ".join(EDITABLE_FIELDS + ("rank",))}')
 
+    item = save_fields(item_id, fields) if fields else fetch_item(item_id)
+
+    # Closed items always drop out of the ranking; open items move only when asked.
+    changes = {}
+    had_rank = 'rank' in item
+    if item.get('status') in CLOSED_STATUSES:
+        if had_rank:
+            changes = rerank(item_id, None)
+    elif rank_given and (desired_rank is not None or had_rank):
+        changes = rerank(item_id, desired_rank)
+    apply_own_rank(item, changes)
+    return respond(200, {'item': with_defaults(item), 'rankChanges': changes})
+
+
+def fetch_item(item_id):
+    resp = table.get_item(Key={'itemId': item_id})
+    if 'Item' not in resp:
+        raise NotFoundError(f'Item {item_id} not found')
+    return resp['Item']
+
+
+def save_fields(item_id, fields):
     names = {'#updatedAt': 'updatedAt'}
     values = {':updatedAt': now_iso()}
     set_parts = ['#updatedAt = :updatedAt']
@@ -255,19 +370,26 @@ def update_item(item_id, data):
             raise NotFoundError(f'Item {item_id} not found')
         raise
     print(f'Updated {item_id}: {list(fields)}')
-    return respond(200, {'item': with_defaults(resp['Attributes'])})
+    return resp['Attributes']
 
 
 def delete_item(item_id):
     item_id = normalize_id(item_id)
     try:
-        table.delete_item(Key={'itemId': item_id}, ConditionExpression='attribute_exists(itemId)')
+        resp = table.delete_item(Key={'itemId': item_id},
+                                 ConditionExpression='attribute_exists(itemId)',
+                                 ReturnValues='ALL_OLD')
     except ClientError as e:
         if e.response['Error']['Code'] == 'ConditionalCheckFailedException':
             raise NotFoundError(f'Item {item_id} not found')
         raise
     print(f'Deleted {item_id}')
-    return respond(200, {'deleted': item_id})
+    old = resp.get('Attributes', {})
+    changes = {}
+    if 'rank' in old and old.get('status') not in CLOSED_STATUSES:
+        changes = rerank(item_id, None, write_self=False)
+        changes.pop(item_id, None)
+    return respond(200, {'deleted': item_id, 'rankChanges': changes})
 
 
 # ---------------------------------------------------------------------------
